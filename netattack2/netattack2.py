@@ -33,7 +33,6 @@ def auto_installer():
         subprocess.call("sudo pip install netifaces", shell=True)
         subprocess.call("sudo apt-get install python-scapy -y > {}".format(os.devnull), shell=True)
         subprocess.call("sudo apt-get install python-nmap -y > {}".format(os.devnull), shell=True)
-        subprocess.call("sudo apt-get install python-nfqueue -y > {}".format(os.devnull), shell=True)
         subprocess.call("sudo apt-get install nmap -y > {}".format(os.devnull), shell=True)
         sys.exit("\n[{G}+{N}] Requirements installed.\n".format(G=GREEN, N=NORMAL))
 
@@ -45,7 +44,7 @@ Usually modules that need to be installed
 try:
     import netifaces
     from scapy.all import *
-    import nfqueue
+    
     import nmap
 except ImportError:
     auto_installer()
