@@ -44,16 +44,23 @@ image = Image.new('RGB', (width, height))
 draw = ImageDraw.Draw(image)
 font = ImageFont.load_default()
 
-def draw_keyboard(selected_key_index, input_text):
-    keys = [
-        '!', '"', '£', '$', '%', '&', '/', '(', ')', '=',
-        '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
-        'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
-        'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';',
-        'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '\\',
-        '|', '?', '^', 'ì', ':', '-', '_', "'", '@', '#',
-        '§', '*', '+', '[', ']', '{', '}', '<-', '╰┈➤'
-    ]
+def draw_keyboard(selected_key_index, input_text, mode="alpha"):
+    if mode == "alpha":
+        keys = [
+            '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+            'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
+            'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';',
+            'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/',
+            ' ', 'DEL', 'ENT', "!#1"
+        ]
+    else:  # special characters mode
+        keys = [
+            '!', '"', '£', '$', '%', '&', '/', '(', ')', '=',
+            '?', '^', '@', '#', '_', '-', '+', '{', '}', '\\',
+            '[', ']', '*', ':', ';', "'", '<', '>', '|', '~',
+            ' ', 'DEL', 'ENT', "ABC"
+        ]
+    
     key_width = 12
     key_height = 12
     cols = 10
@@ -81,50 +88,63 @@ def draw_keyboard(selected_key_index, input_text):
     disp.LCD_ShowImage(image, 0, 0)
 
 def get_keyboard_input():
-    keys = [
-        '!', '"', '£', '$', '%', '&', '/', '(', ')', '=',
+    alpha_keys = [
         '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
         'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
         'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';',
-        'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '\\',
-        '|', '?', '^', 'ì', ':', '-', '_', "'", '@', '#',
-        '§', '*', '+', '[', ']', '{', '}', '<-', '╰┈➤'
+        'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/',
+        ' ', 'DEL', 'ENT', "!#1"
     ]
+    
+    special_keys = [
+        '!', '"', '£', '$', '%', '&', '/', '(', ')', '=',
+        '?', '^', '@', '#', '_', '-', '+', '{', '}', '\\',
+        '[', ']', '*', ':', ';', "'", '<', '>', '|', '~',
+        ' ', 'DEL', 'ENT', "ABC"
+    ]
+
     selected_key_index = 0
     input_text = ""
+    mode = "alpha"  # Start in alphanumeric mode
 
-    draw_keyboard(selected_key_index, input_text)
+    draw_keyboard(selected_key_index, input_text, mode)
 
     while True:
         if GPIO.input(KEY_UP_PIN) == 0:  # Move selection up
-            selected_key_index = (selected_key_index - 10) % len(keys)
-            draw_keyboard(selected_key_index, input_text)
+            selected_key_index = (selected_key_index - 10) % len(alpha_keys if mode == "alpha" else special_keys)
+            draw_keyboard(selected_key_index, input_text, mode)
             time.sleep(0.3)
 
         if GPIO.input(KEY_DOWN_PIN) == 0:  # Move selection down
-            selected_key_index = (selected_key_index + 10) % len(keys)
-            draw_keyboard(selected_key_index, input_text)
+            selected_key_index = (selected_key_index + 10) % len(alpha_keys if mode == "alpha" else special_keys)
+            draw_keyboard(selected_key_index, input_text, mode)
             time.sleep(0.3)
 
         if GPIO.input(KEY_LEFT_PIN) == 0:  # Move selection left
-            selected_key_index = (selected_key_index - 1) % len(keys)
-            draw_keyboard(selected_key_index, input_text)
+            selected_key_index = (selected_key_index - 1) % len(alpha_keys if mode == "alpha" else special_keys)
+            draw_keyboard(selected_key_index, input_text, mode)
             time.sleep(0.3)
 
         if GPIO.input(KEY_RIGHT_PIN) == 0:  # Move selection right
-            selected_key_index = (selected_key_index + 1) % len(keys)
-            draw_keyboard(selected_key_index, input_text)
+            selected_key_index = (selected_key_index + 1) % len(alpha_keys if mode == "alpha" else special_keys)
+            draw_keyboard(selected_key_index, input_text, mode)
             time.sleep(0.3)
 
         if GPIO.input(KEY_PRESS_PIN) == 0:  # Select key
-            key = keys[selected_key_index]
-            if key == '╰┈➤':
+            key = (alpha_keys if mode == "alpha" else special_keys)[selected_key_index]
+            if key == 'ENT':
                 return input_text
-            elif key == '<-':
+            elif key == 'DEL':
                 input_text = input_text[:-1]
+            elif key == "!#1":
+                mode = "special"
+                selected_key_index = 0
+            elif key == "ABC":
+                mode = "alpha"
+                selected_key_index = 0
             else:
                 input_text += key
-            draw_keyboard(selected_key_index, input_text)
+            draw_keyboard(selected_key_index, input_text, mode)
             time.sleep(0.3)
 
 
