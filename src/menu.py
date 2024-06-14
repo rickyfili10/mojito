@@ -90,6 +90,54 @@ def draw_keyboard(selected_key_index, input_text, mode="alpha", caps_lock=False)
     # Display the updated image
     disp.LCD_ShowImage(image, 0, 0)
 
+def draw_terminal(command_input, output_lines):
+    draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
+    
+    # Draw input area
+    input_area_height = 20
+    draw.text((0, 0), "> " + command_input, font=font, fill=(255, 255, 255))
+    
+    # Draw output area
+    output_area_start = input_area_height + 2
+    output_area_height = height - input_area_height - 2
+    output_text = "\n".join(output_lines[-(output_area_height // 10):])  # Show up to 10 lines of output
+    draw.text((0, output_area_start), output_text, font=font, fill=(255, 255, 255))
+    
+    # Draw keyboard area
+    keyboard_area_start = output_area_start + output_area_height
+    keyboard_area_height = height - keyboard_area_start
+    draw.rectangle((0, keyboard_area_start, width, height), outline=(255, 255, 255))
+    
+    disp.LCD_ShowImage(image, 0, 0)
+
+def terminal():
+    command_input = ""
+    output_lines = []
+    
+    draw_terminal(command_input, output_lines)
+    
+    while True:
+        command_input = get_keyboard_input()
+        
+        if command_input.endswith("⏎"):
+            command_input = command_input[:-1]  # Remove the newline character
+            if command_input.strip().lower() == "exit":
+                break
+            
+            output_lines.append(command_input)
+            try:
+                result = subprocess.run(command_input, shell=True, capture_output=True, text=True)
+                output_lines.extend(result.stdout.splitlines())
+                if result.stderr:
+                    output_lines.extend(result.stderr.splitlines())
+            except Exception as e:
+                output_lines.append(str(e))
+                
+            command_input = ""
+        else:
+            output_lines.append(command_input)
+        
+        draw_terminal(command_input, output_lines)
 
 
 def get_keyboard_input():
