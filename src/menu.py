@@ -44,8 +44,90 @@ image = Image.new('RGB', (width, height))
 draw = ImageDraw.Draw(image)
 font = ImageFont.load_default()
 
+def draw_keyboard(selected_key_index, input_text):
+    keys = [
+        '!', '"', '£', '$', '%', '&', '/', '(', ')', '=',
+        '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+        'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
+        'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';',
+        'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '\\',
+        '|', '?', '^', 'ì', ':', '-', '_', "'", '@', '#',
+        '§', '*', '+', '[', ']', '{', '}', '<-', '╰┈➤'
+    ]
+    key_width = 12
+    key_height = 12
+    cols = 10
+
+    # Clear previous image
+    draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
+
+    # Draw the current input text
+    draw.text((0, 0), input_text, font=font, fill=(255, 255, 255))
+
+    # Draw the keyboard
+    for i, key in enumerate(keys):
+        col = i % cols
+        row = i // cols
+        x = col * key_width
+        y = (row + 1) * key_height  # Start drawing from second row
+        if i == selected_key_index:
+            draw.rectangle((x, y, x + key_width, y + key_height), fill=(0, 255, 0))  # Highlight selected key
+            draw.text((x + 2, y + 2), key, font=font, fill=(0, 0, 0))
+        else:
+            draw.rectangle((x, y, x + key_width, y + key_height), outline=(255, 255, 255))
+            draw.text((x + 2, y + 2), key, font=font, fill=(255, 255, 255))
+
+    # Display the updated image
+    disp.LCD_ShowImage(image, 0, 0)
+
+def get_keyboard_input():
+    keys = [
+        '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+        'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
+        'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';',
+        'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/',
+        ' ', '<-', '╰┈➤'
+    ]
+    selected_key_index = 0
+    input_text = ""
+
+    draw_keyboard(selected_key_index, input_text)
+
+    while True:
+        if GPIO.input(KEY_UP_PIN) == 0:  # Move selection up
+            selected_key_index = (selected_key_index - 10) % len(keys)
+            draw_keyboard(selected_key_index, input_text)
+            time.sleep(0.3)
+
+        if GPIO.input(KEY_DOWN_PIN) == 0:  # Move selection down
+            selected_key_index = (selected_key_index + 10) % len(keys)
+            draw_keyboard(selected_key_index, input_text)
+            time.sleep(0.3)
+
+        if GPIO.input(KEY_LEFT_PIN) == 0:  # Move selection left
+            selected_key_index = (selected_key_index - 1) % len(keys)
+            draw_keyboard(selected_key_index, input_text)
+            time.sleep(0.3)
+
+        if GPIO.input(KEY_RIGHT_PIN) == 0:  # Move selection right
+            selected_key_index = (selected_key_index + 1) % len(keys)
+            draw_keyboard(selected_key_index, input_text)
+            time.sleep(0.3)
+
+        if GPIO.input(KEY_PRESS_PIN) == 0:  # Select key
+            key = keys[selected_key_index]
+            if key == '╰┈➤':
+                return input_text
+            elif key == '<-':
+                input_text = input_text[:-1]
+            else:
+                input_text += key
+            draw_keyboard(selected_key_index, input_text)
+            time.sleep(0.3)
+
+
 # Menu options
-menu_options = ["Test","Reboot", "Shutdown", "Monitor Mode", "Show Devices", "Deauth"]
+menu_options = ["Test", "Keyboard Test", "Reboot", "Shutdown", "Monitor Mode", "Show Devices", "Deauth"]
 selected_index = 0
 
 def execute_command_and_display_output():
@@ -226,6 +308,9 @@ try:
                     show_message("Internal Error.\nMaybe too much mojito?", 3)
 
                 # Redraw menu after sniffing
+            elif menu_options[selected_index] == "Keyboard Test":
+                kinput = get_keyboard_input()
+                show_message(kinput, 3)
                 draw_menu(selected_index)
             elif menu_options[selected_index] == "Deauth WiFi":
                 # Deauth WiFi
