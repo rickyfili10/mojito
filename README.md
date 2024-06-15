@@ -8,3 +8,5 @@ Mojito is an hacking tool for raspberry pi 0 w/wh that use wavseshare 1.44 inch 
 
 # THE AUTHORS TAKE NO RESPONSIBILITY FOR HOW THIS TOOL IS USED
 Use it at your own risk.
+
+based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code
