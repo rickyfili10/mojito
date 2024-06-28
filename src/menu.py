@@ -190,7 +190,7 @@ while True:
         
         if selected_option == "Networks":
             # Draw and handle the Network sub-menu
-            sub_menu_options = ["Wifi", "VPN", "Firewall"]
+            sub_menu_options = ["Wifi", "Deauth", "Firewall"]
             sub_selected_index = 0
             
             def draw_sub_menu(sub_selected_index):
@@ -227,10 +227,8 @@ while True:
 
                         # Pause before allowing further input
                         time.sleep(1)
-                    elif sub_selected_option == "VPN":
-                        # Add your logic here for VPN option
-
-                        # Pause before allowing further input
+                    elif sub_selected_option == "Deauth":
+                        os.system("airmon-ng start wlan0")
                         time.sleep(1)
                     
                     break  # Exit sub-menu to main menu
