@@ -60,10 +60,10 @@ def draw_keyboard(selected_key_index, input_text, mode="alpha", caps_lock=False)
             '[', ']', '*', ':', ';', "'", '<', '>', '|', '~',
             ' ', 'DEL', '⏎', "ABC", "CAPS"
         ]
-    
+
     if caps_lock:
         keys = [key.upper() if key.isalpha() else key for key in keys]
-    
+
     key_width = 12
     key_height = 12
     cols = 10
@@ -104,14 +104,14 @@ def get_keyboard_input():
         '[', ']', '*', ':', ';', "'", '<', '>', '|', '~',
         ' ', 'DEL', '⏎', "ABC", "CAPS"
     ]
-    
+
     input_text = ""
     selected_key_index = 0
     mode = "alpha"
     caps_lock = False
-    
+
     draw_keyboard(selected_key_index, input_text, mode, caps_lock)
-    
+
     while True:
         if GPIO.input(KEY_UP_PIN) == 0:
             selected_key_index = (selected_key_index - 10) % len(alpha_keys)
@@ -141,13 +141,27 @@ def get_keyboard_input():
                 caps_lock = not caps_lock
             else:
                 input_text += key.upper() if caps_lock else key
-            
+
             draw_keyboard(selected_key_index, input_text, mode, caps_lock)
             time.sleep(0.3)
 
 # Menu options
-menu_options = ["Networks", "Bluetooth", "Payload", "Party", "Reboot", "Shutdown"]
+menu_options = ["Networks","Bluetooth", "Payload", "Party", "Reboot", "Shutdown"]
 selected_index = 0
+def show_image(image_path, exit_event=None):
+    image = Image.open(image_path)
+    image = image.resize((128, 128))  # Resize the image to fit the display if necessary
+
+    disp.LCD_Clear()  # Clear the display
+    disp.LCD_ShowImage(image, 0, 0)  # Show the image on the display
+
+    # Wait for exit event (e.g., button press or timeout)
+    while True:
+        if exit_event is not None and exit_event():
+            break  # Exit the loop if exit event occurs
+        time.sleep(0.1)  # Adjust sleep time as needed
+
+    disp.LCD_Clear()  # Clear the display after exit
 
 def draw_menu(selected_index):
     # Clear previous image
@@ -172,10 +186,11 @@ def show_message(message, duration=2):
     draw.text((10, 50), message, font=font, fill=(255, 255, 255))
     disp.LCD_ShowImage(image, 0, 0)
     time.sleep(duration)
+    disp.LCD_Clear()
 
 while True:
     draw_menu(selected_index)
-    
+
     if GPIO.input(KEY_UP_PIN) == 0:
         selected_index = (selected_index - 1) % len(menu_options)
         draw_menu(selected_index)
@@ -187,12 +202,12 @@ while True:
     if GPIO.input(KEY_PRESS_PIN) == 0:
         selected_option = menu_options[selected_index]
         show_message(f"Selected: {selected_option}", 1)
-        
+
         if selected_option == "Networks":
             # Draw and handle the Network sub-menu
             sub_menu_options = ["Wifi", "Deauth", "Firewall"]
             sub_selected_index = 0
-            
+
             def draw_sub_menu(sub_selected_index):
                 draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
                 for i, option in enumerate(sub_menu_options):
@@ -206,10 +221,10 @@ while True:
                     else:
                         draw.text((1, y), option, font=font, fill=(255, 255, 255))
                 disp.LCD_ShowImage(image, 0, 0)
-            
+
             while True:
                 draw_sub_menu(sub_selected_index)
-                
+
                 if GPIO.input(KEY_UP_PIN) == 0:
                     sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
                     draw_sub_menu(sub_selected_index)
@@ -221,7 +236,7 @@ while True:
                 if GPIO.input(KEY_PRESS_PIN) == 0:
                     sub_selected_option = sub_menu_options[sub_selected_index]
                     show_message(f"Selected: {sub_selected_option}", 1)
-                    
+
                     if sub_selected_option == "Wifi":
                         # Add your logic here for Wifi option
 
@@ -230,13 +245,14 @@ while True:
                     elif sub_selected_option == "Deauth":
                         os.system("airmon-ng start wlan0")
                         time.sleep(1)
-                    
+
                     break  # Exit sub-menu to main menu
+
         elif selected_option == "Party":
             # Draw and handle the Network sub-menu
             sub_menu_options = ["Login", "Join a Party", "Create a Party", "Leave Party", "Exit"]
             sub_selected_index = 0
-            
+
             def draw_sub_menu(sub_selected_index):
                 draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
                 for i, option in enumerate(sub_menu_options):
@@ -250,10 +266,10 @@ while True:
                     else:
                         draw.text((1, y), option, font=font, fill=(255, 255, 255))
                 disp.LCD_ShowImage(image, 0, 0)
-            
+
             while True:
                 draw_sub_menu(sub_selected_index)
-                
+
                 if GPIO.input(KEY_UP_PIN) == 0:
                     sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
                     draw_sub_menu(sub_selected_index)
@@ -265,7 +281,7 @@ while True:
                 if GPIO.input(KEY_PRESS_PIN) == 0:
                     sub_selected_option = sub_menu_options[sub_selected_index]
                     show_message(f"Selected: {sub_selected_option}", 1)
-                    
+
                     if sub_selected_option == "Join a Party":
                         show_message("Select the party name", 3)
                         partyName = get_keyboard_input()
@@ -292,12 +308,66 @@ while True:
                         LpartyName = get_keyboard_input()
                         result = subprocess.run(["sudo", "hamachi", "leave", LpartyName,], capture_output=True, text=True)
                         show_message(result.stdout, 3)
-                    
-                    
+
+
                     break  # Exit sub-menu to main menu
         elif selected_option == "Bluetooth":
-            # Add your logic here for Bluetooth option
-            show_message("Opening Bluetooth Settings...", 2)
+            sub_menu_options = ["Spam"]
+            sub_selected_index = 0
+
+            def draw_sub_menu(sub_selected_index):
+                draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
+                for i, option in enumerate(sub_menu_options):
+                    y = i * 20
+                    if i == sub_selected_index:
+                        text_size = draw.textbbox((0, 0), option, font=font)
+                        text_width = text_size[2] - text_size[0]
+                        text_height = text_size[3] - text_size[1]
+                        draw.rectangle((0, y, width, y + text_height), fill=(0, 255, 0))
+                        draw.text((1, y), option, font=font, fill=(0, 0, 0))
+                    else:
+                        draw.text((1, y), option, font=font, fill=(255, 255, 255))
+                disp.LCD_ShowImage(image, 0, 0)
+
+            while True:
+                draw_sub_menu(sub_selected_index)
+
+                if GPIO.input(KEY_UP_PIN) == 0:
+                    sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
+                    draw_sub_menu(sub_selected_index)
+                    time.sleep(0.3)
+                if GPIO.input(KEY_DOWN_PIN) == 0:
+                    sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
+                    draw_sub_menu(sub_selected_index)
+                    time.sleep(0.3)
+                if GPIO.input(KEY_PRESS_PIN) == 0:
+                    sub_selected_option = sub_menu_options[sub_selected_index]
+                    show_message(f"Selected: {sub_selected_option}", 1)
+
+                    if sub_selected_option == "Spam":
+                        sub_menu_options = ["iOS"]
+                        sub_selected_index = 0
+
+                        while True:
+                            draw_sub_menu(sub_selected_index)
+
+                            if GPIO.input(KEY_UP_PIN) == 0:
+                                sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
+                                draw_sub_menu(sub_selected_index)
+                                time.sleep(0.3)
+                            if GPIO.input(KEY_DOWN_PIN) == 0:
+                                sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
+                                draw_sub_menu(sub_selected_index)
+                                time.sleep(0.3)
+                            if GPIO.input(KEY_PRESS_PIN) == 0:
+                                sub_selected_option = sub_menu_options[sub_selected_index]
+                                show_message(f"Selected: {sub_selected_option}", 1)
+
+                                if sub_selected_option == "iOS":
+                                    os.system("sudo python3 iphone.py")
+                                    show_image("bkat.png", lambda: GPIO.input(KEY_PRESS_PIN) == 0)  # Show image until button press
+
+                    break  # Exit Bluetooth menu to main menu
         elif selected_option == "Payload":
             # Add your logic here for Payload option
             show_message("Opening Payload Settings...", 2)
