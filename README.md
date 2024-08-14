@@ -5,7 +5,7 @@
 This project is called "Mojito" beacuse while the developers were creating the project, they were drinking mojitos (maked with heart of @rickyfili10)
 
 # What's that?
-Mojito is an hacking tool for raspberry pi 0 w/wh that use wavseshare 1.44 inch lcd display. It have a collection of hacking tools and it is based on Kali Linux. 
+Mojito is an hacking project created only for educational purposes and runs on a raspberry pi 0 w/wh that use a wavseshare 1.44 inch lcd HAT display. It have a collection of hacking tools and it is based on Kali Linux. 
 
 # DISCLAIMER
 ### Mojito is for educational purposes only.
