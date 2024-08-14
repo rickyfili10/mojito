@@ -7,8 +7,8 @@ This project is called "Mojito" beacuse while we was creating the project, we wa
 Mojito is an hacking tool for raspberry pi 0 w/wh that use wavseshare 1.44 inch lcd display. It have a collection of hacking tools and it is based on Kali Linux. 
 
 # DISCLAIMER
-### KatLogger is for educational purposes only.
-The authors take NO responsibility and liability for how you use any of the tools/source code/any files provided. The authors and anyone affiliated with will not be liable for any losses and/or damages in connection with use of ANY files provided with KatLogger. DO NOT use KatLogger if you don't have the permission to do that,
+### Mojito is for educational purposes only.
+The authors take NO responsibility and liability for how you use any of the tools/source code/any files provided. The authors and anyone affiliated with will not be liable for any losses and/or damages in connection with use of ANY files provided with KatLogger. DO NOT use Mojito if you don't have the permission to do that,
 ### USE IT AT YOUR OWN RISK.
 
  By: CodeMakers team. ツ
