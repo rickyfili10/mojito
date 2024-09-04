@@ -12,6 +12,14 @@ Mojito is an hacking project created only for educational purposes and runs on a
 The authors take NO responsibility and liability for how you use any of the tools/source code/any files provided. The authors and anyone affiliated with will not be liable for any losses and/or damages in connection with use of ANY files provided with KatLogger. DO NOT use Mojito if you don't have the permission to do that,
 ### USE IT AT YOUR OWN RISK.
 
- By: BlacKat team. ツ
+# HOW TO SETUP AND INSTALL MOJITO?
+1. Flash and setup kali linux for raspberry pi 0 wh
+2. Clone Mojito repostory
+3. Install and setup requisites using "sudo pip install pybluez spidev RPi.gpio" and use sudo raspi-config to enable SPi interface
+4. Execute menu.py using "sudo python menu.py"
+
+
+
+--- With love by BlacKat team. ツ ---
 
 based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code
