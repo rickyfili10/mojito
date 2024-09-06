@@ -5,6 +5,10 @@ import time
 import os
 import random
 import subprocess
+import hashlib
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.backends import default_backend
 
 # Pin setup
 KEY_UP_PIN = 6
@@ -26,6 +30,130 @@ disp = LCD_1in44.LCD()
 Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT
 disp.LCD_Init(Lcd_ScanDir)
 disp.LCD_Clear()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def generate_key_from_password(password: str) -> bytes:
+    """Genera una chiave AES a partire dalla password."""
+    return hashlib.sha256(password.encode()).digest()
+
+def encrypt_message(message: str, key: bytes) -> bytes:
+    """Cripta un messaggio usando una chiave e restituisce il testo cifrato."""
+    iv = os.urandom(16)
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
+    encryptor = cipher.encryptor()
+    padder = padding.PKCS7(algorithms.AES.block_size).padder()
+    padded_message = padder.update(message.encode()) + padder.finalize()
+    encrypted_message = encryptor.update(padded_message) + encryptor.finalize()
+    return iv + encrypted_message
+
+def write_encrypted_message_to_file(file_path: str, message: str, key: bytes):
+    """Cripta un messaggio e lo scrive in un file."""
+
+    encrypted_message = encrypt_message(message, key)
+    with open(file_path, 'wb') as file:
+        file.write(encrypted_message)
+def decrypt_message(encrypted_message: bytes, key: bytes) -> str:
+    """Decifra un messaggio usando una chiave e restituisce il testo in chiaro."""
+    iv = encrypted_message[:16]
+    encrypted_message = encrypted_message[16:]
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
+    decryptor = cipher.decryptor()
+    padded_message = decryptor.update(encrypted_message) + decryptor.finalize()
+    unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
+    try:
+        message = unpadder.update(padded_message) + unpadder.finalize()
+        return message.decode()
+    except ValueError:
+        pass
+def setPsk():
+    # Definisci il messaggio da criptare e la chiave per la cifratura
+    original_message = "mojito"
+    show_message("Create a password:", 3)
+    password = get_keyboard_input()  # Password per generare la chiave AES
+    key = generate_key_from_password(password)
+
+    # Scrivi il messaggio criptato nel file psk.txt
+    write_encrypted_message_to_file("psk.txt", original_message, key)
+    show_message("Password Saved.", 3)
+def read_encrypted_message_from_file(file_path: str) -> bytes:
+    """Legge un messaggio criptato da un file."""
+    with open(file_path, 'rb') as file:
+        return file.read()
+def returner():
+    psk_try = 0
+    max_tries = 4
+    if os.path.exists("psk.txt"):
+        encrypted_message = read_encrypted_message_from_file("psk.txt")
+
+        while psk_try < max_tries:
+            show_message("Password Required.", 1)
+            user_password = get_keyboard_input()
+            user_key = generate_key_from_password(user_password)
+
+            try:
+                decrypted_message = decrypt_message(encrypted_message, user_key)
+
+                if decrypted_message == "mojito":
+                    show_message("Login in...", 1)
+                    break
+
+                else:
+                    show_message("Wrong password", 1)
+                    psk_try += 1
+            except ValueError as e:
+                show_message(str(e))
+                psk_try += 1
+
+
+    else:
+        setPsk()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Display logo at startup
 logo_path = "logo.png"
@@ -144,9 +272,9 @@ def get_keyboard_input():
 
             draw_keyboard(selected_key_index, input_text, mode, caps_lock)
             time.sleep(0.3)
-
+#returner()
 # Menu options
-menu_options = ["Networks","Bluetooth", "Payload", "Party", "Reboot", "Shutdown"]
+menu_options = ["Networks","Bluetooth", "Payload", "Party", "App & Plugin", "Shutdown"]
 selected_index = 0
 def show_image(image_path, exit_event=None):
     image = Image.open(image_path)
@@ -188,6 +316,7 @@ def show_message(message, duration=2):
     time.sleep(duration)
     disp.LCD_Clear()
 
+returner()
 while True:
     draw_menu(selected_index)
 
@@ -238,10 +367,13 @@ while True:
                     show_message(f"Selected: {sub_selected_option}", 1)
 
                     if sub_selected_option == "Wifi":
-                        # Add your logic here for Wifi option
+                        sub_menu_options = ["Fake AP"]
+                        if sub_selected_option == "Fake AP":
+                            show_message("Create a name for the\nfake AP", 3)
+                            fakeAp = get_keyboard_input()
+                            os.system(f"sudo wifiphisher -e {fakeAp}")
 
-                        # Pause before allowing further input
-                        time.sleep(1)
+
                     elif sub_selected_option == "Deauth":
                         os.system("airmon-ng start wlan0")
                         time.sleep(1)
@@ -368,16 +500,77 @@ while True:
                                     show_image("bkat.png", lambda: GPIO.input(KEY_PRESS_PIN) == 0)  # Show image until button press
 
                     break  # Exit Bluetooth menu to main menu
+
+
+
+        elif selected_option == "App & Plugin":
+            sub_menu_options = ["Settings", "Exit"]
+            sub_selected_index = 0
+
+            def draw_sub_menu(sub_selected_index):
+                draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
+                for i, option in enumerate(sub_menu_options):
+                    y = i * 20
+                    if i == sub_selected_index:
+                        text_size = draw.textbbox((0, 0), option, font=font)
+                        text_width = text_size[2] - text_size[0]
+                        text_height = text_size[3] - text_size[1]
+                        draw.rectangle((0, y, width, y + text_height), fill=(0, 255, 0))
+                        draw.text((1, y), option, font=font, fill=(0, 0, 0))
+                    else:
+                        draw.text((1, y), option, font=font, fill=(255, 255, 255))
+                disp.LCD_ShowImage(image, 0, 0)
+
+            while True:
+                draw_sub_menu(sub_selected_index)
+
+                if GPIO.input(KEY_UP_PIN) == 0:
+                    sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
+                    draw_sub_menu(sub_selected_index)
+                    time.sleep(0.3)
+                if GPIO.input(KEY_DOWN_PIN) == 0:
+                    sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
+                    draw_sub_menu(sub_selected_index)
+                    time.sleep(0.3)
+                if GPIO.input(KEY_PRESS_PIN) == 0:
+                    sub_selected_option = sub_menu_options[sub_selected_index]
+                    show_message(f"Selected: {sub_selected_option}", 1)
+
+                    if sub_selected_option == "Settings":
+                        sub_menu_options = ["Password", "Exit"]
+                        sub_selected_index = 0
+
+                        while True:
+                            draw_sub_menu(sub_selected_index)
+
+                            if GPIO.input(KEY_UP_PIN) == 0:
+                                sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
+                                draw_sub_menu(sub_selected_index)
+                                time.sleep(0.3)
+                            if GPIO.input(KEY_DOWN_PIN) == 0:
+                                sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
+                                draw_sub_menu(sub_selected_index)
+                                time.sleep(0.3)
+                            if GPIO.input(KEY_PRESS_PIN) == 0:
+                                sub_selected_option = sub_menu_options[sub_selected_index]
+                                show_message(f"Selected: {sub_selected_option}", 1)
+
+                                if sub_selected_option == "Password":
+                                    setPsk()
+                                    break
+                                if sub_selected_option == "Exit":
+                                    break
+                    if sub_selected_option == "Exit":
+                        break
+
+
+
+
+
+
         elif selected_option == "Payload":
             # Add your logic here for Payload option
             show_message("Opening Payload Settings...", 2)
-        elif selected_option == "Passwords":
-            password = get_keyboard_input()
-            show_message(f"Password: {password}", 3)
-        elif selected_option == "Reboot":
-            show_message("Rebooting...", 2)
-            time.sleep(1)
-            subprocess.call(['sudo', 'reboot'])
         elif selected_option == "Shutdown":
             show_message("Shutting down...", 2)
             time.sleep(1)
