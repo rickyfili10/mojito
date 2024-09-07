@@ -3,12 +3,12 @@ from PIL import Image, ImageDraw, ImageFont
 import LCD_1in44
 import time
 import os
-import random
 import subprocess
 import hashlib
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
+import socket
 
 # Pin setup
 KEY_UP_PIN = 6
@@ -16,6 +16,9 @@ KEY_DOWN_PIN = 19
 KEY_LEFT_PIN = 5
 KEY_RIGHT_PIN = 26
 KEY_PRESS_PIN = 13
+KEY1_PIN = 21
+KEY2_PIN = 20
+KEY3_PIN = 16
 
 # Initialize GPIO
 GPIO.setmode(GPIO.BCM)
@@ -24,6 +27,9 @@ GPIO.setup(KEY_DOWN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(KEY_LEFT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(KEY_RIGHT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(KEY_PRESS_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(KEY1_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(KEY2_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(KEY3_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # Initialize display
 disp = LCD_1in44.LCD()
@@ -40,10 +46,115 @@ disp.LCD_Clear()
 
 
 
+# Impostazioni di rete
+BROADCAST_IP = '<broadcast>'  # IP di broadcast per inviare a tutti
+PORT = 12345  # Porta UDP su cui comunicare
 
 
 
+def list_files_in_directory(directory):
+    """List all files in the specified directory."""
+    return [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
 
+
+def draw_file_menu(files, selected_index):
+    """Draw the file menu on the display in a grid format."""
+    draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
+    
+    # Definire dimensioni della griglia
+    num_cols = 3  # Numero di colonne
+    num_rows = 4  # Numero di righe
+    item_width = width // num_cols
+    item_height = 20  # Altezza dell'elemento, puoi modificarlo se necessario
+    
+    for i, file in enumerate(files):
+        col = i % num_cols
+        row = i // num_cols
+        x = col * item_width
+        y = row * item_height
+        
+        if i == selected_index:
+            text_size = draw.textbbox((0, 0), file, font=font)
+            text_width = text_size[2] - text_size[0]
+            text_height = text_size[3] - text_size[1]
+            draw.rectangle((x, y, x + item_width, y + item_height), fill=(0, 255, 0))  # Evidenziare lo sfondo
+            draw.text((x + 1, y + 1), file, font=font, fill=(0, 0, 0))  # Testo in nero
+        else:
+            draw.text((x + 1, y + 1), file, font=font, fill=(255, 255, 255))  # Testo in bianco
+
+    disp.LCD_ShowImage(image, 0, 0)
+
+
+def execute_file(file_path):
+    """Execute the file based on its extension."""
+    if file_path.endswith('.py'):
+        # For Python files
+        subprocess.run(['sudo', 'python3', file_path])
+    elif file_path.endswith('.sh'):
+        # For shell scripts
+        subprocess.run(['sudo', 'bash', file_path])
+    elif file_path.endswith(".moj"):
+        subprocess.run(['sudo', './', file_path])
+    else:
+        # Handle other types or notify user
+        show_message(f"Unsupported file type: {file_path}")
+
+
+def show_file_menu():
+    # Supponiamo che tu abbia una directory che contiene le app o file che vuoi mostrare
+    directory = "app/"  # Modifica questo percorso con il percorso corretto
+    files = list_files_in_directory(directory)
+    selected_index = 0
+    num_cols = 3  # Numero di colonne
+    num_rows = 4  # Numero di righe
+
+    def draw_file_menu(files, selected_index, num_cols, num_rows):
+        num_items = len(files)
+        
+        # Calcola le dimensioni delle celle
+        cell_width = width // num_cols
+        cell_height = height // num_rows
+
+        draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
+
+        for i, file in enumerate(files):
+            y = (i // num_cols) * cell_height
+            x = (i % num_cols) * cell_width
+            if i == selected_index:
+                draw.rectangle((x, y, x + cell_width, y + cell_height), fill=(0, 255, 0))  # Evidenzia
+                draw.text((x + 2, y + 2), file, font=font, fill=(0, 0, 0))  # Testo in nero
+            else:
+                draw.text((x + 2, y + 2), file, font=font, fill=(255, 255, 255))  # Testo in bianco
+
+        disp.LCD_ShowImage(image, 0, 0)
+
+    draw_file_menu(files, selected_index, num_cols, num_rows)
+
+    while True:
+        if GPIO.input(KEY_UP_PIN) == 0:
+            selected_index = (selected_index - num_cols) % len(files)
+            draw_file_menu(files, selected_index, num_cols, num_rows)
+            time.sleep(0.3)
+        if GPIO.input(KEY_DOWN_PIN) == 0:
+            selected_index = (selected_index + num_cols) % len(files)
+            draw_file_menu(files, selected_index, num_cols, num_rows)
+            time.sleep(0.3)
+        if GPIO.input(KEY_LEFT_PIN) == 0:
+            selected_index = (selected_index - 1) % len(files)
+            draw_file_menu(files, selected_index, num_cols, num_rows)
+            time.sleep(0.3)
+        if GPIO.input(KEY_RIGHT_PIN) == 0:
+            selected_index = (selected_index + 1) % len(files)
+            draw_file_menu(files, selected_index, num_cols, num_rows)
+            time.sleep(0.3)
+        if GPIO.input(KEY_PRESS_PIN) == 0:
+            selected_file = files[selected_index]
+            show_message(f"Selected: {selected_file}", 1)
+            
+            # Esegui l'azione sul file selezionato
+            file_path = os.path.join(directory, selected_file)
+            execute_file(file_path)  # Chiamata alla funzione per eseguire il file
+            break
 
 def generate_key_from_password(password: str) -> bytes:
     """Genera una chiave AES a partire dalla password."""
@@ -156,12 +267,7 @@ def returner():
 
 
 # Display logo at startup
-logo_path = "logo.png"
-if os.path.exists(logo_path):
-    logo_image = Image.open(logo_path)
-    logo_image = logo_image.resize((128, 128))  # Ensure the image fits the screen
-    disp.LCD_ShowImage(logo_image, 0, 0)
-    time.sleep(3)
+
 
 # Create blank image for drawing
 width = 128
@@ -257,6 +363,22 @@ def get_keyboard_input():
             selected_key_index = (selected_key_index + 1) % len(alpha_keys)
             draw_keyboard(selected_key_index, input_text, mode, caps_lock)
             time.sleep(0.3)
+
+        # Verifica dell'input dei tasti speciali
+        if GPIO.input(KEY1_PIN) == 0:  # Se KEY1 (P21) è premuto, cancella l'ultimo carattere
+            input_text = input_text[:-1]
+            draw_keyboard(selected_key_index, input_text, mode, caps_lock)
+            time.sleep(0.3)
+        
+        if GPIO.input(KEY2_PIN) == 0:  # Se KEY2 (P20) è premuto, aggiungi uno spazio
+            input_text += ' '
+            draw_keyboard(selected_key_index, input_text, mode, caps_lock)
+            time.sleep(0.3)
+
+        if GPIO.input(KEY3_PIN) == 0:  # Se KEY3 (P16) è premuto, conferma l'input
+            return input_text
+
+        # Gestione dell'input del pulsante di selezione (KEY_PRESS_PIN)
         if GPIO.input(KEY_PRESS_PIN) == 0:
             key = alpha_keys[selected_key_index] if mode == "alpha" else special_keys[selected_key_index]
             if key == "DEL":
@@ -272,7 +394,8 @@ def get_keyboard_input():
 
             draw_keyboard(selected_key_index, input_text, mode, caps_lock)
             time.sleep(0.3)
-#returner()
+
+
 # Menu options
 menu_options = ["Networks","Bluetooth", "Payload", "Party", "App & Plugin", "Shutdown"]
 selected_index = 0
@@ -317,7 +440,11 @@ def show_message(message, duration=2):
     disp.LCD_Clear()
 
 returner()
+
 while True:
+    listen_for_messages()
+    data, addr = socket.recvfrom(1024)  # Dimensione buffer
+    show_message(f"\n[{addr}]\n{data.decode('utf-8')}", 3)
     draw_menu(selected_index)
 
     if GPIO.input(KEY_UP_PIN) == 0:
@@ -368,17 +495,30 @@ while True:
 
                     if sub_selected_option == "Wifi":
                         sub_menu_options = ["Fake AP"]
-                        if sub_selected_option == "Fake AP":
-                            show_message("Create a name for the\nfake AP", 3)
-                            fakeAp = get_keyboard_input()
-                            os.system(f"sudo wifiphisher -e {fakeAp}")
+                        sub_selected_index = 0
 
+                        while True:
+                            draw_sub_menu(sub_selected_index)
 
-                    elif sub_selected_option == "Deauth":
-                        os.system("airmon-ng start wlan0")
-                        time.sleep(1)
+                            if GPIO.input(KEY_UP_PIN) == 0:
+                                sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
+                                draw_sub_menu(sub_selected_index)
+                                time.sleep(0.3)
+                            if GPIO.input(KEY_DOWN_PIN) == 0:
+                                sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
+                                draw_sub_menu(sub_selected_index)
+                                time.sleep(0.3)
+                            if GPIO.input(KEY_PRESS_PIN) == 0:
+                                sub_selected_option = sub_menu_options[sub_selected_index]
+                                show_message(f"Selected: {sub_selected_option}", 1)
 
-                    break  # Exit sub-menu to main menu
+                                if sub_selected_option == "Fake AP":
+                                    show_message("Create a name for\n the fake AP", 3)
+                                    fakeAp = get_keyboard_input()
+                                    os.system(f"sudo wifiphisher -e {fakeAp}")
+                                    show_image("fakeAp.png", lambda: GPIO.input(KEY_PRESS_PIN) == 0)  # Show image until button press
+
+                     # Exit sub-menu to main menu
 
         elif selected_option == "Party":
             # Draw and handle the Network sub-menu
@@ -504,64 +644,8 @@ while True:
 
 
         elif selected_option == "App & Plugin":
-            sub_menu_options = ["Settings", "Exit"]
-            sub_selected_index = 0
+            show_file_menu()  # Call the function to show files
 
-            def draw_sub_menu(sub_selected_index):
-                draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
-                for i, option in enumerate(sub_menu_options):
-                    y = i * 20
-                    if i == sub_selected_index:
-                        text_size = draw.textbbox((0, 0), option, font=font)
-                        text_width = text_size[2] - text_size[0]
-                        text_height = text_size[3] - text_size[1]
-                        draw.rectangle((0, y, width, y + text_height), fill=(0, 255, 0))
-                        draw.text((1, y), option, font=font, fill=(0, 0, 0))
-                    else:
-                        draw.text((1, y), option, font=font, fill=(255, 255, 255))
-                disp.LCD_ShowImage(image, 0, 0)
-
-            while True:
-                draw_sub_menu(sub_selected_index)
-
-                if GPIO.input(KEY_UP_PIN) == 0:
-                    sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
-                    draw_sub_menu(sub_selected_index)
-                    time.sleep(0.3)
-                if GPIO.input(KEY_DOWN_PIN) == 0:
-                    sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
-                    draw_sub_menu(sub_selected_index)
-                    time.sleep(0.3)
-                if GPIO.input(KEY_PRESS_PIN) == 0:
-                    sub_selected_option = sub_menu_options[sub_selected_index]
-                    show_message(f"Selected: {sub_selected_option}", 1)
-
-                    if sub_selected_option == "Settings":
-                        sub_menu_options = ["Password", "Exit"]
-                        sub_selected_index = 0
-
-                        while True:
-                            draw_sub_menu(sub_selected_index)
-
-                            if GPIO.input(KEY_UP_PIN) == 0:
-                                sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
-                                draw_sub_menu(sub_selected_index)
-                                time.sleep(0.3)
-                            if GPIO.input(KEY_DOWN_PIN) == 0:
-                                sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
-                                draw_sub_menu(sub_selected_index)
-                                time.sleep(0.3)
-                            if GPIO.input(KEY_PRESS_PIN) == 0:
-                                sub_selected_option = sub_menu_options[sub_selected_index]
-                                show_message(f"Selected: {sub_selected_option}", 1)
-
-                                if sub_selected_option == "Password":
-                                    setPsk()
-                                    break
-                                if sub_selected_option == "Exit":
-                                    break
-                    if sub_selected_option == "Exit":
-                        break
 
 
 
