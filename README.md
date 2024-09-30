@@ -9,7 +9,7 @@ Mojito is an hacking project created only for educational purposes and runs on a
 
 # DISCLAIMER
 ### Mojito is for educational purposes only.
-The authors take NO responsibility and liability for how you use any of the tools/source code/any files provided. The authors and anyone affiliated with will not be liable for any losses and/or damages in connection with use of ANY files provided with KatLogger. DO NOT use Mojito if you don't have the permission to do that,
+The authors take NO responsibility and liability for how you use any of the tools/source code/any files provided. The authors and anyone affiliated with will not be liable for any losses and/or damages in connection or other type of damages with use of ANY Tools provided with Mojito. DO NOT use Mojito if you don't have the permission to do that.
 ### USE IT AT YOUR OWN RISK.
 
 # HOW TO SETUP AND INSTALL MOJITO?
