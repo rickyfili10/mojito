@@ -25,4 +25,4 @@ SETUP WIFIPISHER E PYBLUEZ
 
 --- With love by BlacKat team. ツ ---
 
-based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code
+Screen drivers based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code
