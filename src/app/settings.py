@@ -149,7 +149,7 @@ def returner():
 
 def draw_menu(selected_index):
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
-    menu_options = ["Wifi", "SSH", "Password", "Info" "Exit"]
+    menu_options = ["Wifi", "SSH", "Password", "Info", "Exit"]
     for i, option in enumerate(menu_options):
         y = i * 20
         if i == selected_index:
