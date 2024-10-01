@@ -433,9 +433,6 @@ def show_message(message, duration=2):
 returner()
 
 while True:
-    listen_for_messages()
-    data, addr = socket.recvfrom(1024)  # Dimensione buffer
-    show_message(f"\n[{addr}]\n{data.decode('utf-8')}", 3)
     draw_menu(selected_index)
 
     if GPIO.input(KEY_UP_PIN) == 0:
