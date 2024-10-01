@@ -9,6 +9,7 @@ from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # THIS IS FOR IMPORT THE SCREEN DRIVERS WITH import LCD_1in44
 import LCD_1in44
+import json  
 # Pin setup
 KEY_UP_PIN = 6
 KEY_DOWN_PIN = 19
@@ -48,6 +49,25 @@ font = ImageFont.load_default()
 
 
 
+def system_info():
+    try:
+        # Apri il file info.json
+        with open('setting/info.json', 'r') as f:
+            info = json.load(f)
+
+        # Crea il messaggio da mostrare (modifica in base ai contenuti del file JSON)
+        system_info_message = (
+            f"System Info:\n"
+            f"Version: {info.get('version', 'N/A')}\n"
+            f"Setting version: {info.get('settings', 'N/A')}\n"
+            f"Authors: {info.get('author', 'N/A')}\n"
+        )
+        show_message(system_info_message, 5)  # Mostra le informazioni per 5 secondi
+
+    except FileNotFoundError:
+        show_message("info.json not found!", 3)  # Messaggio di errore se il file non esiste
+    except json.JSONDecodeError:
+        show_message("Error reading info.json", 3)  # Messaggio di errore se il file è corrotto
 def generate_key_from_password(password: str) -> bytes:
     """Genera una chiave AES a partire dalla password."""
     return hashlib.sha256(password.encode()).digest()
@@ -129,7 +149,7 @@ def returner():
 
 def draw_menu(selected_index):
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
-    menu_options = ["Wifi", "SSH", "Password", "Exit"]
+    menu_options = ["Wifi", "SSH", "Password", "Info" "Exit"]
     for i, option in enumerate(menu_options):
         y = i * 20
         if i == selected_index:
@@ -369,5 +389,6 @@ while True:
                 setPsk()
             elif selected_option == "Exit":
                 os.system("sudo python /home/kali/mojito/src/menu.py")  # Exit the main menu
-
+            if selected_option == "Info":
+                system_info()
 
