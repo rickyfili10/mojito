@@ -8,7 +8,6 @@ import hashlib
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
-import socket
 
 # Pin setup
 KEY_UP_PIN = 6
@@ -41,14 +40,6 @@ disp.LCD_Clear()
 
 
 
-
-
-
-
-
-# Impostazioni di rete
-BROADCAST_IP = '<broadcast>'  # IP di broadcast per inviare a tutti
-PORT = 12345  # Porta UDP su cui comunicare
 
 
 
