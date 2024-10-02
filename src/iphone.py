@@ -65,7 +65,7 @@ def send_bt_packets(sock):
             cmd_pkt = struct.pack("<B%dB" % len(bt_packet), len(bt_packet), *bt_packet)
             bluez.hci_send_cmd(sock, 0x08, 0x0008, cmd_pkt)
 
-            time.sleep(0.001)  # Adjust this delay to increase or decrease packet sending speed
+            time.sleep(1)  # Adjust this delay to increase or decrease packet sending speed
 
             cmd_pkt = struct.pack("<B", 0x00)
             bluez.hci_send_cmd(sock, 0x08, 0x000A, cmd_pkt)
