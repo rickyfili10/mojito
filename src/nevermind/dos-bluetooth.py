@@ -1,7 +1,7 @@
 
 
 
-# Richi devi togliere la parte in cui inizia il dos dove c'è il comando iping3 e importarlo dal file menu.py, da lì poi fai un menu con i nomi dei mac (sono dentro mac_addrs) e poi fai che selezionandone uno parte il comando "l2ping nome del mac" 
+# Richi devi togliere la parte in cui inizia il dos dove c'è il comando l2ping e importare questo file in menu.py, da lì poi fai un menu con i nomi dei mac (sono dentro mac_addrs) e poi fai che selezionandone uno parte il comando "l2ping nome del mac" 
 
 
 
