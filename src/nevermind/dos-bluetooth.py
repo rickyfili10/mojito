@@ -1,3 +1,10 @@
+
+
+
+# Richi devi togliere la parte in cui inizia il dos dove c'è il comando iping3 e importarlo dal file menu.py, da lì poi fai un menu con i nomi dei mac (sono dentro mac_addrs) e poi fai che selezionandone uno parte il comando "l2ping nome del mac" 
+
+
+
 import subprocess
 import time as t
 from functools import lru_cache
@@ -30,7 +37,7 @@ class ddos:
     def ddos_em(mac_addrs, self):
        # while True:
        for i in mac_addrs:
-            result1 = subprocess.run(["sudo", "hping3", i], capture_output=True, text=True)
+            result1 = subprocess.run(["sudo", "l2ping", mac_addrs], capture_output=True, text=True)
             print(result1.stdout)
 
     def main(self):
