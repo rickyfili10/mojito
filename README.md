@@ -28,13 +28,14 @@ The authors take NO responsibility and liability for how you use any of the tool
    - sudo systemctl enable mojito.services
    - sudo systemctl start mojito.services
    - sudo reboot
+  <br>After a while it should display the Mojito menu.
   
 # TO DO
    - Add wifi deauth
    - Add wifi sniff
    - Add wifi beacon
    - Fix I/O errors
-  <br>After a while it should display the Mojito menu.
+
 
 
 --- With love by BlacKat team. ツ ---
