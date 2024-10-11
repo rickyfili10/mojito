@@ -1,5 +1,5 @@
-# STILL UNDER DEVELOPMENT<br><br><br><br>
-No release will be made before version 1.0. Using the code now may have bugs or incomplete pieces.
+# STILL UNDER DEVELOPMENT
+## No release will be made before version 1.0. Using the code now may have bugs or incomplete pieces.
 
 # The Mojito Project by Blackat
 <br>![logo](https://github.com/rickyfili10/mojito/blob/main/logo.png)
