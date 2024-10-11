@@ -648,7 +648,6 @@ while True:
                                     os.system("sudo bash bleddos.sh")
                                     show_image("bkat2.png", lambda: GPIO.input(KEY_PRESS_PIN) == 0)  # Show image until button press
                                     break
-                                break
                             break  # Exit Bluetooth menu to main menu
                                 
 
