@@ -35,6 +35,8 @@ The authors take NO responsibility and liability for how you use any of the tool
    - Add wifi sniff
    - Add wifi beacon
    - Fix I/O errors
+   - Fix I/O error when click "bluetooth" option
+
 
 
 
