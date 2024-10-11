@@ -28,7 +28,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    - sudo systemctl enable mojito.services
    - sudo systemctl start mojito.services
    - sudo reboot
-  After a while it should display the Mojito menu.
+  <br>After a while it should display the Mojito menu.
 
 
 --- With love by BlacKat team. ツ ---
