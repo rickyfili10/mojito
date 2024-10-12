@@ -15,5 +15,5 @@ while true; do
             sudo l2ping -f $device &
         done
     fi
-    sleep 1
+    sleep 10
 done
