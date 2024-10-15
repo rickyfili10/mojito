@@ -39,6 +39,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    - Add Apple sideload (impossible)
    - Add Apple Jailbreaker (like checkra1n)
    - Add adb apk installer (for bypass family link (if you are a kid) or to bypass blocks on company phones)
+   - Add android rooter -> Bootloader unlocker, vbmeta flasher and sudo binary flasher (like Magisk)
 
 
 
