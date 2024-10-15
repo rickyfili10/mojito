@@ -60,7 +60,7 @@ def system_info():
             f"System Info:\n"
             f"Version: {info.get('version', 'N/A')}\n"
             f"Setting version: {info.get('settings', 'N/A')}\n"
-            f"Authors: {info.get('author', 'N/A')}\n"
+            f"Authors: {info.get('author', '@rickyfili10, @Lif28')}\n"
         )
         show_message(system_info_message, 5)  # Mostra le informazioni per 5 secondi
 
