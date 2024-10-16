@@ -3,7 +3,7 @@
 
 # The Mojito Project by Blackat 🍹
 <br>![logo](https://github.com/rickyfili10/mojito/blob/main/logo.png)
-## Why is called "mojito" like the cocktail?
+## Why is called "mojito" like the cocktail? 🍸
 This project is called "Mojito" beacuse while the developers were coding this project, they were drinking mojitos (maked by @rickyfili10)
 
 # What's that? 🤔
