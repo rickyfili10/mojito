@@ -4,7 +4,7 @@
 # The Mojito Project by Blackat 🍹
 <br>![logo](https://github.com/rickyfili10/mojito/blob/main/logo.png)
 ## Why is called "mojito" like the cocktail? 🍸
-This project is called "Mojito" beacuse while the developers were coding this project, they were drinking mojitos (maked by @rickyfili10)
+This project is called "Mojito" beacuse while the developers were coding this project, they were drinking non alcolic mojitos (maked by @rickyfili10)
 
 # What's that? 🤔
 Mojito is an penetration testing project created only for educational purposes and runs on a raspberry pi 0 w/wh that use a wavseshare 1.44 inch lcd HAT display. It have a collection of hacking tools and it is based on Kali Linux. 
