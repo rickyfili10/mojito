@@ -16,13 +16,13 @@ The authors take NO responsibility and liability for how you use any of the tool
 
 # HOW TO SETUP AND INSTALL MOJITO?
 1. Flash and setup kali linux for raspberry pi 0 wh
-2. Clone Mojito repostory
+2. Clone Mojito repostory (git clone 
 3. Install and setup requisites using
    - sudo apt update
    - sudo apt-get install libbluetooth-dev
    - "sudo pip install pybluez spidev RPi.gpio l2ping" if pybluez dosen't install --> sudo pip install git+https://github.com/pybluez/pybluez
    - use sudo raspi-config to enable SPi interface
-   - sudo apt update && sudo apt install wget
+   - sudo apt install wget
    - wget https://www.vpn.net/installers/logmein-hamachi-2.1.0.203-1.armel.rpm
    - sudo rpm -ivh logmein-hamachi-2.1.0.203-1.armel.rpm
    - sudo cp mojito.services /etc/systemd/system/
