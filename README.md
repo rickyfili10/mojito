@@ -43,7 +43,6 @@ The authors take NO responsibility and liability for how you use any of the tool
    - Add adb apk installer (for bypass family link (if you are a kid) or to bypass blocks on company phones)
    - Add android rooter -> Bootloader unlocker, vbmeta flasher and sudo binary flasher (like Magisk)
 
-⚠️ BY DOWNLOADING AND USING THIS SOFTWARE, YOU ACKNOWLEDGE AND AGREE THAT ANY AND ALL RESPONSIBILITY, INCLUDING LEGAL OR CRIMINAL LIABILITY, RESTS SOLELY WITH YOU, IN ALL JURISDICTIONS WORLDWIDE. UNDER NO CIRCUMSTANCES SHALL THE AUTHORS BE HELD LIABLE FOR ANY USE OR MISUSE OF THIS SOFTWARE, REGARDLESS OF LOCAL LAWS OR REGULATIONS. ⚠️
 
 --- With love by BlacKat team. ツ ---
 
