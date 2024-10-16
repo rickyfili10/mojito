@@ -1,20 +1,20 @@
-# STILL UNDER DEVELOPMENT
+# STILL UNDER DEVELOPMENT 💻
 ## No release will be made before version 1.0. Using the code now may have bugs or incomplete pieces.
 
-# The Mojito Project by Blackat
+# The Mojito Project by Blackat 🍹
 <br>![logo](https://github.com/rickyfili10/mojito/blob/main/logo.png)
 ## Why is called "mojito" like the cocktail?
 This project is called "Mojito" beacuse while the developers were coding this project, they were drinking mojitos (maked by @rickyfili10)
 
-# What's that?
+# What's that? 🤔
 Mojito is an penetration testing project created only for educational purposes and runs on a raspberry pi 0 w/wh that use a wavseshare 1.44 inch lcd HAT display. It have a collection of hacking tools and it is based on Kali Linux. 
 
-# DISCLAIMER
+# DISCLAIMER ⚠️
 ### Mojito is for educational purposes only.
 The authors take NO responsibility and liability for how you use any of the tools/source code/any files provided. The authors and anyone affiliated with will not be liable for any losses and/or damages in connection or other type of damages with use of ANY Tools provided with Mojito. DO NOT use Mojito if you don't have the permission to do that. 
 ### USE IT AT YOUR OWN RISK.
 
-# HOW TO SETUP AND INSTALL MOJITO?
+# HOW TO SETUP AND INSTALL MOJITO? 🔧
 1. Flash and setup kali linux for raspberry pi 0 wh
 2. Clone Mojito repostory (git clone https://github.com/rickyfili10/mojito/tree/main)
 3. Install and setup requisites using
@@ -32,7 +32,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    - sudo reboot
   <br>After a while it should display the Mojito menu.
   
-# TO DO
+# TO DO ✔️
    - Add wifi deauth
    - Add wifi sniff
    - Add wifi beacon
