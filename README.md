@@ -27,8 +27,8 @@ The authors take NO responsibility and liability for how you use any of the tool
    - sudo rpm -ivh logmein-hamachi-2.1.0.203-1.armel.rpm
    - sudo cp mojito.service /etc/systemd/system/
    - sudo systemctl daemon-reload
-   - sudo systemctl enable mojito.services
-   - sudo systemctl start mojito.services
+   - sudo systemctl enable mojito.service
+   - sudo systemctl start mojito.service
    - sudo reboot
   <br>After a while it should display the Mojito menu.
   
