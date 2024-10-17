@@ -32,7 +32,10 @@ The authors take NO responsibility and liability for how you use any of the tool
    - sudo systemctl start mojito.service
    - sudo reboot
   <br>After a while it should display the Mojito menu.
-  
+# SIMBOL LIST: ❌
+   - NB! = No Battery Found!<br>
+   - Plug = pluged to a power source<br>
+   - N% = battery level ( not tested )<br>
 # TO DO ✔️
    - Add wifi deauth
    - Add wifi sniff
