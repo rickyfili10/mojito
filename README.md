@@ -4,7 +4,7 @@
 # The Mojito Project by Blackat 🍹
 
 ## Why is called "mojito" like the cocktail? 🍸
-This project is called "Mojito" beacuse while the developers were coding this project, they were drinking non alcolic mojitos (maked by @rickyfili10)
+This project is called "Mojito" beacuse while the developers were coding this project, they were drinking non-alcoholic mojitos (maked by @rickyfili10)
 ![mojito](https://github.com/user-attachments/assets/b10b95f5-7286-47bb-a8e1-64bc07b0ffd4)
 
 # What's that? 🤔
@@ -81,7 +81,7 @@ The authors take NO responsibility and liability for how you use any of the tool
 
 Screen drivers based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code 💻<br>
 --- With love by BlacKat team. ツ --- 🐈‍⬛😽
-# Wait... Do you want to know the mojito recipe? 🍹
+# Wait... Do you want to know the non-alcoholic mojito recipe? 🍹
    - 7/10 Freash mint leaves 🍃
    - 2 Spoons of brown sugar 🥄
    - 20 ml of lime juice 🍋‍🟩
