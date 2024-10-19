@@ -22,7 +22,7 @@ The authors take NO responsibility and liability for how you use any of the tool
  ```
     sudo apt update
     sudo apt-get install libbluetooth-dev
-    "sudo pip install pybluez spidev RPi.gpio "
+    sudo pip install pybluez spidev RPi.gpio
 ```
    If pybluez dosen't install -->  ``` sudo pip install git+https://github.com/pybluez/pybluez ```
 ```
