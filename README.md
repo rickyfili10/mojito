@@ -81,6 +81,17 @@ The authors take NO responsibility and liability for how you use any of the tool
 
 
 --- With love by BlacKat team. ツ --- 🐈‍⬛😽
+# Wait... Do you want to know the mojito recipe? 🍹
+   - 7/10 Freash mint leaves 🍃
+   - 2 Spoons of brown sugar 🥄
+   - 20 ml of lime juice 🍋‍🟩
+   ### Put the ingredients together in a 300 ml glass and crush them! 🤜 (E.g: with a Wooden spoon)
+   - Fill the glass with crushed ice (or normal ices cube if you don't have the crushed) 🧊
+   - Fill with tonic water 💧
+   - Put a lime and a mint leave for garnish 🍃🍋‍🟩
+   - Put a straw 🍹
+   - Enjoy! 🎉
+   
 
 Screen drivers based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code 💻
 # If you like this please drop a star and follow us! ⭐
