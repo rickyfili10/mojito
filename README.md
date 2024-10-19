@@ -88,7 +88,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    - ❌ Add android rooter -> Bootloader unlocker, vbmeta flasher and sudo binary flasher (like Magisk)
 
 Screen drivers based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code 💻<br>
---- With love by BlacKat team. ツ --- 🐈‍⬛😽
+## --- With love by BlacKat team. ツ --- 🐈‍⬛😽
 # Wait... Do you want to know the non-alcoholic mojito recipe? 🍹
    - 7/10 Freash mint leaves 🍃
    - 2 Spoons of brown sugar 🥄
