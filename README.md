@@ -23,20 +23,40 @@ The authors take NO responsibility and liability for how you use any of the tool
    - sudo apt update
    - sudo apt-get install libbluetooth-dev
    - "sudo pip install pybluez spidev RPi.gpio "
-   ```
-   if pybluez dosen't install --> ``` shell
-   sudo pip install git+https://github.com/pybluez/pybluez ```
-   - ``` sudo timedatectl set-timezone {your local time zone} -- EXAMPLE FOR ITALY: "sudo timedatectl set-timezone Europe/Rome "```
+```
+   if pybluez dosen't install --> 
+``` 
+   sudo pip install git+https://github.com/pybluez/pybluez 
+```
+```
+   - sudo timedatectl set-timezone {your local time zone} -- EXAMPLE FOR ITALY: "sudo timedatectl set-timezone Europe/Rome "
+```
    - ```sudo apt install l2ping ```
    - use sudo raspi-config to enable SPi interface
-   - ```sudo apt install wget```
-   - ```wget https://www.vpn.net/installers/logmein-hamachi-2.1.0.203-1.armel.rpm```
-   - ```sudo rpm -ivh logmein-hamachi-2.1.0.203-1.armel.rpm```
-   - ```sudo cp mojito.service /etc/systemd/system/```
-   - ```sudo systemctl daemon-reload```
-   - ```sudo systemctl enable mojito.service```
-   - ```sudo systemctl start mojito.service```
-   - ```sudo reboot```
+```
+    sudo apt install wget
+```
+```
+wget https://www.vpn.net/installers/logmein-hamachi-2.1.0.203-1.armel.rpm
+```
+ ```
+ sudo rpm -ivh logmein-hamachi-2.1.0.203-1.armel.rpm
+```
+ ```
+ sudo cp mojito.service /etc/systemd/system/
+```
+```
+sudo systemctl daemon-reload
+```
+ ```
+ sudo systemctl enable mojito.service
+```
+ ```
+sudo systemctl start mojito.service
+ ```
+ ```
+ sudo reboot
+```
   <br>After a while it should display the Mojito menu.
 # SIMBOL LIST: ☯️
    - NB! = No Battery Found!<br>
