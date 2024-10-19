@@ -74,8 +74,8 @@ The authors take NO responsibility and liability for how you use any of the tool
    - N% = battery level ( not tested )<br>
 # TO DO ✔️
   [
-  ❌ Not implemented yet
-  ✔️ Implemented
+  ❌ Not implemented yet -
+  ✔️ Implemented -
   ✏️ Almost implemented or in development
   ]
    - ❌ Add wifi deauth
