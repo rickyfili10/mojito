@@ -31,8 +31,10 @@ The authors take NO responsibility and liability for how you use any of the tool
 ```
     sudo timedatectl set-timezone {your local time zone} -- EXAMPLE FOR ITALY: "sudo timedatectl set-timezone Europe/Rome "
 ```
-    ```sudo apt install l2ping ```
-     use sudo raspi-config to enable SPi interface
+```
+    sudo apt install l2ping 
+```
+   use sudo raspi-config to enable SPi interface
 ```
     sudo apt install wget
 ```
