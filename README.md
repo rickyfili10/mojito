@@ -22,9 +22,9 @@ The authors take NO responsibility and liability for how you use any of the tool
 # HOW TO SETUP AND INSTALL MOJITO? 🔧
 1. Flash and setup kali linux for raspberry pi 0 wh 💿
 2. Install and setup requisites with the commands below 🔧
-## Clone the Mojito repostory 🐈‍⬛🍹
+## Clone the Mojito repostory and enter in it 🐈‍⬛🍹
  ```
-  git clone https://github.com/rickyfili10/mojito.git
+  git clone https://github.com/rickyfili10/mojito.git && cd mojito/src
  ```
 ## Install the requisites 📃
  ```
