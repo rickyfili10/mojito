@@ -11,7 +11,7 @@ This project is called "Mojito" beacuse while the developers were coding this pr
 Mojito is an penetration testing project created only for educational purposes and runs on a raspberry pi 0 w/wh that use a wavseshare 1.44 inch lcd HAT display. It have a collection of hacking tools and it is based on Kali Linux. 
 
 # DISCLAIMER ⚠️
-### Mojito is for educational purposes only.
+### Mojito is for educational purposes only. 📖
 The authors take NO responsibility and liability for how you use any of the tools/source code/any files provided. The authors and anyone affiliated with will not be liable for any losses and/or damages in connection or other type of damages with use of ANY Tools provided with Mojito. DO NOT use Mojito if you don't have the permission to do that. 
 ### USE IT AT YOUR OWN RISK.
 
