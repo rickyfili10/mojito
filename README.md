@@ -13,7 +13,7 @@ Mojito is an penetration testing project created only for educational purposes a
 # DISCLAIMER ⚠️
 ### Mojito is for educational purposes only. 📝
 The authors take NO responsibility and liability for how you use any of the tools/source code/any files provided. The authors and anyone affiliated with will not be liable for any losses and/or damages in connection or other type of damages with use of ANY Tools provided with Mojito. DO NOT use Mojito if you don't have the permission to do that. <br>
-### So, in court or any other judicial method, you will not be able to say "But it's the fault of @rickyfili10 and @Lif28 who created Mojito 🤓☝️" or similar things. 
+
 ## USE IT AT YOUR OWN RISK. 🫵
 
 # HOW TO SETUP AND INSTALL MOJITO? 🔧
