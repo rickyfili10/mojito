@@ -45,7 +45,7 @@ The authors take NO responsibility and liability for how you use any of the tool
   sudo cp mojito.service /etc/systemd/system/
 ```
 ```
-  sudo systemctl daemon-reload
+ sudo systemctl daemon-reload
 ```
  ```
   sudo systemctl enable mojito.service
