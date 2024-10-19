@@ -48,11 +48,11 @@ The authors take NO responsibility and liability for how you use any of the tool
 ```
    ### Download hamachi for make party ⬇️
 ```
- wget https://www.vpn.net/installers/logmein-hamachi-2.1.0.203-1.armel.rpm
+ wget https://www.vpn.net/installers/logmein-hamachi_2.1.0.203-1_armel.deb
 ```
   ### Install hamachi ⬇️ 
 ```
-  sudo rpm -ivh logmein-hamachi-2.1.0.203-1.armel.rpm
+  sudo dpkg -i logmein-hamachi_2.1.0.203-1_armel.deb
 ```
   ### Execute Mojito at boot ⏰
 ```
