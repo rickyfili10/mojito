@@ -30,7 +30,7 @@ The authors take NO responsibility and liability for how you use any of the tool
  ```
     sudo apt update
     sudo apt-get install libbluetooth-dev
-    sudo pip install spidev RPi.gpio pybluez
+    sudo apt install python3-spidev python3-RPi.gpio python3-pybluez
 ```
    ### If pybluez dosen't install --> <br> ``` sudo pip install git+https://github.com/pybluez/pybluez ```
    ### <br>Set the time zone ⌚
