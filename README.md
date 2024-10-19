@@ -63,7 +63,7 @@ The authors take NO responsibility and liability for how you use any of the tool
   sudo reboot
 ```
 <br>
- ### After a while it should display the Mojito menu! 🎉
+## After a while it should display the Mojito menu! 🎉
 # SIMBOL LIST: ☯️
    - NB! = No Battery Found!<br>
    - Plug = pluged to a power source<br>
