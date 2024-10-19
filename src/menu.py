@@ -10,6 +10,13 @@ from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
 import socket
 import sys
+import psutil
+import json
+# Network settings
+BROADCAST_IP = '<broadcast>' 
+PORT = 12345  # Port
+
+
 # Pin setup
 KEY_UP_PIN = 6
 KEY_DOWN_PIN = 19
@@ -37,9 +44,6 @@ Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT
 disp.LCD_Init(Lcd_ScanDir)
 disp.LCD_Clear()
 
-# Impostazioni di rete
-BROADCAST_IP = '<broadcast>'  # IP di broadcast per inviare a tutti
-PORT = 12345  # Porta UDP su cui comunicare
 
 
 
@@ -141,10 +145,15 @@ def show_file_menu():
         if GPIO.input(KEY_PRESS_PIN) == 0:
             selected_file = files[selected_index]
             show_message(f"Selected: {selected_file}", 1)
-            
             # Esegui l'azione sul file selezionato
             execute_file(directory, selected_file)  # Passa solo il nome base del file
             break
+        if GPIO.input(KEY1_PIN) == 0:  
+            break
+        if GPIO.input(KEY2_PIN) == 0:  
+            break
+        if GPIO.input(KEY3_PIN) == 0: 
+            break    
 
 def generate_key_from_password(password: str) -> bytes:
     """Genera una chiave AES a partire dalla password."""
@@ -357,6 +366,7 @@ def get_keyboard_input():
 # Menu options
 menu_options = ["Networks","Bluetooth", "Payload", "Party", "App & Plugin", "Shutdown"]
 selected_index = 0
+
 def show_image(image_path, exit_event=None):
     image = Image.open(image_path)
     image = image.resize((128, 128))  # Resize the image to fit the display if necessary
@@ -372,23 +382,73 @@ def show_image(image_path, exit_event=None):
 
     disp.LCD_Clear()  # Clear the display after exit
 
+def get_battery_level():
+    battery = psutil.sensors_battery()
+    if battery is None:
+        return None, None  # Nessuna batteria rilevata
+    percent = battery.percent
+    is_plugged = battery.power_plugged
+    return percent, is_plugged
+def read_theme_color(json_file_path1='app/setting/config.json'):
+
+    if not os.path.exists(json_file_path1):
+        print(f"File not found: {json_file_path1}")
+        return None
+
+    try:
+        with open(json_file_path1, 'r') as json_file:
+            config = json.load(json_file)
+            theme_color = config.get('Theme')
+            
+            if theme_color and isinstance(theme_color, list) and len(theme_color) == 3:
+                return tuple(theme_color)
+            else:
+                print("Invalid 'Theme' format. It should be a list of three elements.")
+                return None
+    except json.JSONDecodeError as e:
+        print(f"Error reading JSON: {e}")
+        return None
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None    
 def draw_menu(selected_index):
     # Clear previous image
+
+    # Clear screen
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
 
+    # Aggiungi l'orario in alto a destra
+    current_time = time.strftime("%H:%M")  # Formato 24h HH:MM
+    draw.text((width - 40, 0), current_time, font=font, fill=(255, 255, 255))  # Orario in alto a destra
+
+    # Ottieni il livello della batteria
+    battery_level, plugged_in = get_battery_level()
+    
+    # Visualizza messaggio sul livello della batteria o "NB!" a sinistra
+    if battery_level is None:
+        draw.text((5, 0), "NB!", font=font, fill=(255, 0, 0))  # Messaggio di errore a sinistra
+    else:
+        if plugged_in:
+            draw.text((5, 0), "PLUG", font=font, fill=(255, 255, 255))  # Messaggio "PLUG" a sinistra
+        else:
+            draw.text((5, 0), f"{battery_level}%", font=font, fill=(255, 255, 255))  # Livello della batteria a sinistra
+
+    # Calcolare l'offset per le opzioni del menu
+    menu_offset = 16  # Puoi modificare questo valore per spostare ulteriormente il menu
     for i, option in enumerate(menu_options):
-        y = i * 20  # Spacing between menu items
+        y = (i * 20) + menu_offset  # Spacing between menu items with offset
         if i == selected_index:
             text_size = draw.textbbox((0, 0), option, font=font)
             text_width = text_size[2] - text_size[0]
             text_height = text_size[3] - text_size[1]
-            draw.rectangle((0, y, width, y + text_height), fill=(0, 255, 0))  # Highlight background
+            draw.rectangle((0, y, width, y + text_height), fill=(read_theme_color()))  # Highlight background
             draw.text((1, y), option, font=font, fill=(0, 0, 0))  # Text in black
         else:
             draw.text((1, y), option, font=font, fill=(255, 255, 255))  # Text in white
 
     # Display the updated image
     disp.LCD_ShowImage(image, 0, 0)
+
 
 def show_message(message, duration=2):
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))  # Clear previous image
@@ -567,8 +627,11 @@ while True:
 
 
                     break  # Exit sub-menu to main menu
+
         elif selected_option == "Bluetooth":
-            sub_menu_options = ["Spam", "DDOS"]
+            def run_bleddos():
+                os.system("sudo bash bleddos.sh")
+            sub_menu_options = ["Spam"]
             sub_selected_index = 0
 
             def draw_sub_menu(sub_selected_index):
@@ -600,6 +663,9 @@ while True:
                     sub_selected_option = sub_menu_options[sub_selected_index]
                     show_message(f"Selected: {sub_selected_option}", 1)
 
+
+                   
+
                     if sub_selected_option == "Spam":
                         sub_menu_options = ["iOS", "Exit"]
                         sub_selected_index = 0
@@ -617,55 +683,29 @@ while True:
                                 time.sleep(0.3)
                             if GPIO.input(KEY_PRESS_PIN) == 0:
                                 sub_selected_option = sub_menu_options[sub_selected_index]
-                                show_message(f"Selected: {sub_selected_option}", 1)
+                                show_message(f"ì{sub_selected_option}", 1)
 
                                 if sub_selected_option == "iOS":
                                     os.system("sudo python3 iphone.py")
                                     show_image("bkat.png", lambda: GPIO.input(KEY_PRESS_PIN) == 0)  # Show image until button press
                                     break
-                                break
-                    break  # Exit Bluetooth menu to main menu
-                if sub_selected_option == "DDOS":
-                        sub_menu_options = ["SEEK AND DESTROY"]
-                        sub_selected_index = 0
 
-                        while True:
-                            draw_sub_menu(sub_selected_index)
-
-                            if GPIO.input(KEY_UP_PIN) == 0:
-                                sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
-                                draw_sub_menu(sub_selected_index)
-                                time.sleep(0.3)
-                            if GPIO.input(KEY_DOWN_PIN) == 0:
-                                sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
-                                draw_sub_menu(sub_selected_index)
-                                time.sleep(0.3)
-                            if GPIO.input(KEY_PRESS_PIN) == 0:
-                                sub_selected_option = sub_menu_options[sub_selected_index]
-                                show_message(f"Selected: {sub_selected_option}", 1)
-
-                                if sub_selected_option == "SEEK AND DESTROY":
-                                    os.system("sudo bash bleddos.sh")
-                                    show_image("bkat2.png", lambda: GPIO.input(KEY_PRESS_PIN) == 0)  # Show image until button press
-                                    break
-                            break  # Exit Bluetooth menu to main menu
+                        
                                 
 
 
 
         elif selected_option == "App & Plugin":
             while True:
-                if GPIO.input(KEY1_PIN) == 0:  # Se KEY1 (P21) è premuto
-                    time.sleep(0.3)  # Debounce
+                if GPIO.input(KEY1_PIN) == 0:  
                     break
-                if GPIO.input(KEY2_PIN) == 0:  # Se KEY2 (P20) è premuto
-                    time.sleep(0.3)  # Debounce
+                if GPIO.input(KEY2_PIN) == 0:  
                     break
-                if GPIO.input(KEY3_PIN) == 0:  # Se KEY3 (P16) è premuto
-                    time.sleep(0.3)  # Debounce
+                if GPIO.input(KEY3_PIN) == 0: 
                     break
                 else:
-                    show_file_menu()  # Mostra il menu dei file dopo il ciclo
+                    show_file_menu() 
+
 
 
 
