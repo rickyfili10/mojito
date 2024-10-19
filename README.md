@@ -24,29 +24,29 @@ The authors take NO responsibility and liability for how you use any of the tool
     sudo apt-get install libbluetooth-dev
     sudo pip install pybluez spidev RPi.gpio
 ```
-   If pybluez dosen't install -->  ``` sudo pip install git+https://github.com/pybluez/pybluez ```
-   <br>Set the time zone
+   ### If pybluez dosen't install -->  ``` sudo pip install git+https://github.com/pybluez/pybluez ```
+   ### <br>Set the time zone
 ```
     sudo timedatectl set-timezone {your local time zone} -- EXAMPLE FOR ITALY: "sudo timedatectl set-timezone Europe/Rome "
 ```
-  Install l2ping
+  ### Install l2ping
 ```
     sudo apt install l2ping 
 ```
    ### Use sudo raspi-config to enable SPi interface ⚠️
-   Install wget
+   ### Install wget
 ```
  sudo apt install wget
 ```
-   Download hamachi for make party
+   ### Download hamachi for make party
 ```
  wget https://www.vpn.net/installers/logmein-hamachi-2.1.0.203-1.armel.rpm
 ```
-  Install hamachi
+  ### Install hamachi
 ```
   sudo rpm -ivh logmein-hamachi-2.1.0.203-1.armel.rpm
 ```
-  Execute Mojito at boot
+  ### Execute Mojito at boot
 ```
   sudo cp mojito.service /etc/systemd/system/
 ```
