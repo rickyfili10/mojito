@@ -31,7 +31,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    ### If pybluez dosen't install --> <br> ``` sudo pip install git+https://github.com/pybluez/pybluez ```
    ### <br>Set the time zone ⌚
 ```
-    sudo timedatectl set-timezone {your local time zone} -- EXAMPLE FOR ITALY: "sudo timedatectl set-timezone Europe/Rome "
+    sudo timedatectl set-timezone {your local time zone} -- EXAMPLE FOR ITALY: "sudo timedatectl set-timezone Europe/Rome"
 ```
   ### Install l2ping ⛓️‍💥
 ```
