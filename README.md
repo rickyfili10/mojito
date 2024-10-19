@@ -92,7 +92,7 @@ Screen drivers based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code 💻<
    - Fill the glass with crushed ice (or normal ices cube if you don't have the crushed) 🧊
    - Fill with tonic water 💧
    - Mix! 🥄
-   - Put a lime and a mint leave for garnish 🍃🍋‍🟩
+   - Put a slice of lime and some mint leave for garnish 🍃🍋‍🟩
    - Put a straw 🍹
    - Enjoy! 🎉
    
