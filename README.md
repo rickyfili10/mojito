@@ -80,7 +80,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    - ❌ Add android rooter -> Bootloader unlocker, vbmeta flasher and sudo binary flasher (like Magisk)
 
 
---- With love by BlacKat team. ツ ---
+--- With love by BlacKat team. ツ --- 🐈‍⬛😽
 
-Screen drivers based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code
+Screen drivers based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code 💻
 # If you like this please drop a star and follow us! ⭐
