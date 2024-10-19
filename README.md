@@ -21,8 +21,12 @@ The authors take NO responsibility and liability for how you use any of the tool
   - 32 GB sd card (You need much less, but you might need 32 GB in the future for other projects!) 📀
 # HOW TO SETUP AND INSTALL MOJITO? 🔧
 1. Flash and setup kali linux for raspberry pi 0 wh 💿
-2. Clone Mojito repostory (git clone https://github.com/rickyfili10/mojito.git) ⬇️
-3. Install and setup requisites with the commands below 🔧 
+2. Install and setup requisites with the commands below 🔧
+## Clone the Mojito repostory
+ ```
+  git clone https://github.com/rickyfili10/mojito.git
+ ```
+## Install the requisites
  ```
     sudo apt update
     sudo apt-get install libbluetooth-dev
