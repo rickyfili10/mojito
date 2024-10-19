@@ -1,4 +1,4 @@
-# STILL UNDER DEVELOPMENT 💻
+# STILL UNDER DEVELOPMENT 👨‍💻
 ## No release will be made before version 1.0. Using the code now may have bugs or incomplete pieces. ❌💿
 
 # The Mojito Project by Blackat 🍹
