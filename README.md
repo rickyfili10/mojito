@@ -72,6 +72,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    - Add wifi deauth
    - Add wifi sniff
    - Add wifi beacon
+   - [x] Fix I/O errors
    - Add Apple sideload (probably impossible)
    - Add Apple Jailbreaker (like checkra1n and dopamine)
    - Add adb apk installer (for bypass family link (if you are a kid) or to bypass blocks on company phones)
