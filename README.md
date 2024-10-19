@@ -24,7 +24,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    - sudo apt-get install libbluetooth-dev
    - "sudo pip install pybluez spidev RPi.gpio "
    ```
-   if pybluez dosen't install --> ```
+   if pybluez dosen't install --> ``` shell
    sudo pip install git+https://github.com/pybluez/pybluez ```
    - ``` sudo timedatectl set-timezone {your local time zone} -- EXAMPLE FOR ITALY: "sudo timedatectl set-timezone Europe/Rome "```
    - ```sudo apt install l2ping ```
