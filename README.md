@@ -85,7 +85,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    - 7/10 Freash mint leaves 🍃
    - 2 Spoons of brown sugar 🥄
    - 20 ml of lime juice 🍋‍🟩
-   ### Put the ingredients together in a 300 ml glass and crush them! 🤜 (E.g: with a Wooden spoon)
+### Put the ingredients together in a 300 ml glass and crush them! 🤜 (E.g: with a Wooden spoon)
    - Fill the glass with crushed ice (or normal ices cube if you don't have the crushed) 🧊
    - Fill with tonic water 💧
    - Put a lime and a mint leave for garnish 🍃🍋‍🟩
