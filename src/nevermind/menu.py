@@ -242,18 +242,6 @@ def draw_menu(selected_index):
     current_time = time.strftime("%H:%M")  # Formato 24h HH:MM
     draw.text((width - 40, 0), current_time, font=font, fill=(255, 255, 255))  # Orario in alto a destra
 
-    # Ottieni il livello della batteria
-    battery_level, plugged_in = get_battery_level()
-    
-    # Visualizza messaggio sul livello della batteria o "NB!" a sinistra
-    if battery_level is None:
-        draw.text((5, 0), "NB!", font=font, fill=(255, 0, 0))  # Messaggio di errore a sinistra
-    else:
-        if plugged_in:
-            draw.text((5, 0), "PLUG", font=font, fill=(255, 255, 255))  # Messaggio "PLUG" a sinistra
-        else:
-            draw.text((5, 0), f"{battery_level}%", font=font, fill=(255, 255, 255))  # Livello della batteria a sinistra
-
     # Calcolare l'offset per le opzioni del menu
     menu_offset = 16  # Puoi modificare questo valore per spostare ulteriormente il menu
     for i, option in enumerate(menu_options):
