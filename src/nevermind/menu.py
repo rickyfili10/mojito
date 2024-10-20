@@ -234,25 +234,42 @@ def show_image(image_path, exit_event=None):
 
 def draw_menu(selected_index):
     # Clear previous image
+
+    # Clear screen
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
-    max_options = 4
-    start_index = max(0, selected_index - (max_options // 2)) #Calcola indice partenza
 
-    if start_index + max_options > len(menu_options):
-        start_index = len(menu_options) - max_options
+    # Aggiungi l'orario in alto a destra
+    current_time = time.strftime("%H:%M")  # Formato 24h HH:MM
+    draw.text((width - 40, 0), current_time, font=font, fill=(255, 255, 255))  # Orario in alto a destra
 
+    # Ottieni il livello della batteria
+    battery_level, plugged_in = get_battery_level()
+    
+    # Visualizza messaggio sul livello della batteria o "NB!" a sinistra
+    if battery_level is None:
+        draw.text((5, 0), "NB!", font=font, fill=(255, 0, 0))  # Messaggio di errore a sinistra
+    else:
+        if plugged_in:
+            draw.text((5, 0), "PLUG", font=font, fill=(255, 255, 255))  # Messaggio "PLUG" a sinistra
+        else:
+            draw.text((5, 0), f"{battery_level}%", font=font, fill=(255, 255, 255))  # Livello della batteria a sinistra
 
-    for i  in range(start_index, min(start_index + max_options, len(menu_options))):
-        y = (i - start_index) * 20  # Spacing between menu items
-        option = menu_options[i]
+    # Calcolare l'offset per le opzioni del menu
+    menu_offset = 16  # Puoi modificare questo valore per spostare ulteriormente il menu
+    for i, option in enumerate(menu_options):
+        y = (i * 20) + menu_offset  # Spacing between menu items with offset
         if i == selected_index:
-            draw.rectangle((0, y, width, y + 20), fill=(0, 255, 0))  # Highlight background
+            text_size = draw.textbbox((0, 0), option, font=font)
+            text_width = text_size[2] - text_size[0]
+            text_height = text_size[3] - text_size[1]
+            draw.rectangle((0, y, width, y + text_height), fill=(read_theme_color()))  # Highlight background
             draw.text((1, y), option, font=font, fill=(0, 0, 0))  # Text in black
         else:
             draw.text((1, y), option, font=font, fill=(255, 255, 255))  # Text in white
 
     # Display the updated image
     disp.LCD_ShowImage(image, 0, 0)
+
 
 def show_message(message, duration=2):
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))  # Clear previous image
