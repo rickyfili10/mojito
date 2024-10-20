@@ -233,31 +233,22 @@ def show_image(image_path, exit_event=None):
     disp.LCD_Clear()  # Clear the display after exit
 
 def draw_menu(selected_index):
-    # Clear previous image
 
-    # Clear screen
+    # Clear the screen
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
 
-    # Aggiungi l'orario in alto a destra
-    current_time = time.strftime("%H:%M")  # Formato 24h HH:MM
-    draw.text((width - 40, 0), current_time, font=font, fill=(255, 255, 255))  # Orario in alto a destra
-
-    # Calcolare l'offset per le opzioni del menu
-    menu_offset = 16  # Puoi modificare questo valore per spostare ulteriormente il menu
     for i, option in enumerate(menu_options):
-        y = (i * 20) + menu_offset  # Spacing between menu items with offset
-        if i == selected_index:
+        y = i * 20  # Spacing between menu items
+
+    	if i == selected_index:
             text_size = draw.textbbox((0, 0), option, font=font)
             text_width = text_size[2] - text_size[0]
             text_height = text_size[3] - text_size[1]
-            draw.rectangle((0, y, width, y + text_height), fill=(read_theme_color()))  # Highlight background
-            draw.text((1, y), option, font=font, fill=(0, 0, 0))  # Text in black
+            draw.rectangle((0, y, width, y + text_height), fill=(0, 255, 0))  # Highlight background
+	    draw.text((1, y), option, font=font, fill=(0, 0, 0))  # Text in black
         else:
             draw.text((1, y), option, font=font, fill=(255, 255, 255))  # Text in white
-
-    # Display the updated image
     disp.LCD_ShowImage(image, 0, 0)
-
 
 def show_message(message, duration=2):
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))  # Clear previous image
