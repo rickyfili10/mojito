@@ -94,6 +94,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    - ⌚ Add Apple Jailbreaker (like checkra1n and dopamine)
    - ❌ Add adb apk installer (for bypass family link (if you are a kid 🤣🫵) or to bypass blocks on company phones)
    - ❌ Add android rooter -> Bootloader unlocker, vbmeta flasher and sudo binary flasher (like Magisk)
+   - ✏️ Mojito official wiki
 
 ### Under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0) Licence 📄
   What you can do: ✔️<br>
