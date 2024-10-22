@@ -102,7 +102,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    - Creating Derivative Works --> Theoretically under this license you couldn't, but the authors decided that you can do it anyway. As long as the authors don't like what you did you will be forced to remove it ✔️<br>
  What you can't do: ❌<br>
    - Impose additional restrictions 🟰<br>
-    
+  Failure to comply with these rules could have legal and criminal consequences where you will be forced to compensate for the damages caused. 👨‍⚖️👩‍⚖️<br>
 Screen drivers based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code 💻<br>
 ## --- With love by BlacKat team. ツ --- 🐈‍⬛😽
 # Wait... Do you want to know the non-alcoholic mojito recipe? 🍹
