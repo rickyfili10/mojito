@@ -97,9 +97,9 @@ The authors take NO responsibility and liability for how you use any of the tool
 
 ### Under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0) Licence 📄
   What you can do: ✔️<br>
-    - Share 🔗<br>
-    - Use for non-commercial purposes 💸❌<br>
-    - Creating Derivative Works ✔️ --> Theoretically under this license you couldn't, but the authors decided that you can do it anyway. As long as the authors don't like what you did you will be forced to remove it<br>
+   - Share 🔗<br>
+   - Use for non-commercial purposes 💸❌<br>
+   - Creating Derivative Works ✔️ --> Theoretically under this license you couldn't, but the authors decided that you can do it anyway. As long as the authors don't like what you did you will be forced to remove it<br>
   What you can't do: ❌<br>
    - Impose additional restrictions 🟰<br>
     
