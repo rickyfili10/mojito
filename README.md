@@ -77,7 +77,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    - Plug = pluged to a power source<br>
    - N% = battery level ( not tested )<br>
 # TO DO ✔️
-  [
+  [<br>
   ❌ Not implemented yet <br>
   ✔️ Implemented <br>
   ✏️ Almost implemented or in development<br>
