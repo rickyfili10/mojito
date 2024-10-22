@@ -4,7 +4,7 @@ import os
 import subprocess
 import socket
 import sys
-from lib.mojstd import * # Mojito Standard Library 
+from libs.mojstd import * # Mojito Standard Library 
 
 
 
