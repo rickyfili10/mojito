@@ -3,7 +3,7 @@ Description=Mojito Boot Executer
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /home/kali/mojito/src/menu.py
+ExecStart=/usr/bin/python3 /home/kali/mojito/src/boot.py
 WorkingDirectory=/home/kali/mojito/src
 StandardOutput=inherit
 StandardError=inherit
