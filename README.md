@@ -100,7 +100,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    - Share 🔗<br>
    - Use for non-commercial purposes 💸❌<br>
    - Creating Derivative Works ✔️ --> Theoretically under this license you couldn't, but the authors decided that you can do it anyway. As long as the authors don't like what you did you will be forced to remove it<br>
-  What you can't do: ❌<br>
+  <br>What you can't do: ❌<br>
    - Impose additional restrictions 🟰<br>
     
 Screen drivers based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code 💻<br>
