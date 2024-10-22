@@ -1,5 +1,5 @@
-from lib.mojstd.py import *
-from bootCheck import *
+from libs.mojstd.py import *
+from libs.bootCheck import *
 import os
 
 BootCheck() # Return True, so in case of plugin to start at boot it boot it 
