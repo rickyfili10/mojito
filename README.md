@@ -73,9 +73,9 @@ The authors take NO responsibility and liability for how you use any of the tool
 
 ## After a while it should display the Mojito menu! 🎉
 # SIMBOLS LIST: ☯️
-   - NB! = No Battery Found!<br>
-   - Plug = pluged to a power source<br>
-   - N% = battery level ( not tested )<br>
+   - NB! = No Battery Found! 🙅‍♂️<br> 
+   - Plug = pluged to a power source 🔌<br>
+   - N% = battery level ( not tested ) 🔋<br>
 # TO DO ✔️
   [<br>
   ❌ Not implemented yet <br>
