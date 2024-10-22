@@ -78,12 +78,12 @@ The authors take NO responsibility and liability for how you use any of the tool
    - N% = battery level ( not tested )<br>
 # TO DO ✔️
   [
-  ❌ Not implemented yet -
-  ✔️ Implemented -
-  ✏️ Almost implemented or in development
-  🔧 Dosen't work or in pause for now 
-  ⚒️ To fix
-  🛑 End of support
+  ❌ Not implemented yet <br>
+  ✔️ Implemented <br>
+  ✏️ Almost implemented or in development<br>
+  🔧 Dosen't work or in pause for now <br>
+  ⚒️ To fix<br>
+  🛑 End of support<br>
   ]
    - ❌ Add wifi deauth
    - ❌ Add wifi sniff
