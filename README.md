@@ -105,18 +105,5 @@ The authors take NO responsibility and liability for how you use any of the tool
    - Impose additional restrictions 🟰<br>
 
 Screen drivers based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code 💻<br>
-## --- With love by BlacKat team. ツ --- 🐈‍⬛😽
-# Wait... Do you want to know the non-alcoholic mojito recipe? 🍹
-   - 7/10 Freash mint leaves 🍃
-   - 2 Spoons of brown sugar 🥄
-   - 20 ml of lime juice 🍋‍🟩
-### Put the ingredients together in a 300 ml glass and crush them! 🤜 (E.g: with a Wooden spoon or with the cocktail tool)<br>
-   - Fill the glass with crushed ice (or normal ices cube if you don't have the crushed) 🧊
-   - Fill with tonic water 💧
-   - Mix! 🥄
-   - Put a slice of lime and some mint leave for garnish 🍃🍋‍🟩
-   - Put a straw 🍹
-   - Enjoy! 🎉
-   
 
-# If you like this please drop a star and follow us! ⭐
+## --- With love by BlacKat team. ツ ---
