@@ -95,6 +95,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    - ❌ Add adb apk installer (for bypass family link (if you are a kid 🤣🫵) or to bypass blocks on company phones)
    - ❌ Add android rooter -> Bootloader unlocker, vbmeta flasher and sudo binary flasher (like Magisk)
 
+### Read the LICENCE before making changes and/or publishing the code! 📄
 Screen drivers based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code 💻<br>
 ## --- With love by BlacKat team. ツ --- 🐈‍⬛😽
 # Wait... Do you want to know the non-alcoholic mojito recipe? 🍹
