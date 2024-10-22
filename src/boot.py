@@ -1,8 +1,8 @@
 from lib.mojstd.py import *
+from bootCheck import BootCheck
 import os
 
-def boot(): # This option return true if mojito has booted
-  return True
+BootCheck()
   
 returner()
 os.system("sudo python menu.py")
