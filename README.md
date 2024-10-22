@@ -81,7 +81,7 @@ The authors take NO responsibility and liability for how you use any of the tool
   ❌ Not implemented yet -
   ✔️ Implemented -
   ✏️ Almost implemented or in development
-  🔧 Almost implemented or implemented but dosen't work or in pause for now 
+  🔧 Dosen't work or in pause for now 
   ⚒️ To fix
   🛑 End of support
   ]
