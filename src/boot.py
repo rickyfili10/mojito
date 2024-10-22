@@ -3,7 +3,7 @@ from bootCheck import *
 import os
 
 BootCheck() # Return True, so in case of plugin to start at boot it boot it 
-exec_plugins() 
+execPlugins() 
   
 returner()
 os.system("sudo python menu.py")
