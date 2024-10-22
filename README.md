@@ -99,7 +99,7 @@ The authors take NO responsibility and liability for how you use any of the tool
   What you can do: ✔️<br>
    - Share 🔗<br>
    - Use for non-commercial purposes 💸❌<br>
-   - Creating Derivative Works --> Theoretically under this license you couldn't, but the authors decided that you can do it anyway. As long as the authors don't like what you did you will be forced to remove it ✔️<br>
+   - Creating Derivative Works --> Theoretically under this license you couldn't, but the authors decided that you can do it anyway. As long as you will pubblicate the source code and if the authors don't like what you did you will be forced to remove it ✔️<br>
   What you can't do: ❌<br>
    - Impose additional restrictions 🟰<br>
 
