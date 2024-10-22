@@ -2,7 +2,7 @@ import os
 import json
 import subprocess
 
-def exec_plugins(file_path):
+def readExtension(file_path):
     # Esegui script Python
     if file_path.endswith(".py"):
         subprocess.run(["python", file_path], check=True)
@@ -16,7 +16,7 @@ def exec_plugins(file_path):
             os.chmod(file_path, 0o755)  # Rendi eseguibile
         subprocess.run([file_path], check=True)
 
-def esegui_da_json(json_path):
+def execPlugins(json_path):
     # Apri e leggi il file JSON
     try:
         with open(json_path, 'r') as f:
@@ -24,14 +24,14 @@ def esegui_da_json(json_path):
 
         # Controlla se "to_boot" è presente nel JSON
         if "to_boot" in data:
-            files_da_eseguire = data["to_boot"]
+            fileToExec = data["to_boot"]
             
             # Esegui ciascun file
-            for file_name in files_da_eseguire:
+            for file_name in filesToExec:
                 # Crea il percorso relativo al file da eseguire
                 file_path = os.path.join(os.path.dirname(json_path), file_name)
-                print(f"Eseguendo: {file_path}")
-                esegui_file(file_path)
+                print(f"Boot Debugger: Executing: {file_path}")
+                readExtension(file_path)
 
         else:
             print(f"Boot Debugger: 'to_boot' option not found {json_path}")
