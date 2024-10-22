@@ -41,7 +41,7 @@ The authors take NO responsibility and liability for how you use any of the tool
 ```
     sudo apt install l2ping 
 ```
-   ### Use "sudo raspi-config" and enable SPi interface ⚠️
+   ## Use "sudo raspi-config" and enable SPi interface ⚠️
    ### Install wget ⬇️
 ```
  sudo apt install wget
