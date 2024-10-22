@@ -1,2 +1,2 @@
-def on_boot():
+def BootCheck():
   return "True"
