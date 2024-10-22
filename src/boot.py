@@ -1,4 +1,4 @@
-from libs.mojstd.py import *
+from libs.mojstd import *
 from libs.bootCheck import *
 import os
 
