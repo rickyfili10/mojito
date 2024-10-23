@@ -39,7 +39,7 @@ def execPlugins(json_path):
     except Exception as e:
         print(f"Boot Debugger: error starting plugin: {str(e)}")
 
-json_file_path = "../app/settings/info.json"
+json_file_path = "../app/setting/info.json"
 
 
 def BootCheck():
