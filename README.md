@@ -99,6 +99,7 @@ The authors take NO responsibility and liability for how you use any of the tool
    - ⚒️ Fix Settings app
    - ⚒️ Fix that you can't use iOs bluetooth spam more than 1 time
    - ⚒️ Fix all the exit and link KEY1, KEY2 & KEY3 for exit when you press it
+   - ✏️ Put all the libraries in libs folder to make the code cleaner
 
 ### Under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0) Licence 📄
   What you can do: ✔️<br>
