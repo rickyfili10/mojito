@@ -82,7 +82,7 @@ The authors take NO responsibility and liability for how you use any of the tool
   ❌ Not implemented yet <br>
   ✔️ Implemented <br>
   ✏️ Almost implemented or in development<br>
-  🔧 Dosen't work <br>
+  🔧 Dosen't work and should be fixed<br>
   ⌚ In pause for now<br>
   ⚒️ To fix soon<br>
   🛑 End of support<br>
@@ -96,10 +96,13 @@ The authors take NO responsibility and liability for how you use any of the tool
    - ❌ Add adb apk installer (for bypass family link (if you are a kid 🤣🫵) or to bypass blocks on company phones)
    - ❌ Add android rooter -> Bootloader unlocker, vbmeta flasher and sudo binary flasher (like Magisk)
    - ✏️ Mojito official wiki
-   - ⚒️ Fix Settings app
+   - 🔧 Fix Settings app
    - ⚒️ Fix that you can't use iOs bluetooth spam more than 1 time
    - ⚒️ Fix all the exit and link KEY1, KEY2 & KEY3 for exit when you press it
    - ✏️ Put all the libraries in libs folder to make the code cleaner
+   - ⌚ Add party function
+   - ❌ Add a function to save Wifi and Wifi password to connect to networks without password
+   - ✔️ Plugin and app support (Plugin support can be bugged)
 
 ### Under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0) Licence 📄
   What you can do: ✔️<br>
