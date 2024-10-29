@@ -8,7 +8,7 @@ from libs.mojstd import * # Mojito Standard Library
 
 
 
-returner()
+# returner()
 while True:
     draw_menu(selected_index)
 
