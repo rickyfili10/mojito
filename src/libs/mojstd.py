@@ -357,7 +357,7 @@ def get_keyboard_input():
 
 
 # Menu options
-menu_options = ["Networks","Bluetooth", "Payload", "Party", "App & Plugin", "Shutdown", "Reboot", "Restart MojGUI..."]
+menu_options = ["Networks","Bluetooth", "Payload", "Party", "App & Plugin", "Shutdown", "Reboot", "Restart MojUI"]
 selected_index = 0
 
 def show_image(image_path, exit_event=None):
