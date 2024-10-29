@@ -357,7 +357,7 @@ def get_keyboard_input():
 
 
 # Menu options
-menu_options = ["Networks","Bluetooth", "Payload", "Party", "App & Plugin", "Shutdown"]
+menu_options = ["Networks","Bluetooth", "Payload", "Party", "App & Plugin", "Shutdown", "Reboot", "Restart MojGUI..."]
 selected_index = 0
 
 def show_image(image_path, exit_event=None):
@@ -426,21 +426,32 @@ def draw_menu(selected_index):
         else:
             draw.text((5, 0), f"{battery_level}%", font=font, fill=(255, 255, 255))  # Livello della batteria a sinistra
 
-    # Calcolare l'offset per le opzioni del menu
-    menu_offset = 16  # Puoi modificare questo valore per spostare ulteriormente il menu
-    for i, option in enumerate(menu_options):
-        y = (i * 20) + menu_offset  # Spacing between menu items with offset
-        if i == selected_index:
+    # Imposta il numero massimo di opzioni visibili
+    max_visible_options = 6
+    # Calcola l'offset di scorrimento in base all'opzione selezionata
+    scroll_offset = max(0, min(selected_index - max_visible_options + 1, len(menu_options) - max_visible_options))
+
+    # Ottieni le opzioni visibili nella finestra di visualizzazione
+    visible_options = menu_options[scroll_offset:scroll_offset + max_visible_options]
+
+    # Disegna le opzioni del menu con scorrimento
+    menu_offset = 16  # Offset per iniziare a disegnare il menu più in basso
+    for i, option in enumerate(visible_options):
+        y = (i * 20) + menu_offset  # Spaziatura tra le opzioni con l'offset
+
+        # Evidenzia l'opzione selezionata
+        if scroll_offset + i == selected_index:
             text_size = draw.textbbox((0, 0), option, font=font)
             text_width = text_size[2] - text_size[0]
             text_height = text_size[3] - text_size[1]
-            draw.rectangle((0, y, width, y + text_height), fill=(read_theme_color()))  # Highlight background
-            draw.text((1, y), option, font=font, fill=(0, 0, 0))  # Text in black
+            draw.rectangle((0, y, width, y + text_height), fill=(read_theme_color()))  # Evidenzia sfondo
+            draw.text((1, y), option, font=font, fill=(0, 0, 0))  # Testo in nero
         else:
-            draw.text((1, y), option, font=font, fill=(255, 255, 255))  # Text in white
+            draw.text((1, y), option, font=font, fill=(255, 255, 255))  # Testo in bianco
 
     # Display the updated image
     disp.LCD_ShowImage(image, 0, 0)
+
 
 
 def show_message(message, duration=2):
@@ -457,20 +468,55 @@ def bk(): # Back Keys
     if GPIO.input(KEY3_PIN) == 0:
         return True
     
-def draw_sub_menu(sub_selected_index, sub_menu_options):
+def draw_sub_menu(selected_index, menu_options):
+    # Clear previous image
+
+    # Clear screen
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
-    for i, option in enumerate(sub_menu_options):
-        y = i * 20
-        if i == sub_selected_index:
+
+    # Aggiungi l'orario in alto a destra
+    current_time = time.strftime("%H:%M")  # Formato 24h HH:MM
+    draw.text((width - 40, 0), current_time, font=font, fill=(255, 255, 255))  # Orario in alto a destra
+
+    # Ottieni il livello della batteria
+    battery_level, plugged_in = get_battery_level()
+
+    # Visualizza messaggio sul livello della batteria o "NB!" a sinistra
+    if battery_level is None:
+        draw.text((5, 0), "NB!", font=font, fill=(255, 0, 0))  # Messaggio di errore a sinistra
+    else:
+        if plugged_in:
+            draw.text((5, 0), "PLUG", font=font, fill=(255, 255, 255))  # Messaggio "PLUG" a sinistra
+        else:
+            draw.text((5, 0), f"{battery_level}%", font=font, fill=(255, 255, 255))  # Livello della batteria a sinistra
+
+    # Imposta il numero massimo di opzioni visibili
+    max_visible_options = 6
+    # Calcola l'offset di scorrimento in base all'opzione selezionata
+    scroll_offset = max(0, min(selected_index - max_visible_options + 1, len(menu_options) - max_visible_options))
+
+    # Ottieni le opzioni visibili nella finestra di visualizzazione
+    visible_options = menu_options[scroll_offset:scroll_offset + max_visible_options]
+
+    # Disegna le opzioni del menu con scorrimento
+    menu_offset = 16  # Offset per iniziare a disegnare il menu più in basso
+    for i, option in enumerate(visible_options):
+        y = (i * 20) + menu_offset  # Spaziatura tra le opzioni con l'offset
+
+        # Evidenzia l'opzione selezionata
+        if scroll_offset + i == selected_index:
             text_size = draw.textbbox((0, 0), option, font=font)
             text_width = text_size[2] - text_size[0]
             text_height = text_size[3] - text_size[1]
-            draw.rectangle((0, y, width, y + text_height), fill=(0, 255, 0))
-            draw.text((1, y), option, font=font, fill=(0, 0, 0))
+            draw.rectangle((0, y, width, y + text_height), fill=(read_theme_color()))  # Evidenzia sfondo
+            draw.text((1, y), option, font=font, fill=(0, 0, 0))  # Testo in nero
         else:
-            draw.text((1, y), option, font=font, fill=(255, 255, 255))
+            draw.text((1, y), option, font=font, fill=(255, 255, 255))  # Testo in bianco
+
+    # Display the updated image
     disp.LCD_ShowImage(image, 0, 0)
-    
+
+
 def mc(sub_menu_options): # Menu Configuration, don't confuse this with Mc Donald.
     if GPIO.input(KEY_UP_PIN) == 0:
         sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
