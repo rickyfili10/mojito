@@ -5,7 +5,7 @@ mac_addrs = set()
 current_mac = None
 
 @lru_cache(maxsize=236)
-class ddos:
+class dos:
 
     def __init__(self):
         self.result = subprocess.run(["sudo", "btmgmt", "find"], stdout=subprocess.PIPE)
@@ -35,4 +35,4 @@ class ddos:
     def main(self):
         self.scan_mac_addrs()
 
-ddos().main()
+dos().main()
