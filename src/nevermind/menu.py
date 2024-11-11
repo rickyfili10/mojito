@@ -104,7 +104,7 @@ while True:
                     selected_option = menu_options[selected_index]
 
                     if selected_option == "Wifi":
-                        menu_options = ["Pwnagotchi", "Wifiphisher", "Handshakes"]
+                        menu_options = ["Wifiphisher", "Handshakes"]
                         selected_index = 0
 
                         #WIFI
