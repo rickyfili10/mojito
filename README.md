@@ -115,7 +115,5 @@ The authors take NO responsibility and liability for how you use any of the tool
 
 Screen drivers based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code 💻<br>
 
-## --- By BlacKat team. ツ --- 🐈‍⬛
-![160417499](https://github.com/user-attachments/assets/a77d0a6c-077a-460f-af97-02674ba76432)
-
+## --- By BlacKat team. ツ ---
 # Please follow us and drop a star! ⭐
