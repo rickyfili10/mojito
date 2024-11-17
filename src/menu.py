@@ -362,3 +362,14 @@ while True:
             subprocess.call(['sudo', 'shutdown', '-h', 'now'])
         else:
             show_message("Unknown option", 2)
+
+
+
+
+
+
+
+
+
+
+# this is a test
