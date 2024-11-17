@@ -363,13 +363,3 @@ while True:
         else:
             show_message("Unknown option", 2)
 
-
-
-
-
-
-
-
-
-
-# this is a test
