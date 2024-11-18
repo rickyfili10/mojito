@@ -116,7 +116,7 @@ def updateMain():
         if local_hash != remote_hash:
             print(f"Update avabile! {repo_name}. ")
             show_message(f"Update avabile!\n {repo_name}.", 1)
-            update_repo(repo_url, local_dir)
+            update_repo(repo_url, repo_name, local_dir)
         else:
             print(f"{repo_name} alredy updated!")
             show_message(f"{repo_name}\nAlredy updated!", 1)
