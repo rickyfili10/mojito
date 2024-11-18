@@ -86,22 +86,23 @@ The authors take NO responsibility and liability for how you use any of the tool
   🔧 Dosen't work and should be fixed<br>
   ⌚ In pause for now<br>
   ⚒️ To fix soon<br>
+  🙅 Continuation not guaranteed
   🛑 End of support<br>
   ]
    - ❌ Add wifi deauth
    - ❌ Add wifi sniff
    - ❌ Add wifi beacon
    - ✔️ Fix I/O errors
-   - ❌ Add Apple sideload (maybe)
+   - 🙅 Add Apple sideload (maybe)
    - ⌚ Add Apple Jailbreaker (like checkra1n and dopamine)
-   - ❌ Add adb apk installer (for bypass family link (if you are a kid) or to bypass blocks on company phones)
-   - ❌ Add android rooter -> Bootloader unlocker, vbmeta flasher and sudo binary flasher (like Magisk)
+   - 🙅 Add adb apk installer (for bypass family link (if you are a kid) or to bypass blocks on company phones)
+   - 🙅 Add android rooter -> Bootloader unlocker, vbmeta flasher and sudo binary flasher (like Magisk)
    - ✏️ Mojito official wiki
    - 🔧 Fix Settings app
    - ⚒️ Fix that you can't use iOs bluetooth spam
    - ⚒️ Fix all the exit buttons
    - ✏️ Make the code cleaner
-   - ⌚ Add party function
+   - 🙅 Add party function
    - ❌ Add a function to save Wifi and Wifi password to connect to networks without password
    - ✔️ Plugin and app support (Plugin support can be bugged)
 
