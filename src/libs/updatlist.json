@@ -1,0 +1,9 @@
+{
+    "repositories": [
+        {
+            "name": "mojito",
+            "url": "https://github.com/rickyfili10/mojito.git",
+            "local_dir": "/home/pi/mojito"
+        }
+    ]
+}
