@@ -106,7 +106,7 @@ We, the authors and developers of Mojito, do not guarantee that the tools inside
    - ✏️ Make the code cleaner
    - 🙅 Add party function
    - ❌ Add a function to save Wifi and Wifi password to connect to networks without password
-   - ✔️ Plugin and app support (Plugin support can be bugged)
+   - 🔧 Plugin and app support (Plugin support can be bugged)
 
 ### Under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0) Licence 📄
   What you can do: ✔️<br>
