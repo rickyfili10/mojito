@@ -87,16 +87,17 @@ The authors take NO responsibility and liability for how you use any of the tool
   ⌚ In pause for now<br>
   ⚒️ To fix soon<br>
   🙅 Continuation not guaranteed<br>
+  💡Idea<br>
   🛑 End of support<br>
   ]
    - ❌ Add wifi deauth
    - ❌ Add wifi sniff
    - ❌ Add wifi beacon
    - ✔️ Fix I/O errors
-   - 🙅 Add Apple sideload 
+   - 💡 Add Apple sideload 
    - ⌚ Add Apple Jailbreaker (like checkra1n and dopamine)
-   - 🙅 Add adb apk installer (for bypass family link (if you are a kid) or to bypass blocks on company phones)
-   - 🙅 Add android rooter -> Bootloader unlocker, vbmeta flasher and sudo binary flasher (like Magisk)
+   - 💡 Add adb apk installer (for bypass family link (if you are a kid) or to bypass blocks on company phones)
+   - 💡 Add android rooter -> Bootloader unlocker, vbmeta flasher and sudo binary flasher (like Magisk)
    - ✏️ Mojito official wiki
    - 🔧 Fix Settings app
    - ⚒️ Fix that you can't use iOs bluetooth spam
