@@ -111,7 +111,7 @@ The authors take NO responsibility and liability for how you use any of the tool
   What you can do: ✔️<br>
    - Share 🔗<br>
    - Use for non-commercial purposes 💸❌<br>
-   - You cannot Create Derivative Works<br>
+   - You cannot Create Derivative Works, but the authors permict that if you respect that: the work will be ALWAYS open source and free, and the authors will be mentionated and if the authors dosn't like what you did, you must remove it from the internet (but you can have a copy that only you can use) 📄<br>
   What you can't do: ❌<br>
    - Impose additional restrictions 🟰<br>
 
