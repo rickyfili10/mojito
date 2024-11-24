@@ -14,6 +14,7 @@ Mojito is an penetration testing project created only for educational purposes a
 # DISCLAIMER ⚠️
 ### Mojito is for educational purposes only. 
 The authors take NO responsibility and liability for how you use any of the tools/source code/any files provided. The authors and anyone affiliated with will not be liable for any losses and/or damages in connection or other type of damages with use of ANY Tools provided with Mojito. DO NOT use Mojito if you don't have the permission to do that. <br>
+We, the authors and developers of Mojito, do not guarantee that the tools inside it will work completely bug-free and we do not guarantee the safety of being anonymous/undetected when performing an attack on a device.
 
 ## USE IT AT YOUR OWN RISK. 
 
