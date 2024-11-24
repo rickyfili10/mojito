@@ -86,7 +86,7 @@ The authors take NO responsibility and liability for how you use any of the tool
   🔧 Dosen't work and should be fixed<br>
   ⌚ In pause for now<br>
   ⚒️ To fix soon<br>
-  🙅 Continuation not guaranteed
+  🙅 Continuation not guaranteed<br>
   🛑 End of support<br>
   ]
    - ❌ Add wifi deauth
