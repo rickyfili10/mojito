@@ -9,7 +9,7 @@ This project is called "Mojito" beacuse while the developers were coding this pr
 ![mojito](https://github.com/user-attachments/assets/b10b95f5-7286-47bb-a8e1-64bc07b0ffd4)
 
 # What's that? 🤔
-Mojito is an penetration testing project created only for educational purposes and runs on a raspberry pi 0 w/wh that use a wavseshare 1.44 inch lcd HAT display. It have a collection of hacking tools and it is based on Kali Linux. 
+Mojito is swiss army knife for ethical hacking (educational purposes only) and runs on a raspberry pi 0 w/wh that use a wavseshare 1.44 inch lcd HAT display. It have a collection of hacking tools and it is based on Kali Linux. 
 
 # DISCLAIMER ⚠️
 ### Mojito is for educational purposes only. 
