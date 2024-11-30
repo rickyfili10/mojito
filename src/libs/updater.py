@@ -16,9 +16,9 @@ def load_repositories():
             config = json.load(f)
         return config.get("repositories", [])
     except FileNotFoundError:
-        print(f"File di configurazione {CONFIG_FILE} non trovato.")
+        print(f"{CONFIG_FILE} not found. ")
     except json.JSONDecodeError as e:
-        print(f"Errore nella lettura del file {CONFIG_FILE}: {e}")
+        print(f"Error during reading {CONFIG_FILE}: {e}")
     return []
 
 def get_remote_hash(repo_url):
