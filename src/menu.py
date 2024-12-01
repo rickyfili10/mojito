@@ -360,5 +360,9 @@ while True:
             show_message("Shutting down...", 2)
             time.sleep(1)
             subprocess.call(['sudo', 'shutdown', '-h', 'now'])
+        elif selected_option == "Reboot":
+            os.system("sudo reboot")
+        elif selected_option == "Restart MojUI":
+            os.system("sudo python boot.py")
         else:
             show_message("Unknown option", 2)
