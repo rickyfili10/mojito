@@ -366,3 +366,31 @@ while True:
             os.system("sudo python boot.py")
         else:
             show_message("Unknown option", 2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# this is a test
