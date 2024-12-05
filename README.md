@@ -44,7 +44,10 @@ We, the authors and developers of Mojito, do not guarantee that the tools inside
 ```
     sudo apt install l2ping 
 ```
-   ## Use "sudo raspi-config" and enable SPi interface 
+   ### Enabling SPi
+```
+    sudo sed -i "s/#dtparam=spi=on/dtparam=spi=on/" "/boot/config.txt"
+```   
    ### Install wget 
 ```
  sudo apt install wget
