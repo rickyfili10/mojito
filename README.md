@@ -46,7 +46,7 @@ We, the authors and developers of Mojito, do not guarantee that the tools inside
 ```
    ### Enabling SPi
 ```
-    sudo sed -i "s/#dtparam=spi=on/dtparam=spi=on/" "/boot/config.txt"
+sudo sed -i "s/#dtparam=spi=on/dtparam=spi=on/" "/boot/config.txt"
 ```   
    ### Install wget 
 ```
