@@ -68,7 +68,7 @@ sudo apt upgrade
 ```
 sudo sed -i "s/#dtparam=spi=on/dtparam=spi=on/" "/boot/config.txt"
 ```   
-  ### Execute Mojito at boot 
+  ### Execute Mojito at boot and set his hostname
 ```
   sudo cp mojito.service /etc/systemd/system/
 ```
@@ -80,6 +80,10 @@ sudo sed -i "s/#dtparam=spi=on/dtparam=spi=on/" "/boot/config.txt"
 ```
 ```
   sudo systemctl start mojito.service
+```
+```
+sudo hostnamectl set-hostname Mojito
+ 
 ```
 ```
   sudo reboot
