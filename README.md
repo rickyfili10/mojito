@@ -41,9 +41,12 @@ We, the authors and developers of Mojito, do not guarantee that the tools inside
 ```
     sudo timedatectl set-timezone {your local time zone} -- EXAMPLE FOR ITALY: "sudo timedatectl set-timezone Europe/Rome"
 ```
-  ### Install l2ping ⛓️‍💥
+  ### Install l2flood ⛓️‍💥
 ```
-    sudo apt install l2ping 
+git clone https://github.com/kovmir/l2flood
+cd l2flood
+make # Use `make serial` to build upstream l2ping.
+sudo make install
 ```
    ### Enabling SPi
 ```
