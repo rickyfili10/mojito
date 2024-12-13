@@ -28,7 +28,19 @@ We, the authors and developers of Mojito, do not guarantee that the tools inside
 2. Install and setup requisites with the commands below
 ## ⚠️ IF YOU HAVE ALREADY AN EXTERNAL ANTENNA THAT SUPPORT PACKET INJECTION WITH A RECOMMEND CHIPSETS BY US INSTALL THIS ⚠️
 ## Method 1
-
+ ```
+git clone https://github.com/morrownr/88x2bu-20210702.git && cd 88x2bu-20210702
+ ```
+ ```
+sudo bash install-driver.sh
+ ```
+⚠️ BE CAREFUL NOT TO BLACKLIST INSTALLED DRIVERS ⚠️
+## Method 2
+ ```
+sudo apt update
+sudo apt install realtek-rtl88xxau-dkms -y
+sudo apt upgrade
+```
 ## Clone the Mojito repostory and enter in it 
  ```
   git clone https://github.com/rickyfili10/mojito.git && cd mojito/src
