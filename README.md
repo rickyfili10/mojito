@@ -30,6 +30,8 @@ We, the authors and developers of Mojito, do not guarantee that the tools inside
 ```
 ssh kali@192.168.1.xxx
 ```
+You can see Mojito ip form your WiFi.
+If it doesn't seem to appear, try connecting it to an HDMI and plugging a keyboard into it to try to connect automatically.
 5. Install and setup requisites with the commands below
 ## ⚠️ IF YOU HAVE ALREADY AN EXTERNAL ANTENNA THAT SUPPORT PACKET INJECTION WITH A RECOMMEND CHIPSETS BY US INSTALL THIS ⚠️
 ### Else skip to Clone the Mojito repostory and enter in it 
