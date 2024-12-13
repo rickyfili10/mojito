@@ -113,6 +113,8 @@ sudo sed -i "s/#dtparam=spi=on/dtparam=spi=on/" "/boot/config.txt"
    - ❌ Add wifi deauth
    - ❌ Add wifi sniff
    - ❌ Add wifi beacon
+   - ✏️ Add wifi fakeAP
+   - ✏️ Add wifi Rick Roll AP
    - ✔️ Fix I/O errors
    - 💡 Add Apple sideload 
    - ⌚ Add Apple Jailbreaker (like checkra1n and dopamine)
