@@ -82,8 +82,7 @@ sudo sed -i "s/#dtparam=spi=on/dtparam=spi=on/" "/boot/config.txt"
   sudo systemctl start mojito.service
 ```
 ```
-sudo hostnamectl set-hostname Mojito
- 
+  sudo hostnamectl set-hostname Mojito
 ```
 ```
   sudo reboot
