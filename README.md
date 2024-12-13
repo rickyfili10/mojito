@@ -26,7 +26,9 @@ We, the authors and developers of Mojito, do not guarantee that the tools inside
 # HOW TO SETUP AND INSTALL MOJITO? 
 1. Flash and setup kali linux for raspberry pi 0 wh 
 2. Install and setup requisites with the commands below
-## ⚠️ IF YOU HAVE ALREADY AN EXTERNAL ANTENNA THAT SUPPORT PACKET INJECTION PLEASE INSTALL HIS DRIVERS FRIST ⚠️
+## ⚠️ IF YOU HAVE ALREADY AN EXTERNAL ANTENNA THAT SUPPORT PACKET INJECTION WITH A RECOMMEND CHIPSETS BY US INSTALL THIS ⚠️
+## Method 1
+
 ## Clone the Mojito repostory and enter in it 
  ```
   git clone https://github.com/rickyfili10/mojito.git && cd mojito/src
