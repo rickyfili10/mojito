@@ -281,8 +281,7 @@ def draw_keyboard(selected_key_index, input_text, mode="alpha", caps_lock=False)
 
     # Display the updated image
     disp.LCD_ShowImage(image, 0, 0)
-
-def get_keyboard_input():
+def getinput(): 
     alpha_keys = [
         '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
         'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p',
