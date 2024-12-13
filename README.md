@@ -26,12 +26,20 @@ We, the authors and developers of Mojito, do not guarantee that the tools inside
 # HOW TO SETUP AND INSTALL MOJITO? 
 1. Flash and setup kali linux for raspberry pi 0 wh
 2. Put a wpa_supplicant.conf with your wifi information inside the sd card and create a file called "ssh" with nothing inside.
-3. Connect to it using ssh, for example:
+⚠️ REMEMBER: THE PASSWORD WILL BE ALWAYS "kali" ⚠️
+4. Connect to it using ssh, for example:
 ```
 ssh kali@192.168.1.xxx
 ```
 You can see Mojito ip form your WiFi.
-If it doesn't seem to appear, try connecting it to an HDMI and plugging a keyboard into it to try to connect automatically.
+If it doesn't seem to appear, try connecting it to an HDMI and plugging a keyboard into it to try to connect automatically.<br>
+You can use this to connect manually from an hdmi and keyboard setup
+```
+sudo iwconfig wlan0 up
+sudo nmcli device wifi connect "{your wifi SSID}" password "{your wifi password}"
+sudo enable ssh
+sudo start ssh
+```
 5. Install and setup requisites with the commands below
 ## ⚠️ IF YOU HAVE ALREADY AN EXTERNAL ANTENNA THAT SUPPORT PACKET INJECTION WITH A RECOMMEND CHIPSETS BY US INSTALL THIS ⚠️
 ### Else skip to Clone the Mojito repostory and enter in it 
