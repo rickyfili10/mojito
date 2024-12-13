@@ -87,7 +87,7 @@ def execute_file(directory, file_base):
                 subprocess.run(['sudo', './', file_path])
             return
     # Se il file non ha una delle estensioni supportate
-    show_message(f"Unsupported file: {file_base}")
+    ui_print(f"Unsupported file: {file_base}")
 
 def show_file_menu():
     directory = "app/"  # Modifica questo percorso con il percorso corretto
@@ -137,7 +137,7 @@ def show_file_menu():
             time.sleep(0.3)
         if GPIO.input(KEY_PRESS_PIN) == 0:
             selected_file = files[selected_index]
-            show_message(f"Selected: {selected_file}", 1)
+            ui_print(f"Selected: {selected_file}", 1)
             # Esegui l'azione sul file selezionato
             execute_file(directory, selected_file)  # Passa solo il nome base del file
             break
@@ -184,13 +184,13 @@ def decrypt_message(encrypted_message: bytes, key: bytes) -> str:
 def setPsk():
     # Definisci il messaggio da criptare e la chiave per la cifratura
     original_message = "mojito"
-    show_message("Create a password:", 3)
+    ui_print("Create a password:", 3)
     password = get_keyboard_input()  # Password per generare la chiave AES
     key = generate_key_from_password(password)
 
     # Scrivi il messaggio criptato nel file psk.txt
     write_encrypted_message_to_file("psk.txt", original_message, key)
-    show_message("Password Saved.", 3)
+    ui_print("Password Saved.", 3)
 def read_encrypted_message_from_file(file_path: str) -> bytes:
     """Legge un messaggio criptato da un file."""
     with open(file_path, 'rb') as file:
@@ -202,7 +202,7 @@ def returner():
         encrypted_message = read_encrypted_message_from_file("psk.txt")
 
         while psk_try < max_tries:
-            show_message("Password Required.", 1)
+            ui_print("Password Required.", 1)
             user_password = get_keyboard_input()
             user_key = generate_key_from_password(user_password)
 
@@ -210,14 +210,14 @@ def returner():
                 decrypted_message = decrypt_message(encrypted_message, user_key)
 
                 if decrypted_message == "mojito":
-                    show_message("Login in...", 1)
+                    ui_print("Login in...", 1)
                     break
 
                 else:
-                    show_message("Wrong password", 1)
+                    ui_print("Wrong password", 1)
                     psk_try += 1
             except ValueError as e:
-                show_message(str(e))
+                ui_print(str(e))
                 psk_try += 1
 
 
@@ -355,6 +355,58 @@ def get_keyboard_input():
             draw_keyboard(selected_key_index, input_text, mode, caps_lock)
             time.sleep(0.3)
 
+def YesNo(selected_key_index, mode="alpha"):
+    # Impostazioni per il disegno della schermata
+    width, height = 320, 240  # Risoluzione dello schermo (adatta questa dimensione al tuo schermo)
+    
+    # Clear previous image
+    draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
+
+    # Crea i tasti "Yes" e "No"
+    button_width = 100
+    button_height = 50
+    center_x = width // 2
+    center_y = height // 2
+
+    # Posizioni dei tasti "Yes" e "No" (disposti orizzontalmente)
+    yes_x = center_x - button_width - 20  # "Yes" si sposterà a sinistra
+    no_x = center_x + 20  # "No" sarà a destra del centro
+    button_y = center_y - button_height // 2  # Verticalmente centrato
+
+    # Disegna i tasti con il cursore selezionato
+    if selected_key_index == 0:
+        draw.rectangle((yes_x, button_y, yes_x + button_width, button_y + button_height), fill=(0, 255, 0))  # Tasto Yes selezionato
+        draw.text((yes_x + 20, button_y + 15), "Yes", font=font, fill=(0, 0, 0))
+        draw.rectangle((no_x, button_y, no_x + button_width, button_y + button_height), outline=(255, 255, 255))  # Tasto No non selezionato
+        draw.text((no_x + 20, button_y + 15), "No", font=font, fill=(255, 255, 255))
+    else:
+        draw.rectangle((yes_x, button_y, yes_x + button_width, button_y + button_height), outline=(255, 255, 255))  # Tasto Yes non selezionato
+        draw.text((yes_x + 20, button_y + 15), "Yes", font=font, fill=(255, 255, 255))
+        draw.rectangle((no_x, button_y, no_x + button_width, button_y + button_height), fill=(0, 255, 0))  # Tasto No selezionato
+        draw.text((no_x + 20, button_y + 15), "No", font=font, fill=(0, 0, 0))
+
+    # Display the updated image
+    disp.LCD_ShowImage(image, 0, 0)
+def getYesNo():
+    selected_key_index = 0  # Inizialmente selezionato "Yes"
+    while True:
+        draw_keyboard(selected_key_index)
+
+        # Navigazione tra i tasti (cambia selezione tra "Yes" e "No")
+        if GPIO.input(KEY_LEFT_PIN) == 0:  # Se l'utente preme il tasto sinistro, seleziona "Yes"
+            selected_key_index = 0
+            time.sleep(0.3)
+        if GPIO.input(KEY_RIGHT_PIN) == 0:  # Se l'utente preme il tasto destro, seleziona "No"
+            selected_key_index = 1
+            time.sleep(0.3)
+
+        # Conferma la selezione
+        if GPIO.input(KEY_PRESS_PIN) == 0:  # Quando l'utente preme il tasto di conferma
+            if selected_key_index == 0:
+                return "Yes"
+            elif selected_key_index == 1:
+                return "No"
+            time.sleep(0.3)
 
 # Menu options
 menu_options = ["Networks","Bluetooth", "Payload", "Party", "App & Plugin", "Shutdown", "Reboot", "Restart MojUI"]
@@ -454,11 +506,15 @@ def draw_menu(selected_index):
 
 
 
-def show_message(message, duration=2):
+def ui_print(message, duration=2):
+    print(message)
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))  # Clear previous image
     draw.text((10, 50), message, font=font, fill=(255, 255, 255))
     disp.LCD_ShowImage(image, 0, 0)
-    time.sleep(duration)
+    if duration != "unclear":
+        time.sleep(duration)
+        disp.LCD_Clear()
+def screen_clear():
     disp.LCD_Clear()
 def bk(): # Back Keys
     if GPIO.input(KEY1_PIN) == 0:
@@ -517,15 +573,84 @@ def draw_sub_menu(selected_index, menu_options):
     disp.LCD_ShowImage(image, 0, 0)
 
 
-def mc(sub_menu_options): # Menu Configuration, don't confuse this with Mc Donald.
-    if GPIO.input(KEY_UP_PIN) == 0:
-        sub_selected_index = (sub_selected_index - 1) % len(sub_menu_options)
-        draw_sub_menu(sub_selected_index)
-        time.sleep(0.3)
-    if GPIO.input(KEY_DOWN_PIN) == 0:
-        sub_selected_index = (sub_selected_index + 1) % len(sub_menu_options)
-        draw_sub_menu(sub_selected_index)
-        time.sleep(0.3)
-    if GPIO.input(KEY_PRESS_PIN) == 0:
-        sub_selected_option = sub_menu_options[sub_selected_index]
-        show_message(f"Selected: {sub_selected_option}", 1)
+def mc(menu_options): # Menu Configuration, don't confuse this with Mc Donald.
+    # Clear previous image
+
+    # Clear screen
+    draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
+
+    # Aggiungi l'orario in alto a destra
+    current_time = time.strftime("%H:%M")  # Formato 24h HH:MM
+    draw.text((width - 40, 0), current_time, font=font, fill=(255, 255, 255))  # Orario in alto a destra
+
+    # Ottieni il livello della batteria
+    battery_level, plugged_in = get_battery_level()
+
+    # Visualizza messaggio sul livello della batteria o "NB!" a sinistra
+    if battery_level is None:
+        draw.text((5, 0), "NB!", font=font, fill=(255, 0, 0))  # Messaggio di errore a sinistra
+    else:
+        if plugged_in:
+            draw.text((5, 0), "PLUG", font=font, fill=(255, 255, 255))  # Messaggio "PLUG" a sinistra
+        else:
+            draw.text((5, 0), f"{battery_level}%", font=font, fill=(255, 255, 255))  # Livello della batteria a sinistra
+
+    # Imposta il numero massimo di opzioni visibili
+    max_visible_options = 6
+    # Calcola l'offset di scorrimento in base all'opzione selezionata
+    scroll_offset = max(0, min(selected_index - max_visible_options + 1, len(menu_options) - max_visible_options))
+
+    # Ottieni le opzioni visibili nella finestra di visualizzazione
+    visible_options = menu_options[scroll_offset:scroll_offset + max_visible_options]
+
+    # Disegna le opzioni del menu con scorrimento
+    menu_offset = 16  # Offset per iniziare a disegnare il menu più in basso
+    for i, option in enumerate(visible_options):
+        y = (i * 20) + menu_offset  # Spaziatura tra le opzioni con l'offset
+
+        # Evidenzia l'opzione selezionata
+        if scroll_offset + i == selected_index:
+            text_size = draw.textbbox((0, 0), option, font=font)
+            text_width = text_size[2] - text_size[0]
+            text_height = text_size[3] - text_size[1]
+            draw.rectangle((0, y, width, y + text_height), fill=(read_theme_color()))  # Evidenzia sfondo
+            draw.text((1, y), option, font=font, fill=(0, 0, 0))  # Testo in nero
+        else:
+            draw.text((1, y), option, font=font, fill=(255, 255, 255))  # Testo in bianco
+
+    # Display the updated image
+    disp.LCD_ShowImage(image, 0, 0)
+
+
+
+
+def list(menu_options):
+    # Clear previous image
+
+    # Clear screen
+    draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
+
+    max_visible_options = 7
+    # Calcola l'offset di scorrimento in base all'opzione selezionata
+    scroll_offset = max(0, min(selected_index - max_visible_options + 1, len(menu_options) - max_visible_options))
+
+    # Ottieni le opzioni visibili nella finestra di visualizzazione
+    visible_options = menu_options[scroll_offset:scroll_offset + max_visible_options]
+
+    # Disegna le opzioni del menu con scorrimento
+    menu_offset = 16  # Offset per iniziare a disegnare il menu più in basso
+    for i, option in enumerate(visible_options):
+        y = (i * 20) + menu_offset  # Spaziatura tra le opzioni con l'offset
+
+        # Evidenzia l'opzione selezionata
+        if scroll_offset + i == selected_index:
+            text_size = draw.textbbox((0, 0), option, font=font)
+            text_width = text_size[2] - text_size[0]
+            text_height = text_size[3] - text_size[1]
+            draw.rectangle((0, y, width, y + text_height), fill=(read_theme_color()))  # Evidenzia sfondo
+            draw.text((1, y), option, font=font, fill=(0, 0, 0))  # Testo in nero
+        else:
+            draw.text((1, y), option, font=font, fill=(255, 255, 255))  # Testo in bianco
+
+    # Display the updated image
+    disp.LCD_ShowImage(image, 0, 0)
