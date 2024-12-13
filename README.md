@@ -49,18 +49,6 @@ We, the authors and developers of Mojito, do not guarantee that the tools inside
 ```
 sudo sed -i "s/#dtparam=spi=on/dtparam=spi=on/" "/boot/config.txt"
 ```   
-   ### Install wget 
-```
- sudo apt install wget
-```
-   ### Download hamachi for make party 
-```
- wget https://www.vpn.net/installers/logmein-hamachi_2.1.0.203-1_armel.deb
-```
-  ### Install hamachi 
-```
-  sudo dpkg -i logmein-hamachi_2.1.0.203-1_armel.deb
-```
   ### Execute Mojito at boot 
 ```
   sudo cp mojito.service /etc/systemd/system/
