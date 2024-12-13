@@ -24,8 +24,13 @@ We, the authors and developers of Mojito, do not guarantee that the tools inside
   - 16 GB sd card (You need much less, but you might need 16 GB for additional packages)
   - An external usb antenna that support packet injection and monitor mode. We recommend RTL8812BU or RTL8822BU        Chipsets
 # HOW TO SETUP AND INSTALL MOJITO? 
-1. Flash and setup kali linux for raspberry pi 0 wh 
-2. Install and setup requisites with the commands below
+1. Flash and setup kali linux for raspberry pi 0 wh
+2. Put a wpa_supplicant.conf with your wifi information inside the sd card and create a file called "ssh" with nothing inside.
+3. Connect to it using ssh, for example:
+```
+ssh kali@192.168.1.xxx
+```
+5. Install and setup requisites with the commands below
 ## ⚠️ IF YOU HAVE ALREADY AN EXTERNAL ANTENNA THAT SUPPORT PACKET INJECTION WITH A RECOMMEND CHIPSETS BY US INSTALL THIS ⚠️
 ### Else skip to Clone the Mojito repostory and enter in it 
 ## Method 1 (Credit to morrownr on github)
