@@ -28,7 +28,7 @@ We, the authors and developers of Mojito, do not guarantee that the tools inside
 2. Install and setup requisites with the commands below
 ## ⚠️ IF YOU HAVE ALREADY AN EXTERNAL ANTENNA THAT SUPPORT PACKET INJECTION WITH A RECOMMEND CHIPSETS BY US INSTALL THIS ⚠️
 ### Else skip to Clone the Mojito repostory and enter in it 
-## Method 1
+## Method 1 (Credit to morrownr on github)
  ```
 git clone https://github.com/morrownr/88x2bu-20210702.git && cd 88x2bu-20210702
  ```
@@ -131,6 +131,7 @@ sudo sed -i "s/#dtparam=spi=on/dtparam=spi=on/" "/boot/config.txt"
    - Impose additional restrictions 🟰<br>
 
 Screen drivers based on https://github.com/Kudesnick/1.44inch-LCD-HAT-Code 💻<br>
+Antenna drivers created by https://github.com/morrownr/88x2bu-20210702.git 📡<br>
 ⚠️ The rest of the credits will be implemented shortly ⚠️
 ## --- By BlacKat team. ツ ---
 # Please follow us and drop a star! ⭐
