@@ -43,10 +43,10 @@ We, the authors and developers of Mojito, do not guarantee that the tools inside
 ```
   ### Install l2flood ⛓️‍💥
 ```
-git clone https://github.com/kovmir/l2flood
-cd l2flood
-make # Use `make serial` to build upstream l2ping.
-sudo make install
+  git clone https://github.com/kovmir/l2flood
+  cd l2flood
+  make # Use `make serial` to build upstream l2ping.
+  sudo make install
 ```
    ### Enabling SPi
 ```
