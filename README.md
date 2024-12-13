@@ -1,6 +1,6 @@
 # STILL UNDER DEVELOPMENT 
 ### Ehy! We are working hard on this project! So please if you can help us! 🫰
-## No release and ISO or IMG file will be made before version 1.0. Using the code now may have bugs or incomplete pieces. 💿❌
+## No release and ISO or IMG file will be made before version 1.0. Using the code now may have bugs or incomplete pieces. 💿❌ If you want to install it without a iso file, ggo to How to setup and install section.
 
 # The Mojito Project by Blackat
 
@@ -24,7 +24,8 @@ We, the authors and developers of Mojito, do not guarantee that the tools inside
   - 16 GB sd card (You need much less, but you might need 16 GB for additional packages) 
 # HOW TO SETUP AND INSTALL MOJITO? 
 1. Flash and setup kali linux for raspberry pi 0 wh 
-2. Install and setup requisites with the commands below 
+2. Install and setup requisites with the commands below
+## ⚠️ IF YOU HAVE ALREADY AN EXTERNAL ANTENNA THAT SUPPORT PACKET INJECTION PLEASE INSTALL HIS DRIVERS FRIST ⚠️
 ## Clone the Mojito repostory and enter in it 
  ```
   git clone https://github.com/rickyfili10/mojito.git && cd mojito/src
