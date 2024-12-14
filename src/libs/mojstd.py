@@ -433,28 +433,7 @@ def get_battery_level():
     percent = battery.percent
     is_plugged = battery.power_plugged
     return percent, is_plugged
-def read_theme_color(json_file_path1='app/setting/config.json'):
 
-    if not os.path.exists(json_file_path1):
-        print(f"File not found: {json_file_path1}")
-        return None
-
-    try:
-        with open(json_file_path1, 'r') as json_file:
-            config = json.load(json_file)
-            theme_color = config.get('Theme')
-
-            if theme_color and isinstance(theme_color, list) and len(theme_color) == 3:
-                return tuple(theme_color)
-            else:
-                print("Invalid 'Theme' format. It should be a list of three elements.")
-                return None
-    except json.JSONDecodeError as e:
-        print(f"Error reading JSON: {e}")
-        return None
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None
 def draw_menu(selected_index):
     # Clear previous image
 
@@ -495,7 +474,7 @@ def draw_menu(selected_index):
             text_size = draw.textbbox((0, 0), option, font=font)
             text_width = text_size[2] - text_size[0]
             text_height = text_size[3] - text_size[1]
-            draw.rectangle((0, y, width, y + text_height), fill=(read_theme_color()))  # Evidenzia sfondo
+            draw.rectangle((0, y, width, y + text_height), fill=(50, 205, 50))  # Evidenzia sfondo
             draw.text((1, y), option, font=font, fill=(0, 0, 0))  # Testo in nero
         else:
             draw.text((1, y), option, font=font, fill=(255, 255, 255))  # Testo in bianco
@@ -563,7 +542,7 @@ def draw_sub_menu(selected_index, menu_options):
             text_size = draw.textbbox((0, 0), option, font=font)
             text_width = text_size[2] - text_size[0]
             text_height = text_size[3] - text_size[1]
-            draw.rectangle((0, y, width, y + text_height), fill=(read_theme_color()))  # Evidenzia sfondo
+            draw.rectangle((0, y, width, y + text_height), fill=(50, 205, 50))  # Evidenzia sfondo
             draw.text((1, y), option, font=font, fill=(0, 0, 0))  # Testo in nero
         else:
             draw.text((1, y), option, font=font, fill=(255, 255, 255))  # Testo in bianco
