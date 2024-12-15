@@ -405,17 +405,19 @@ while True:
                                                 time.sleep(5)
 
                                             def RickRoll(a, b):
-                                                
-                                                os.system(f"sudo airbase-ng -e {a} -c {b} wlan1")
+                                                os.system(f'sudo airbase-ng -e "{nevergonnagiveuup[a]}" -c {b} wlan1')
 
-                                            for i in range(0, 7):
-                                                show_message(f"""Dossing
-    {mac} . . .""")
-                                                BleDos = threading.Thread(target=RickRoll, args=[str(a, b)]).start()
-                                                a += 1
+                                            for i in range(len(nevergonnagiveuup)):
+                                                show_message(f"""Fake AP - 
+    RickRoll started . . .""", 1.5)
+                                                threading.Thread(target=RickRoll, args=(i, b)).start()
                                                 b += 1
-                                                        
-
+                                            while True:
+                                                show_message("Press Key 3 to stop...")
+                                                if bk() == True:
+                                                    show_message("Retring...", 0.5)
+                                                    threading.Event()
+                                                    break
 
         elif selected_option == "Bluetooth":
             selected_index = 0
