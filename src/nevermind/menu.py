@@ -18,9 +18,11 @@ scroll_offset = 0
 selected_index = 0
 handshakes = 1 #on
 max_visible_options = 7
+INTERFACE = json.load(open("settings/settings.json", "r"))["interface"]
+interface = []
 Exit = "<---------Exit--------->"
 
-#@functools.lru_cache(maxsize=236)
+#@functools.lru_cache(maxsize=1000)
 def bk():
     if GPIO.input(KEY3_PIN) == 0:
             return True
@@ -59,7 +61,7 @@ def draw_menu(selected_index):
 
 selected_index = 0
 b = 1
-nevergonnagiveuup = ["Never Gonna Give You Up", "Never Gonna Let You Down", "Never Gonna Run Around", "And DesertYou", "Never Gonna Make You Cry", "Never Gonna Say Good", "Never Gonna Tell A Lie", "And Hurt "]
+nevergonnagiveuup = ["Never Gonna Give You Up", "Never Gonna Let You Down", "Never Gonna Run Around", "And DesertYou", "Never Gonna Make You Cry", "Never Gonna Say Good Bye"]
 a = nevergonnagiveuup[0]
 
 
@@ -73,7 +75,7 @@ a = nevergonnagiveuup[0]
 
 
 while True:
-    menu_options = ["Networks","Bluetooth", "Reboot", "Shutdown"]
+    menu_options = ["Networks","Bluetooth", "Settings", "Reboot", "Shutdown"]
     draw_menu(selected_index)
 
     if GPIO.input(KEY_UP_PIN) == 0:
@@ -90,7 +92,7 @@ while True:
 
         if selected_option == "Networks":
             # NETWORKS
-            time.sleep(0.25)
+            time.sleep(0.2)
             while True:
                 menu_options = ["Wifi"]
                 draw_menu(selected_index)
@@ -134,6 +136,8 @@ while True:
                             elif GPIO.input(KEY_PRESS_PIN) == 0:
                                 selected_option = menu_options[selected_index]
 
+
+                                #Handshakes -----------------> WORKS !!!
                                 if selected_option == "Handshakes":
                                     show_message("Loading...", 0.3)
                                     wifi_info().main()
@@ -182,10 +186,9 @@ while True:
                                                 ]
 
                                                 show_message("Wait please...")
-                                                os.system("sudo iw wlan0 interface add mon0 type monitor")
+                                                os.system(f"sudo iw {INTERFACE} interface add mon0 type monitor")
                                                 time.sleep(1)
                                                 os.system("sudo airmon-ng start mon0")
-                                                #os.system("sudo airmon-ng check mon0 && sudo airmon-ng check kill")
                                                 show_message("mon0 ready!")
 
                                                 # KEY3
@@ -250,23 +253,26 @@ while True:
 
                                                     show_message("this might take some time...", 2)
                                                     show_message("""When the handshake
-        is captured,
-        you'll be notified
-        and you'll be
-        brought back to the
-        previous menu""", 2.5)
+is captured,
+you'll be notified
+and you'll be
+brought back to the
+previous menu""", 2.5)
+                                                    while True:
+                                                        if os.path.exists(f"'wpa({selected_bssid}).pcap'") == True:
+                                                            show_message("Handshake captured!",1)
+                                                            os.system("sudo systemctl start NetworkManager")
+                                                            show_message("Retring...")
+                                                            break
 
-                                                    if os.path.exists(f"'wpa({selected_bssid}).pcap'") == True:
-                                                        show_message("Handshake captured!",1)
-                                                        os.system("sudo systemctl start NetworkManager")
-                                                        show_message("Retring...")
-                                                        break
+                                                        elif bk() == True:
+                                                            selected_index = 0
+                                                            break
 
-                                                    elif bk() == True:
-                                                        selected_index = 0
-                                                        break
+                                                        else:
+                                                            pass
 
-                                #DEAUTH ALL
+                                #DEAUTH ALL -----> THIS MIGHT NOT WORK 
                                 elif selected_option == "Deauth all":
                                     wifi_info().main()
                                     menu_options = []
@@ -286,7 +292,6 @@ while True:
 
                                     selected_index = 0
                                     while True:
-
                                         draw_menu(selected_index)
                                         if GPIO.input(KEY_UP_PIN) == 0:
                                             selected_index = (selected_index - 1) % len(menu_options)
@@ -308,30 +313,21 @@ while True:
                                                 selected_chan = dictdionary[selected_bssid]
                                                 print("info: "+selected_option+" "+selected_bssid+" "+str(selected_chan))
 
-
-
-
-
                                                 show_message("Deauth starting...")
-
-                                                os.system("sudo iw wlan0 interface add mon0 type monitor")
-                                                os.system("sudo airmon-ng start mon0")
+                                                os.system(f"sudo airmon-ng start {INTERFACE}")
                                                 time.sleep(0.5)
-                                                show_message("mon0 interface created", 1)
+                                                show_message(f"{INTERFACE} interface created", 1)
                                                 time.sleep(0.5)
                                                 show_message("Wait please...", 1)
-                                                time.sleep(2)
-
-                                                subprocess.run(['sudo', 'iwconfig', 'mon0', 'channel', str(selected_chan)], text=True, capture_output=True)
-                                                time.sleep(2)
-                                                show_message(f"mon0 --> channel {str(selected_chan)}")
-
+                                                time.sleep(0.5)
+                                                subprocess.run(['sudo', 'iwconfig', f'{INTERFACE}', 'channel', str(selected_chan)], text=True, capture_output=True)
+                                                time.sleep(1.25)
+                                                show_message(f"{INTERFACE} --> channel {str(selected_chan)}")
                                                 time.sleep(1)
-
                                                 show_message("Loading...")
-                                                time.sleep(3)
+                                                time.sleep(1)
                                                 show_message("Press Key_3 to go back...")
-                                                command = ['sudo', 'aireplay-ng','--deauth', '0', '-a', selected_bssid, 'mon0']
+                                                command = ['sudo', 'aireplay-ng','--deauth', '0', '-a', selected_bssid, f'{INTERFACE}']
 
                                                 deauthall = subprocess.run(command, text=True, capture_output=True)
 
@@ -339,28 +335,24 @@ while True:
                                                     show_message("Retring...", 0.5)
                                                     break
 
-
                                                 elif deauthall.returncode != 0:
-                                                            show_message(f"Error: {deauthall.stderr}", 2)
-                                                            with open("output1.txt", 'a') as file:
-                                                                command_string = ' '.join(command)
-                                                                file.write(f"command: {command_string}\n")
-                                                                file.write(deauthall.stderr)
-                                                                file.write(deauthall.stdout)
-                                                                os.system("sudo iwconfig wlan0 mode managed")
-                                                                os.system("sudo systemctl NetworkManager restart")
-                                                                time.sleep(1)
-                                                                show_message("Restarting wlan0...",2)
-                                                                break
-
-
-
+                                                    show_message(f"Error: {deauthall.stderr}", 2)
+                                                    with open("output1.txt", 'a') as file:
+                                                        command_string = ' '.join(command)
+                                                        file.write(f"command: {command_string}\n")
+                                                        file.write(deauthall.stderr)
+                                                        file.write(deauthall.stdout)
+                                                        os.system(f"sudo iwconfig {INTERFACE} mode managed")
+                                                        os.system("sudo systemctl NetworkManager restart")
+                                                        time.sleep(1)
+                                                        show_message(f"Restarting {INTERFACE}...",2)
+                                                        break
 
                                                 else:
-                                                            with open("output1.txt", 'a') as file:
-                                                                command_string = ' '.join(command)
-                                                                file.write(f"command: {command_string}\n")
-                                                                file.write(deauthall.stdout)
+                                                    with open("output1.txt", 'a') as file:
+                                                        command_string = ' '.join(command)
+                                                        file.write(f"command: {command_string}\n")
+                                                        file.write(deauthall.stdout)
 
 
 
@@ -376,7 +368,7 @@ while True:
                                     selected_index = 0
 
                                     while True:
-                                        menu_options = ["NeverGonnaGiveYouUp", "Random"]
+                                        menu_options = ["RickRoll", "Random"]
                                         draw_menu(selected_index)
                                         
                                         if GPIO.input(KEY_UP_PIN) == 0:
@@ -395,21 +387,21 @@ while True:
                                             selected_option = menu_options[selected_index]
                                             show_message("Wait please...")
 
-                                            if selected_option == "NeverGonnaGiveYouUp":
+                                            if selected_option == "RickRoll":
                                                 time.sleep(1)
-                                                os.system("sudo airmon-ng start wlan1")
-                                                os.system("sudo airmon-ng check wlan1 && sudo airmon-ng check kill")
-                                                os.system("sudo airmon-ng start wlan1")
-
-                                                show_message("waiting 5s ...")
-                                                time.sleep(5)
+                                                os.system(f"sudo airmon-ng start {INTERFACE}")
+                                                os.system(f"sudo airmon-ng check {INTERFACE} && sudo airmon-ng check kill")
+                                                os.system(f"sudo airmon-ng start {INTERFACE}")
+                                                show_message(f"{INTERFACE} is ready")
+                                                show_message("Starting ...")
+                                                time.sleep(1)
 
                                             def RickRoll(a, b):
-                                                os.system(f'sudo airbase-ng -e "{nevergonnagiveuup[a]}" -c {b} wlan1')
+                                                os.system(f'sudo airbase-ng -e "{nevergonnagiveuup[a]}" -c {b} {INTERFACE}')
 
                                             for i in range(len(nevergonnagiveuup)):
                                                 show_message(f"""Fake AP - 
-    RickRoll started . . .""", 1.5)
+RickRoll started . . .""", 1.5)
                                                 threading.Thread(target=RickRoll, args=(i, b)).start()
                                                 b += 1
                                             while True:
@@ -533,7 +525,7 @@ while True:
             menu_options = ["Yes", "No"]
             selected_index = 0
 
-            time.sleep(0.5)
+            time.sleep(0.20)
             while True:
                 draw_menu(selected_index)
                 if GPIO.input(KEY_UP_PIN) == 0:
@@ -554,6 +546,74 @@ while True:
                     if selected_option == "Yes":
                         show_message("Shutting down mojito...", 10)
                         os.system("sudo shutdown now")
+
+                    else:
+                        break
+
+        elif selected_option == "Settings":
+            selected_index = 0
+
+            time.sleep(0.20)
+            while True:
+                menu_options = ["Interface", "Ssh"]
+                draw_menu(selected_index)
+                if GPIO.input(KEY_UP_PIN) == 0:
+                    selected_index = (selected_index - 1) % len(menu_options)
+                    draw_menu(selected_index)
+
+                elif GPIO.input(KEY_DOWN_PIN) == 0:
+                    selected_index = (selected_index + 1) % len(menu_options)
+                    draw_menu(selected_index)
+
+                elif GPIO.input(KEY3_PIN) == 0:
+                    show_message("Retring...", 0.5)
+                    break
+
+                elif GPIO.input(KEY_PRESS_PIN) == 0:
+                    selected_option = menu_options[selected_index]
+
+                    if selected_option == "Interface":
+                        sys_class_net_ = subprocess.run(["ls", "/sys/class/net/"], text=True, capture_output=True)
+                        if sys_class_net_.returncode != 0:
+                            show_message("""Error: Unable to find ANY 
+    network interfaces""")
+
+                        else:
+                            interface = sys_class_net_.stdout.splitlines()
+
+                            #interface menu
+                            selected_index = 0
+                            time.sleep(0.20)
+
+                            while True:
+                                menu_options = interface
+                                draw_menu(selected_index)
+                                if GPIO.input(KEY_UP_PIN) == 0:
+                                    selected_index = (selected_index - 1) % len(menu_options)
+                                    draw_menu(selected_index)
+
+                                elif GPIO.input(KEY_DOWN_PIN) == 0:
+                                    selected_index = (selected_index + 1) % len(menu_options)
+                                    draw_menu(selected_index)
+
+                                elif GPIO.input(KEY3_PIN) == 0:
+                                    show_message("Retring...", 0.5)
+                                    break
+
+                                elif GPIO.input(KEY_PRESS_PIN) == 0:
+                                    selected_option = menu_options[selected_index]
+                                    INTERFACE = {"interface":selected_option}
+                                    show_message("Wait please...", 0.5)
+                                    with open("settings/settings.json", "w") as idk:
+                                        json.dump(INTERFACE, idk, indent=2)
+                                    show_message(f"""Selected Interface:
+{selected_option}""")
+
+                                
+                                
+
+
+
 
                     else:
                         break
