@@ -49,6 +49,7 @@ git clone https://github.com/morrownr/88x2bu-20210702.git && cd 88x2bu-20210702
  ```
  ```
 sudo bash install-driver.sh
+sudo reboot
  ```
 ⚠️ BE CAREFUL NOT TO BLACKLIST INSTALLED DRIVERS ⚠️
 ## Method 2
@@ -56,6 +57,7 @@ sudo bash install-driver.sh
 sudo apt update
 sudo apt install realtek-rtl88xxau-dkms -y
 sudo apt upgrade
+sudo reboot
 ```
 ## Clone the Mojito repostory and enter in it 
  ```
