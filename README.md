@@ -26,7 +26,7 @@ We, the authors and developers of Mojito, do not guarantee that the tools inside
 # HOW TO SETUP AND INSTALL MOJITO? 
 1. Flash and setup kali linux for raspberry pi 0 wh
 2. Put a wpa_supplicant.conf with your wifi information inside the sd card and create a file called "ssh" with nothing inside.
-⚠️ REMEMBER: THE PASSWORD WILL BE ALWAYS "kali" ⚠️
+###⚠️ REMEMBER: THE PASSWORD WILL BE ALWAYS "kali" ⚠️
 4. Connect to it using ssh, for example:
 ```
 ssh kali@192.168.1.xxx
@@ -51,7 +51,7 @@ git clone https://github.com/morrownr/88x2bu-20210702.git && cd 88x2bu-20210702
 sudo bash install-driver.sh
 sudo reboot
  ```
-⚠️ BE CAREFUL NOT TO BLACKLIST INSTALLED DRIVERS ⚠️
+###⚠️ BE CAREFUL NOT TO BLACKLIST INSTALLED DRIVERS ⚠️
 ## Method 2
  ```
 sudo apt update
