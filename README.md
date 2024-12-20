@@ -126,7 +126,7 @@ sudo sed -i "s/#dtparam=spi=on/dtparam=spi=on/" "/boot/config.txt"
    - ❌ Add wifi sniff
    - ❌ Add wifi beacon
    - ✏️ Add wifi fakeAP
-   - ✏️ Add wifi Rick Roll AP
+   - ✔️ Add wifi Rick Roll AP
    - ✔️ Fix I/O errors
    - 💡 Add Apple sideload 
    - ⌚ Add Apple Jailbreaker (like checkra1n and dopamine)
@@ -134,7 +134,7 @@ sudo sed -i "s/#dtparam=spi=on/dtparam=spi=on/" "/boot/config.txt"
    - 💡 Add android rooter -> Bootloader unlocker, vbmeta flasher and sudo binary flasher (like Magisk)
    - ✏️ Mojito official wiki
    - 🔧 Fix Settings app
-   - ⚒️ Fix that you can't use iOs bluetooth spam
+   - ⚒️ Fix that you can't use iOs bluetooth spam more than one time
    - ⚒️ Fix all the exit buttons
    - ✏️ Make the code cleaner
    - 🙅 Add party function
